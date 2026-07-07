@@ -1,8 +1,16 @@
 from fastapi import FastAPI, UploadFile, File
 from pypdf import PdfReader
+from database import init_db
+from contextlib import asynccontextmanager
 import io
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/")
 def root():
