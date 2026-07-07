@@ -1,0 +1,14 @@
+# virtual environment
+.venv/
+
+# environment variables - NEVER commit this
+.env
+
+# python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE files
+.vscode/
+.idea/
