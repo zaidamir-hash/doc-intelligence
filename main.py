@@ -8,6 +8,8 @@ from database import get_db
 from sqlalchemy.orm import Session
 from models import DocumentChunk
 from fastapi import Depends
+from query import search_similar_chunks, generate_answer
+from pydantic import BaseModel
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -69,4 +71,32 @@ async def upload_document(
         "filename": file.filename,
         "pages": len(pdf.pages),
         "chunks_stored": len(chunks)
+    }
+
+
+class QueryRequest(BaseModel):
+    question: str
+
+@app.post("/query")
+def query_document(request: QueryRequest, db: Session = Depends(get_db)):
+    chunks = search_similar_chunks(request.question, db)
+    
+    if not chunks:
+        return {"answer": "No relevant documents found. Please upload a document first."}
+    
+    answer = generate_answer(request.question, chunks)
+    
+    sources = [
+        {
+            "filename": chunk.filename,
+            "chunk_index": chunk.chunk_index,
+            "preview": chunk.content[:100]
+        }
+        for chunk in chunks
+    ]
+    
+    return {
+        "question": request.question,
+        "answer": answer,
+        "sources": sources
     }
