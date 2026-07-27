@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Depends, Request
+from fastapi import FastAPI, UploadFile, File, Depends, Request, HTTPException
 from fastapi.security import APIKeyHeader
 from pypdf import PdfReader
 from database import init_db, get_db
@@ -52,33 +52,69 @@ async def upload_document(
     db: Session = Depends(get_db),
     api_key: str = Depends(verify_api_key)
 ):
-    contents = await file.read()
-    pdf = PdfReader(io.BytesIO(contents))
-    
-    text = ""
-    for page in pdf.pages:
-        text += page.extract_text()
-    
-    chunks = chunk_text(text)
-    
-    for i, chunk in enumerate(chunks):
-        embedding = get_embedding(chunk)
+    try:
+        if not file.filename.endswith(".pdf"):
+            raise HTTPException(
+                status_code=400,
+                detail="Only PDF files are supported"
+            )
         
-        db_chunk = DocumentChunk(
-            filename=file.filename,
-            chunk_index=i,
-            content=chunk,
-            embedding=embedding
+        contents = await file.read()
+        
+        if not contents:
+            raise HTTPException(
+                status_code=400,
+                detail="Uploaded file is empty"
+            )
+        
+        pdf = PdfReader(io.BytesIO(contents))
+        
+        text = ""
+        for page in pdf.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text
+        
+        if not text.strip():
+            raise HTTPException(
+                status_code=422,
+                detail="No extractable text found. PDF may be scanned or image-based."
+            )
+        
+        chunks = chunk_text(text)
+        
+        for i, chunk in enumerate(chunks):
+            try:
+                embedding = get_embedding(chunk)
+            except Exception as e:
+                raise HTTPException(
+                    status_code=502,
+                    detail=f"Embedding service failed: {str(e)}"
+                )
+            
+            db_chunk = DocumentChunk(
+                filename=file.filename,
+                chunk_index=i,
+                content=chunk,
+                embedding=embedding
+            )
+            db.add(db_chunk)
+        
+        db.commit()
+        
+        return {
+            "filename": file.filename,
+            "pages": len(pdf.pages),
+            "chunks_stored": len(chunks)
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error processing document: {str(e)}"
         )
-        db.add(db_chunk)
-    
-    db.commit()
-    
-    return {
-        "filename": file.filename,
-        "pages": len(pdf.pages),
-        "chunks_stored": len(chunks)
-    }
 
 class QueryRequest(BaseModel):
     question: str
@@ -91,24 +127,45 @@ def query_document(
     db: Session = Depends(get_db),
     api_key: str = Depends(verify_api_key)
 ):
-    chunks = search_similar_chunks(body.question, db)
-    
-    if not chunks:
-        return {"answer": "No relevant documents found. Please upload a document first."}
-    
-    answer = generate_answer(body.question, chunks)
-    
-    sources = [
-        {
-            "filename": chunk.filename,
-            "chunk_index": chunk.chunk_index,
-            "preview": chunk.content[:100]
+    try:
+        if not body.question.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Question cannot be empty"
+            )
+        
+        chunks = search_similar_chunks(body.question, db)
+        
+        if not chunks:
+            return {"answer": "No relevant documents found. Please upload a document first."}
+        
+        try:
+            answer = generate_answer(body.question, chunks)
+        except Exception as e:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Answer generation failed: {str(e)}"
+            )
+        
+        sources = [
+            {
+                "filename": chunk.filename,
+                "chunk_index": chunk.chunk_index,
+                "preview": chunk.content[:100]
+            }
+            for chunk in chunks
+        ]
+        
+        return {
+            "question": body.question,
+            "answer": answer,
+            "sources": sources
         }
-        for chunk in chunks
-    ]
     
-    return {
-        "question": body.question,
-        "answer": answer,
-        "sources": sources
-    }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error processing query: {str(e)}"
+        )
