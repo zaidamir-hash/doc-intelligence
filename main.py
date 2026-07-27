@@ -1,15 +1,20 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Depends, Request
+from fastapi.security import APIKeyHeader
 from pypdf import PdfReader
-from database import init_db
+from database import init_db, get_db
 from contextlib import asynccontextmanager
-import io
-from embeddings import get_embedding
-from database import get_db
 from sqlalchemy.orm import Session
 from models import DocumentChunk
-from fastapi import Depends
+from embeddings import get_embedding
 from query import search_similar_chunks, generate_answer
 from pydantic import BaseModel
+from auth import verify_api_key
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+import io
+
+limiter = Limiter(key_func=get_remote_address)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,13 +22,13 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.get("/")
 def root():
     return {"status": "running"}
 
-# chunk function BEFORE the upload endpoint
 def chunk_text(text: str, chunk_size: int = 500, overlap: int = 100) -> list[str]:
     chunks = []
     start = 0
@@ -39,11 +44,13 @@ def chunk_text(text: str, chunk_size: int = 500, overlap: int = 100) -> list[str
     
     return chunks
 
-# upload endpoint AFTER the chunk function
 @app.post("/upload")
+@limiter.limit("5/minute")
 async def upload_document(
+    request: Request,
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key)
 ):
     contents = await file.read()
     pdf = PdfReader(io.BytesIO(contents))
@@ -73,18 +80,23 @@ async def upload_document(
         "chunks_stored": len(chunks)
     }
 
-
 class QueryRequest(BaseModel):
     question: str
 
 @app.post("/query")
-def query_document(request: QueryRequest, db: Session = Depends(get_db)):
-    chunks = search_similar_chunks(request.question, db)
+@limiter.limit("20/minute")
+def query_document(
+    request: Request,
+    body: QueryRequest,
+    db: Session = Depends(get_db),
+    api_key: str = Depends(verify_api_key)
+):
+    chunks = search_similar_chunks(body.question, db)
     
     if not chunks:
         return {"answer": "No relevant documents found. Please upload a document first."}
     
-    answer = generate_answer(request.question, chunks)
+    answer = generate_answer(body.question, chunks)
     
     sources = [
         {
@@ -96,7 +108,7 @@ def query_document(request: QueryRequest, db: Session = Depends(get_db)):
     ]
     
     return {
-        "question": request.question,
+        "question": body.question,
         "answer": answer,
         "sources": sources
     }
