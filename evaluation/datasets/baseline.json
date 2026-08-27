@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "name": "lexis-baseline",
+  "description": "Human-labelled baseline for the current dense-only Lexis retriever. The long-document cases were labelled against the indexed 340-chunk copy of Gov-AR_1 test.pdf and visually checked against the uploaded 91-page report. The original questions behind the previously reported metrics were unavailable, so these cases establish a fresh baseline instead of attempting to recreate a desired score.",
+  "split": "test",
+  "cases": [
+    {
+      "id": "gov-ncpi-fy25-vs-fy24",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What were Pakistan's average NCPI inflation rates in FY25 and FY24?",
+      "answerable": true,
+      "relevant_chunk_indices": [7, 57, 58],
+      "relevance_grades": {"7": 1, "57": 1, "58": 1},
+      "reference_answer": "Average NCPI inflation was 4.5 percent in FY25, down from 23.4 percent in FY24.",
+      "notes": "Three overlapping passages state both rates; chunk 58 begins mid-sentence but still contains both figures.",
+      "tags": ["long-document", "number", "paraphrase", "multiple-evidence"]
+    },
+    {
+      "id": "gov-policy-rate-reduction",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "By how many basis points did the MPC reduce policy rates between June 2024 and June 2025?",
+      "answerable": true,
+      "relevant_chunk_indices": [7, 8],
+      "relevance_grades": {"7": 1, "8": 1},
+      "reference_answer": "The MPC reduced policy rates by 1,100 basis points.",
+      "notes": "Both chunks explicitly state the amount and the June 2024 to June 2025 period.",
+      "tags": ["long-document", "number", "date", "multiple-evidence"]
+    },
+    {
+      "id": "gov-public-debt-ratio",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "How did Pakistan's public debt-to-GDP ratio change from FY24 to FY25?",
+      "answerable": true,
+      "relevant_chunk_indices": [52, 53],
+      "relevance_grades": {"52": 1, "53": 1},
+      "reference_answer": "It rose from 67.7 percent in FY24 to 70.8 percent in FY25.",
+      "notes": "The fact crosses the overlap between adjacent chunks, and both chunks contain the complete comparison.",
+      "tags": ["long-document", "number", "paraphrase", "multiple-evidence"]
+    },
+    {
+      "id": "gov-m2-growth",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "To what rate did broad money (M2) growth decelerate in FY25, and what was its rate in the previous year?",
+      "answerable": true,
+      "relevant_chunk_indices": [53],
+      "relevance_grades": {"53": 1},
+      "reference_answer": "M2 growth decelerated to 13.7 percent in FY25 from 16 percent in the previous year.",
+      "notes": "Chunk 53 is the only indexed passage containing both requested M2 rates.",
+      "tags": ["long-document", "acronym", "number"]
+    },
+    {
+      "id": "gov-january-2025-projections",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "After the January 2025 revision, what inflation projection range did the MPC adopt, and what real GDP growth range did it maintain?",
+      "answerable": true,
+      "relevant_chunk_indices": [143, 149],
+      "relevance_grades": {"143": 1, "149": 1},
+      "reference_answer": "The MPC revised inflation to 5.5-7.5 percent and maintained real GDP growth at 2.5-3.5 percent.",
+      "notes": "Only chunks 143 and 149 contain both requested ranges in one passage.",
+      "tags": ["long-document", "date", "number", "multiple-fact", "multiple-evidence"]
+    },
+    {
+      "id": "gov-securities-sale-gains",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "How much did the banking sector gain from the sale of government securities during FY25?",
+      "answerable": true,
+      "relevant_chunk_indices": [187, 188, 199],
+      "relevance_grades": {"187": 1, "188": 1, "199": 1},
+      "reference_answer": "The banking sector recorded gains of Rs 117 billion during FY25.",
+      "notes": "The figure appears in three indexed footnote passages.",
+      "tags": ["long-document", "number", "exact-term", "multiple-evidence"]
+    },
+    {
+      "id": "gov-climate-risk-fund-purpose",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What is Climate Risk Fund-I for microfinance banks intended to achieve?",
+      "answerable": true,
+      "relevant_chunk_indices": [13],
+      "relevance_grades": {"13": 1},
+      "reference_answer": "It is intended to promote climate-resilient farming and provide liquidity support to small farmers affected by floods.",
+      "notes": "The question paraphrases the fund's two stated purposes.",
+      "tags": ["long-document", "name", "paraphrase"]
+    },
+    {
+      "id": "gov-ifsb-adoption",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "How many new IFSB standards did SBP adopt during FY2024-25, and what total did that bring the adopted standards to?",
+      "answerable": true,
+      "relevant_chunk_indices": [118, 119],
+      "relevance_grades": {"118": 1, "119": 1},
+      "reference_answer": "SBP adopted six new IFSB standards, bringing the total to ten.",
+      "notes": "Two overlapping chunks contain the complete answer.",
+      "tags": ["long-document", "acronym", "number", "multiple-evidence"]
+    },
+    {
+      "id": "gov-aaoifi-adoption",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "How many AAOIFI Shariah standards did SBP adopt during FY2024-25?",
+      "answerable": true,
+      "relevant_chunk_indices": [120, 121],
+      "relevance_grades": {"120": 1, "121": 1},
+      "reference_answer": "SBP adopted nine AAOIFI Shariah standards during FY2024-25.",
+      "notes": "The count appears across two overlapping chunks.",
+      "tags": ["long-document", "acronym", "number", "multiple-evidence"]
+    },
+    {
+      "id": "gov-financial-literacy-reach",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "By the end of June 2025, how many people had received training under the National Financial Literacy Program, and what share were women?",
+      "answerable": true,
+      "relevant_chunk_indices": [266],
+      "relevance_grades": {"266": 1},
+      "reference_answer": "Nearly 4.4 million people had been trained, half of whom were women.",
+      "notes": "The date, total, and share are contained together in chunk 266.",
+      "tags": ["long-document", "date", "number", "name"]
+    },
+    {
+      "id": "gov-prism-plus-expansion",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What does the acronym PRISM+ stand for?",
+      "answerable": true,
+      "relevant_chunk_indices": [15, 249, 336],
+      "relevance_grades": {"15": 1, "249": 1, "336": 1},
+      "reference_answer": "PRISM+ stands for Pakistan Real-Time Interbank Settlement Mechanism Plus.",
+      "notes": "The expansion appears in the Governor's remarks, the PRISM+ section heading, and the abbreviation list.",
+      "tags": ["long-document", "acronym", "exact-term", "multiple-evidence"]
+    },
+    {
+      "id": "gov-statutory-submission",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "Under which statutory provision was the Governor's Annual Report submitted to Parliament?",
+      "answerable": true,
+      "relevant_chunk_indices": [2, 3],
+      "relevance_grades": {"2": 1, "3": 1},
+      "reference_answer": "It was submitted under Section 39(1) of the State Bank of Pakistan Act, 1956.",
+      "notes": "The statutory statement is repeated in letters to the Senate chairperson and National Assembly speaker.",
+      "tags": ["long-document", "clause", "exact-term", "multiple-evidence"]
+    },
+    {
+      "id": "gov-nfis-2028-targets",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What financial inclusion level and gender-gap targets does NFIS 2024-28 set for 2028?",
+      "answerable": true,
+      "relevant_chunk_indices": [16],
+      "relevance_grades": {"16": 1},
+      "reference_answer": "It targets 75 percent financial inclusion and a reduction of the gender gap to 25 percent by 2028.",
+      "notes": "Chunk 16 is the only passage containing both targets together.",
+      "tags": ["long-document", "acronym", "number", "date", "multiple-fact"]
+    },
+    {
+      "id": "gov-bitcoin-reserve-target-unanswerable",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What Bitcoin reserve target did SBP set for FY25?",
+      "answerable": false,
+      "relevant_chunk_indices": [],
+      "relevance_grades": {},
+      "reference_answer": null,
+      "notes": "The complete PDF and indexed chunks contain no Bitcoin reserve target; this case is diagnostic-only until a relevance threshold is introduced.",
+      "tags": ["long-document", "unanswerable", "exact-term"]
+    }
+  ]
+}

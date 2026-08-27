@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "name": "lexis-phase3-stable-evidence-requirements",
+  "description": "Stable page-and-pattern evidence requirements derived from the fixed answerable Phase 1 questions before comparing Phase 3 chunk configurations. A case is preserved only when one generated chunk on an accepted page contains every pattern in at least one pattern group.",
+  "cases": [
+    {
+      "id": "gov-ncpi-fy25-vs-fy24",
+      "pages": [18, 29],
+      "pattern_groups": [["4\\.5 percent", "23\\.4 percent"]]
+    },
+    {
+      "id": "gov-policy-rate-reduction",
+      "pages": [18],
+      "pattern_groups": [["1,100 basis points", "june 2024", "june 2025"]]
+    },
+    {
+      "id": "gov-public-debt-ratio",
+      "pages": [28],
+      "pattern_groups": [["70\\.8 percent", "67\\.7 percent"]]
+    },
+    {
+      "id": "gov-m2-growth",
+      "pages": [28],
+      "pattern_groups": [["13\\.7 percent", "16 percent"]]
+    },
+    {
+      "id": "gov-january-2025-projections",
+      "pages": [45],
+      "pattern_groups": [["5\\.5\\s*-\\s*7\\.5 percent", "2\\.5\\s*(?:-|to)\\s*3\\.5 percent"]]
+    },
+    {
+      "id": "gov-securities-sale-gains",
+      "pages": [56, 58],
+      "pattern_groups": [["rs 117 billion", "fy25"]]
+    },
+    {
+      "id": "gov-climate-risk-fund-purpose",
+      "pages": [19],
+      "pattern_groups": [["climate risk fund-i", "climate resilient farming", "liquidity support"]]
+    },
+    {
+      "id": "gov-ifsb-adoption",
+      "pages": [40],
+      "pattern_groups": [["six new ifsb standards", "total adopted standards to ten"]]
+    },
+    {
+      "id": "gov-aaoifi-adoption",
+      "pages": [41],
+      "pattern_groups": [["nine aaoifi shariah standards"]]
+    },
+    {
+      "id": "gov-financial-literacy-reach",
+      "pages": [72],
+      "pattern_groups": [["4\\.4 million", "half of which have been women"]]
+    },
+    {
+      "id": "gov-prism-plus-expansion",
+      "pages": [19, 89],
+      "pattern_groups": [["prism\\+", "pakistan real\\s*-?time interbank settlement mechanism plus"]]
+    },
+    {
+      "id": "gov-statutory-submission",
+      "pages": [10, 12],
+      "pattern_groups": [["section 39\\(1\\)", "state bank of pakistan act, 1956"]]
+    },
+    {
+      "id": "gov-nfis-2028-targets",
+      "pages": [19, 73],
+      "pattern_groups": [["75 percent", "gender gap to 25 percent", "2028"]]
+    }
+  ]
+}

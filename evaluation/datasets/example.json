@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "name": "schema-example-not-a-benchmark",
+  "description": "Illustrates the dataset schema only. These fictional cases must not be reported as Lexis metrics.",
+  "split": "development",
+  "cases": [
+    {
+      "id": "example-answerable",
+      "filename": "example.pdf",
+      "question": "Which labelled chunks contain the answer?",
+      "answerable": true,
+      "relevant_chunk_indices": [4, 7],
+      "relevance_grades": {
+        "4": 2,
+        "7": 1
+      },
+      "reference_answer": "An optional answer used later for generation evaluation.",
+      "notes": "Chunk 4 is the primary evidence and chunk 7 is supporting evidence.",
+      "tags": ["schema-example", "multiple-evidence"]
+    },
+    {
+      "id": "example-unanswerable",
+      "filename": "example.pdf",
+      "question": "What information is absent from the document?",
+      "answerable": false,
+      "relevant_chunk_indices": [],
+      "relevance_grades": {},
+      "reference_answer": null,
+      "notes": "Unanswerable cases are diagnostic-only until relevance thresholds are added.",
+      "tags": ["schema-example", "unanswerable"]
+    }
+  ]
+}

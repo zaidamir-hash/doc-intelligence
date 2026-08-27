@@ -1,7 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Depends, Request, HTTPException
 from fastapi.security import APIKeyHeader
 from fastapi.middleware.cors import CORSMiddleware
-from pypdf import PdfReader
 from database import init_db, get_db
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
@@ -13,7 +12,18 @@ from auth import verify_api_key
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-import io
+from pdf_processing import (
+    extract_pdf,
+    summarize_extraction,
+)
+from chunking import ChunkingConfig, chunk_extraction, summarize_chunks
+
+
+PRODUCTION_CHUNK_CONFIG = ChunkingConfig(
+    max_tokens=200,
+    overlap_tokens=30,
+    min_chunk_tokens=40,
+)
 
 limiter = Limiter(key_func=get_remote_address)
 
@@ -36,50 +46,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 @app.get("/")
 def root():
     return {"status": "running"}
-
-def find_break_point(text: str, start: int, end: int) -> int:
-    search_window = 200
-    search_start = max(start, end - search_window)
-    chunk = text[search_start:end]
-
-    # Priority 1: paragraph break
-    para_break = chunk.rfind("\n\n")
-    if para_break != -1:
-        return search_start + para_break + 2
-
-    # Priority 2: sentence end
-    for punct in [". ", "! ", "? "]:
-        sentence_break = chunk.rfind(punct)
-        if sentence_break != -1:
-            return search_start + sentence_break + len(punct)
-
-    # Priority 3: single line break (catches bullet points, resumes, headers)
-    line_break = chunk.rfind("\n")
-    if line_break != -1:
-        return search_start + line_break + 1
-
-    # Priority 4: no good boundary found, hard cut
-    return end
-
-def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 200) -> list[str]:
-    chunks = []
-    start = 0
-    text_length = len(text)
-
-    while start < text_length:
-        end = min(start + chunk_size, text_length)
-
-        if end < text_length:
-            end = find_break_point(text, start, end)
-
-        chunk = text[start:end]
-        if chunk.strip():
-            chunks.append(chunk.strip())
-
-        next_start = end - overlap
-        start = next_start if next_start > start else end
-
-    return chunks
 
 @app.post("/upload")
 @limiter.limit("5/minute")
@@ -104,15 +70,10 @@ async def upload_document(
                 detail="Uploaded file is empty"
             )
 
-        pdf = PdfReader(io.BytesIO(contents))
+        extraction = extract_pdf(contents)
+        chunks = chunk_extraction(extraction, PRODUCTION_CHUNK_CONFIG)
 
-        text = ""
-        for page in pdf.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + "\n\n"
-
-        if not text.strip():
+        if not chunks:
             raise HTTPException(
                 status_code=422,
                 detail="No extractable text found. PDF may be scanned or image-based."
@@ -125,11 +86,9 @@ async def upload_document(
             DocumentChunk.filename == file.filename
         ).delete()
 
-        chunks = chunk_text(text)
-
         for i, chunk in enumerate(chunks):
             try:
-                embedding = get_embedding(chunk)
+                embedding = get_embedding(chunk.content)
             except Exception as e:
                 raise HTTPException(
                     status_code=502,
@@ -139,7 +98,7 @@ async def upload_document(
             db_chunk = DocumentChunk(
                 filename=file.filename,
                 chunk_index=i,
-                content=chunk,
+                content=chunk.content,
                 embedding=embedding
             )
             db.add(db_chunk)
@@ -148,8 +107,19 @@ async def upload_document(
 
         return {
             "filename": file.filename,
-            "pages": len(pdf.pages),
-            "chunks_stored": len(chunks)
+            "pages": extraction.page_count,
+            "chunks_stored": len(chunks),
+            "extraction": summarize_extraction(extraction),
+            "chunking": {
+                "configuration": {
+                    "max_tokens": PRODUCTION_CHUNK_CONFIG.max_tokens,
+                    "overlap_tokens": PRODUCTION_CHUNK_CONFIG.overlap_tokens,
+                    "min_chunk_tokens": PRODUCTION_CHUNK_CONFIG.min_chunk_tokens,
+                    "encoding_name": PRODUCTION_CHUNK_CONFIG.encoding_name,
+                    "version": PRODUCTION_CHUNK_CONFIG.version,
+                },
+                "summary": summarize_chunks(chunks),
+            },
         }
 
     except HTTPException:
