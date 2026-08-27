@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
-from models import DocumentChunk
+from sqlalchemy.orm import Session, joinedload
+from models import DOCUMENT_STATUS_READY, Document, DocumentChunk
 from embeddings import get_embedding
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -12,11 +12,18 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def search_similar_chunks(query: str, db: Session, filename: str, top_k: int = 8):
     query_embedding = get_embedding(query)
 
-    results = db.query(DocumentChunk).filter(
-        DocumentChunk.filename == filename
-    ).order_by(
-        DocumentChunk.embedding.l2_distance(query_embedding)
-    ).limit(top_k * 3).all()
+    results = (
+        db.query(DocumentChunk)
+        .join(Document)
+        .options(joinedload(DocumentChunk.document))
+        .filter(
+            Document.original_filename == filename,
+            Document.status == DOCUMENT_STATUS_READY,
+        )
+        .order_by(DocumentChunk.embedding.l2_distance(query_embedding))
+        .limit(top_k * 3)
+        .all()
+    )
 
     seen = set()
     unique_results = []

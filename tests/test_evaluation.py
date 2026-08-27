@@ -92,6 +92,23 @@ class DatasetTests(unittest.TestCase):
             with self.assertRaisesRegex(DatasetValidationError, "must be unique"):
                 load_dataset(path)
 
+    def test_stable_hashes_must_align_with_relevant_indices(self) -> None:
+        cases = [
+            {
+                "id": "misaligned",
+                "filename": "document.pdf",
+                "question": "Question",
+                "answerable": True,
+                "relevant_chunk_indices": [1, 2],
+                "relevant_chunk_hashes": ["a" * 64],
+                "tags": [],
+            }
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = self.write_dataset(directory, cases)
+            with self.assertRaisesRegex(DatasetValidationError, "must align"):
+                load_dataset(path)
+
 
 class MetricTests(unittest.TestCase):
     def test_hit_recall_mrr_and_ndcg(self) -> None:
@@ -162,10 +179,16 @@ class RunnerAndReportTests(unittest.TestCase):
         def fake_retriever(case, top_k):
             return [
                 RetrievedChunk(
-                    chunk_id=30,
+                    chunk_id="chunk-30",
+                    chunk_content_hash="a" * 64,
+                    document_id="document-1",
+                    document_content_hash="b" * 64,
                     chunk_index=3,
                     filename=case.filename,
                     content="Relevant evidence",
+                    page_start=1,
+                    page_end=1,
+                    section_title=None,
                     distance=0.25,
                 )
             ]
@@ -199,6 +222,51 @@ class RunnerAndReportTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "contains no cases"):
             run_evaluation(dataset, lambda case, top_k: [], top_k=10)
+
+    def test_runner_prefers_stable_hash_labels_over_transient_indices(self) -> None:
+        stable_hash = "a" * 64
+        with tempfile.TemporaryDirectory() as directory:
+            path = DatasetTests().write_dataset(
+                directory,
+                [
+                    {
+                        "id": "stable",
+                        "filename": "document.pdf",
+                        "question": "Question",
+                        "answerable": True,
+                        "relevant_chunk_indices": [3],
+                        "relevant_chunk_hashes": [stable_hash],
+                        "document_content_hash": "b" * 64,
+                        "tags": [],
+                    }
+                ],
+            )
+            dataset = load_dataset(path)
+
+        def fake_retriever(case, top_k):
+            return [
+                RetrievedChunk(
+                    chunk_id="stable-id",
+                    chunk_content_hash=stable_hash,
+                    document_id="document-id",
+                    document_content_hash="b" * 64,
+                    chunk_index=999,
+                    filename=case.filename,
+                    content="Evidence moved to another transient index.",
+                    page_start=1,
+                    page_end=1,
+                    section_title=None,
+                    distance=0.1,
+                )
+            ]
+
+        report = run_evaluation(dataset, fake_retriever, top_k=10)
+
+        self.assertEqual(report["aggregate_metrics"]["hit_at_1"], 1.0)
+        self.assertEqual(
+            report["cases"][0]["evaluation_identity_mode"],
+            "stable_content_hash",
+        )
 
 
 if __name__ == "__main__":

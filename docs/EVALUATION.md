@@ -46,6 +46,14 @@ see `docs/PHASE3_CHUNKING.md` for the bounded comparison and tradeoff analysis.
 The default `eval_retrieval.py` dataset is now the Phase 3 dataset. Older labels
 remain historical and must only be used with their matching index.
 
+Phase 4 moved that index into the versioned `documents`/`document_chunks`
+schema and bound the current dataset to stable raw-document and chunk-content
+hashes. Database-backed run `f4f3d2874679` reproduced the Phase 3 result exactly:
+1.0000 Hit@5 and 0.5179 MRR. Current reports expose document UUID/hash, chunk
+UUID/hash, page range, and section title. Historical datasets without hashes
+remain supported in explicit `legacy_chunk_index` mode. See
+`docs/PHASE4_DATABASE.md` for schema and lifecycle details.
+
 The developer explicitly waived the two-page contract comparison on 2026-08-27.
 For this learning project's Phase 1 scope, the reproducible 91-page stress test
 is the accepted baseline. This is a documented scope decision, not a claim that

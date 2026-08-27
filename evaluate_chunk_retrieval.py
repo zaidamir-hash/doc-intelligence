@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 from dataclasses import asdict, replace
@@ -44,6 +45,7 @@ def _label_dataset(
     chunks: list[StructuredChunk],
     evidence_by_id: dict[str, dict[str, object]],
     name: str,
+    document_content_hash: str,
 ) -> EvaluationDataset:
     labelled_cases = []
     for case in base.cases:
@@ -58,6 +60,10 @@ def _label_dataset(
                 case,
                 relevant_chunk_indices=tuple(indices),
                 relevance_grades={index: 1 for index in indices},
+                document_content_hash=document_content_hash,
+                relevant_chunk_hashes=tuple(
+                    chunks[index].content_hash for index in indices
+                ),
                 notes=(
                     f"Phase 3 {name} labels generated from the fixed, "
                     "pre-retrieval page-and-pattern evidence requirements."
@@ -91,10 +97,16 @@ def _retriever(
         )
         return [
             RetrievedChunk(
-                chunk_id=index,
+                chunk_id=str(index),
+                chunk_content_hash=chunks[index].content_hash,
+                document_id="in-memory-comparison",
+                document_content_hash="",
                 chunk_index=index,
                 filename=case.filename,
                 content=chunks[index].content,
+                page_start=chunks[index].page_start,
+                page_end=chunks[index].page_end,
+                section_title=chunks[index].section_title,
                 distance=math.sqrt(
                     sum(
                         (left - right) ** 2
@@ -179,7 +191,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    extraction = extract_pdf(args.pdf.read_bytes())
+    pdf_contents = args.pdf.read_bytes()
+    document_content_hash = hashlib.sha256(pdf_contents).hexdigest()
+    extraction = extract_pdf(pdf_contents)
     base = load_dataset(BASE_QUESTIONS)
     evidence_document = json.loads(
         EVIDENCE_REQUIREMENTS.read_text(encoding="utf-8")
@@ -197,7 +211,13 @@ def main() -> int:
     for name in ELIGIBLE_CONFIGURATIONS:
         config = CONFIGURATIONS[name]
         chunks = chunk_extraction(extraction, config)
-        dataset = _label_dataset(base, chunks, evidence_by_id, name)
+        dataset = _label_dataset(
+            base,
+            chunks,
+            evidence_by_id,
+            name,
+            document_content_hash,
+        )
         labelled_datasets[name] = dataset
         embeddings = _embed_texts([chunk.content for chunk in chunks])
         report = run_evaluation(

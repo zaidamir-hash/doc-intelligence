@@ -57,7 +57,10 @@ def render_markdown_report(report: dict[str, Any]) -> str:
                 f"- Document: `{case['filename']}`",
                 f"- Question: {case['question']}",
                 f"- Answerable: `{str(case['answerable']).lower()}`",
+                f"- Evaluation identity: `{case['evaluation_identity_mode']}`",
+                f"- Expected document hash: `{case['expected_document_content_hash']}`",
                 f"- Expected chunks: `{case['expected_chunk_indices']}`",
+                f"- Expected chunk hashes: `{case['expected_chunk_hashes']}`",
                 f"- Tags: `{case['tags']}`",
                 f"- Retrieval latency: `{case['elapsed_ms']} ms`",
             ]
@@ -76,18 +79,24 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         lines.extend(
             [
                 "",
-                "| Rank | Chunk | L2 distance | Preview |",
-                "| ---: | ---: | ---: | --- |",
+                "| Rank | Chunk | Stable hash | Pages | L2 distance | Preview |",
+                "| ---: | ---: | --- | ---: | ---: | --- |",
             ]
         )
         for retrieved in case["retrieved"]:
             preview = retrieved["preview"].replace("\n", " ").replace("|", "\\|")
+            pages = (
+                str(retrieved["page_start"])
+                if retrieved["page_start"] == retrieved["page_end"]
+                else f"{retrieved['page_start']}-{retrieved['page_end']}"
+            )
             lines.append(
                 f"| {retrieved['rank']} | {retrieved['chunk_index']} | "
+                f"`{retrieved['chunk_content_hash'][:12]}` | {pages} | "
                 f"{retrieved['distance']:.6f} | {preview} |"
             )
         if not case["retrieved"]:
-            lines.append("| — | — | — | No chunks retrieved |")
+            lines.append("| — | — | — | — | — | No chunks retrieved |")
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"

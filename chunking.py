@@ -44,6 +44,13 @@ class ChunkingConfig:
             raise ValueError("version cannot be empty")
 
 
+PRODUCTION_CHUNK_CONFIG = ChunkingConfig(
+    max_tokens=200,
+    overlap_tokens=30,
+    min_chunk_tokens=40,
+)
+
+
 @dataclass(frozen=True)
 class StructuralUnit:
     """A paragraph, list item, sentence, or safe hard-split text unit."""

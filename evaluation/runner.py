@@ -9,10 +9,10 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from typing import Callable
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from embeddings import get_embedding
-from models import DocumentChunk
+from models import DOCUMENT_STATUS_READY, Document, DocumentChunk
 
 from .dataset import EvaluationCase, EvaluationDataset
 from .metrics import DEFAULT_CUTOFFS, CaseMetrics, average_metrics, calculate_case_metrics
@@ -26,10 +26,16 @@ RETRIEVAL_METHOD = "pgvector_l2_exact_content_dedup"
 class RetrievedChunk:
     """One retrieved chunk plus the raw L2 distance used to rank it."""
 
-    chunk_id: int
+    chunk_id: str
+    chunk_content_hash: str
+    document_id: str
+    document_content_hash: str
     chunk_index: int
     filename: str
     content: str
+    page_start: int | None
+    page_end: int | None
+    section_title: str | None
     distance: float
 
 
@@ -52,9 +58,17 @@ def retrieve_dense_chunks(
 
     query_embedding = embedding_function(case.question)
     distance_expression = DocumentChunk.embedding.l2_distance(query_embedding)
+    document_filters = [
+        Document.original_filename == case.filename,
+        Document.status == DOCUMENT_STATUS_READY,
+    ]
+    if case.document_content_hash:
+        document_filters.append(Document.content_hash == case.document_content_hash)
     rows = (
         db.query(DocumentChunk, distance_expression.label("distance"))
-        .filter(DocumentChunk.filename == case.filename)
+        .join(Document)
+        .options(joinedload(DocumentChunk.document))
+        .filter(*document_filters)
         .order_by(distance_expression)
         .limit(top_k * 3)
         .all()
@@ -68,10 +82,16 @@ def retrieve_dense_chunks(
         seen_content.add(chunk.content)
         unique_results.append(
             RetrievedChunk(
-                chunk_id=chunk.id,
+                chunk_id=str(chunk.id),
+                chunk_content_hash=chunk.content_hash,
+                document_id=str(chunk.document_id),
+                document_content_hash=chunk.document.content_hash,
                 chunk_index=chunk.chunk_index,
-                filename=chunk.filename,
+                filename=chunk.document.original_filename,
                 content=chunk.content,
+                page_start=chunk.page_start,
+                page_end=chunk.page_end,
+                section_title=chunk.section_title,
                 distance=float(distance),
             )
         )
@@ -87,9 +107,21 @@ def _case_result(
     preview_characters: int,
     elapsed_ms: float,
 ) -> tuple[dict[str, object], CaseMetrics | None]:
-    retrieved_indices = [chunk.chunk_index for chunk in retrieved]
+    if case.relevant_chunk_hashes:
+        retrieved_labels = [chunk.chunk_content_hash for chunk in retrieved]
+        relevance_labels = {
+            content_hash: case.relevance_grades[chunk_index]
+            for chunk_index, content_hash in zip(
+                case.relevant_chunk_indices, case.relevant_chunk_hashes
+            )
+        }
+        identity_mode = "stable_content_hash"
+    else:
+        retrieved_labels = [chunk.chunk_index for chunk in retrieved]
+        relevance_labels = case.relevance_grades
+        identity_mode = "legacy_chunk_index"
     metrics = (
-        calculate_case_metrics(retrieved_indices, case.relevance_grades, cutoffs)
+        calculate_case_metrics(retrieved_labels, relevance_labels, cutoffs)
         if case.answerable
         else None
     )
@@ -99,6 +131,9 @@ def _case_result(
         "question": case.question,
         "answerable": case.answerable,
         "expected_chunk_indices": list(case.relevant_chunk_indices),
+        "expected_chunk_hashes": list(case.relevant_chunk_hashes),
+        "expected_document_content_hash": case.document_content_hash,
+        "evaluation_identity_mode": identity_mode,
         "relevance_grades": {
             str(index): grade for index, grade in case.relevance_grades.items()
         },
@@ -110,7 +145,13 @@ def _case_result(
             {
                 "rank": rank,
                 "chunk_id": chunk.chunk_id,
+                "chunk_content_hash": chunk.chunk_content_hash,
+                "document_id": chunk.document_id,
+                "document_content_hash": chunk.document_content_hash,
                 "chunk_index": chunk.chunk_index,
+                "page_start": chunk.page_start,
+                "page_end": chunk.page_end,
+                "section_title": chunk.section_title,
                 "distance": chunk.distance,
                 "preview": chunk.content[:preview_characters],
             }

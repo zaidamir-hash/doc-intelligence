@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -29,6 +30,8 @@ class EvaluationCase:
     reference_answer: str | None
     notes: str | None
     tags: tuple[str, ...]
+    document_content_hash: str | None
+    relevant_chunk_hashes: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -110,6 +113,38 @@ def _parse_optional_string(value: Any, field_name: str, case_id: str) -> str | N
     return value.strip() or None
 
 
+def _parse_optional_hash(value: Any, field_name: str, case_id: str) -> str | None:
+    parsed = _parse_optional_string(value, field_name, case_id)
+    if parsed is not None and not re.fullmatch(r"[0-9a-f]{64}", parsed):
+        raise DatasetValidationError(
+            f"Case {case_id}: {field_name} must be a lowercase SHA-256 hash"
+        )
+    return parsed
+
+
+def _parse_chunk_hashes(
+    value: Any, case_id: str, relevant_indices: tuple[int, ...]
+) -> tuple[str, ...]:
+    if value is None:
+        return ()
+    if not isinstance(value, list) or any(
+        not isinstance(item, str) or not re.fullmatch(r"[0-9a-f]{64}", item)
+        for item in value
+    ):
+        raise DatasetValidationError(
+            f"Case {case_id}: relevant_chunk_hashes must contain SHA-256 hashes"
+        )
+    if len(value) != len(relevant_indices):
+        raise DatasetValidationError(
+            f"Case {case_id}: relevant_chunk_hashes must align with chunk indices"
+        )
+    if len(value) != len(set(value)):
+        raise DatasetValidationError(
+            f"Case {case_id}: relevant_chunk_hashes contains duplicates"
+        )
+    return tuple(value)
+
+
 def _parse_case(raw_case: Any) -> EvaluationCase:
     if not isinstance(raw_case, dict):
         raise DatasetValidationError("Every case must be a JSON object")
@@ -160,6 +195,12 @@ def _parse_case(raw_case: Any) -> EvaluationCase:
         ),
         notes=_parse_optional_string(raw_case.get("notes"), "notes", case_id),
         tags=tuple(tag.strip() for tag in raw_tags),
+        document_content_hash=_parse_optional_hash(
+            raw_case.get("document_content_hash"), "document_content_hash", case_id
+        ),
+        relevant_chunk_hashes=_parse_chunk_hashes(
+            raw_case.get("relevant_chunk_hashes"), case_id, relevant_indices
+        ),
     )
 
 

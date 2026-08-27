@@ -24,7 +24,12 @@
         "paraphrase",
         "multiple-evidence"
       ],
-      "id": "gov-ncpi-fy25-vs-fy24"
+      "id": "gov-ncpi-fy25-vs-fy24",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "1351303d61b7a827545539e4067d7be2cac38cbba292a2828825b69e6258fd51",
+        "f80af3ee256ba16b491ee86cbacb40f7027dfcf7ea62a54c5c595779c23f30f2"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -43,7 +48,11 @@
         "number",
         "date"
       ],
-      "id": "gov-policy-rate-reduction"
+      "id": "gov-policy-rate-reduction",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "5127416ebc53297d55c87eaf3b05629156a209053e04f21675e2f175af66e172"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -62,7 +71,11 @@
         "number",
         "paraphrase"
       ],
-      "id": "gov-public-debt-ratio"
+      "id": "gov-public-debt-ratio",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "3c65ed2e3d4bc96bd65a1f52caa9f505a2924ce697dfc8bb5b1afd97be54bad9"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -82,7 +95,11 @@
         "number",
         "multiple-evidence"
       ],
-      "id": "gov-m2-growth"
+      "id": "gov-m2-growth",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "fa35c0bbff7b5a68f098cca0f917ce1636d085432c948fd2e7c0a35ea2309f03"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -103,7 +120,11 @@
         "multiple-fact",
         "multiple-evidence"
       ],
-      "id": "gov-january-2025-projections"
+      "id": "gov-january-2025-projections",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "b2165fe19eda0a070468dfafa10960fed6fb3f88cd7835d031461ff0d3205e69"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -125,7 +146,12 @@
         "exact-term",
         "multiple-evidence"
       ],
-      "id": "gov-securities-sale-gains"
+      "id": "gov-securities-sale-gains",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "71e248582be1b2603f975ef78bc7ec10a3d627a705be2c51757dfdbc9322407c",
+        "1d898edce9eb30413dc8a8aa2de731440b64d2b55e546cbf1d08e06a6ad28d88"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -144,7 +170,11 @@
         "name",
         "paraphrase"
       ],
-      "id": "gov-climate-risk-fund-purpose"
+      "id": "gov-climate-risk-fund-purpose",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "4c6393ebe0fe179a29991c46aef949d96a07b93b20f000cefe6d8c0146bc9f93"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -164,7 +194,11 @@
         "number",
         "multiple-evidence"
       ],
-      "id": "gov-ifsb-adoption"
+      "id": "gov-ifsb-adoption",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "43e6280a9dec4f6f0134b74383acdb0c5d1a75292c5d0d55967710deb694e61a"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -183,7 +217,11 @@
         "acronym",
         "number"
       ],
-      "id": "gov-aaoifi-adoption"
+      "id": "gov-aaoifi-adoption",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "56a0e06235edf849bd7a5d53fb87b5b63fc5a1bf84a76e29bbaad796f79ac7e4"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -203,7 +241,11 @@
         "number",
         "name"
       ],
-      "id": "gov-financial-literacy-reach"
+      "id": "gov-financial-literacy-reach",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "2a08a4a8313044550a115a4ffc27428d3a437948937ce79ca0976d8f6cd81aed"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -225,7 +267,12 @@
         "exact-term",
         "multiple-evidence"
       ],
-      "id": "gov-prism-plus-expansion"
+      "id": "gov-prism-plus-expansion",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "92a7404e6c59a22b559341b5e46413705a69a128cad4602105dc19fa3d2aa028",
+        "a17cec7b4f514022ccde6e35f2eaba28d725303a7218f6f54fd39c17b4612291"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -247,7 +294,12 @@
         "exact-term",
         "multiple-evidence"
       ],
-      "id": "gov-statutory-submission"
+      "id": "gov-statutory-submission",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "fec5fd88b8dbef7ea58e757a61bb5f7c77215650904c96b66d4b85b63d346cf5",
+        "1bc4cd19bf8840b1cd45860c49936cf6596f1ccd1908578272b203efc7026e97"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -273,7 +325,13 @@
         "multiple-fact",
         "multiple-evidence"
       ],
-      "id": "gov-nfis-2028-targets"
+      "id": "gov-nfis-2028-targets",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "a95d6eae12cfb3424da141194d457602b8eefd346617e7089f0e7fe93d5f1639",
+        "ec424c14765beac4ec94acc4412c0c99274957818cec07b38e237233aecca50f",
+        "b5d478e9e36f48663336a2fa97f9ef79b4f397a3ba080d8d299f205f42ce8f84"
+      ]
     },
     {
       "filename": "Gov-AR_1 test.pdf",
@@ -288,7 +346,9 @@
         "unanswerable",
         "exact-term"
       ],
-      "id": "gov-bitcoin-reserve-target-unanswerable"
+      "id": "gov-bitcoin-reserve-target-unanswerable",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": []
     }
   ]
 }

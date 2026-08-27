@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
+from typing import Hashable
 
 
 DEFAULT_CUTOFFS = (1, 3, 5, 10)
@@ -35,8 +36,8 @@ def _discounted_cumulative_gain(grades: list[int]) -> float:
 
 
 def calculate_case_metrics(
-    retrieved_chunk_indices: list[int],
-    relevance_grades: dict[int, int],
+    retrieved_chunk_indices: list[Hashable],
+    relevance_grades: dict[Hashable, int],
     cutoffs: tuple[int, ...] = DEFAULT_CUTOFFS,
 ) -> CaseMetrics:
     """Calculate rank metrics for one answerable question."""
@@ -69,7 +70,7 @@ def calculate_case_metrics(
         hit_at_k[k] = float(bool(relevant_retrieved))
         recall_at_k[k] = len(relevant_retrieved) / len(relevant_indices)
 
-        seen_relevant_indices: set[int] = set()
+        seen_relevant_indices: set[Hashable] = set()
         retrieved_grades: list[int] = []
         for chunk_index in retrieved_at_k:
             if chunk_index in seen_relevant_indices:

@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from pypdf import PdfReader
 
 
+EXTRACTION_VERSION = "page-aware-v1"
 LOW_TEXT_CHARACTER_THRESHOLD = 40
 FURNITURE_POSITION_LINES = 2
 FURNITURE_MINIMUM_PAGES = 3

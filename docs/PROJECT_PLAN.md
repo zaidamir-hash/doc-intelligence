@@ -209,34 +209,34 @@ Provide stable document identity, provenance, versioning, lexical-search support
 
 ### Tasks
 
-- [ ] Add a `documents` table containing stable document ID, original filename, content hash, page count, chunk count, processing status, and timestamps.
-- [ ] Extend chunk storage with:
-  - [ ] `document_id` foreign key.
-  - [ ] `page_start` and `page_end`.
-  - [ ] `section_title` or equivalent nullable heading metadata.
-  - [ ] `content_hash`.
-  - [ ] `token_count`.
-  - [ ] `chunking_version`.
-  - [ ] `embedding_model` and/or embedding version.
-  - [ ] `parent_chunk_id` or section ID if Phase 3 adopts parent-child chunking.
-  - [ ] Lexical search representation required by Phase 6.
-- [ ] Add appropriate foreign keys, uniqueness constraints, and indexes.
-- [ ] Replace filename-only duplicate handling with a documented document/content identity policy.
-- [ ] Define behavior for re-uploading the same filename with different content.
-- [ ] Add a controlled schema migration approach rather than relying only on `create_all`.
-- [ ] Add a controlled re-indexing command for extraction/chunking/embedding version changes.
-- [ ] Ensure failed ingestion remains transactional and does not leave partially indexed documents.
-- [ ] Preserve the ability to connect evaluation labels to stable document/chunk identities.
-- [ ] Document the schema and lifecycle states.
+- [x] Add a `documents` table containing stable document ID, original filename, content hash, page count, chunk count, processing status, and timestamps.
+- [x] Extend chunk storage with:
+  - [x] `document_id` foreign key.
+  - [x] `page_start` and `page_end`.
+  - [x] `section_title` or equivalent nullable heading metadata.
+  - [x] `content_hash`.
+  - [x] `token_count`.
+  - [x] `chunking_version`.
+  - [x] `embedding_model` and/or embedding version.
+  - [x] Do not add `parent_chunk_id`: Phase 3 empirically deferred parent-child chunking, and the decision is documented.
+  - [x] Lexical search representation required by Phase 6.
+- [x] Add appropriate foreign keys, uniqueness constraints, and indexes.
+- [x] Replace filename-only duplicate handling with a documented document/content identity policy.
+- [x] Define behavior for re-uploading the same filename with different content.
+- [x] Add a controlled schema migration approach rather than relying only on `create_all`.
+- [x] Add a controlled re-indexing command for extraction/chunking/embedding version changes.
+- [x] Ensure failed ingestion remains transactional and does not leave partially indexed documents.
+- [x] Preserve the ability to connect evaluation labels to stable document/chunk identities.
+- [x] Document the schema and lifecycle states.
 
 ### Acceptance criteria
 
-- [ ] Documents and chunks have stable, traceable identities independent of transient frontend state.
-- [ ] Page and section provenance survive storage and retrieval.
-- [ ] Duplicate/re-upload behavior is deterministic and documented.
-- [ ] Schema upgrades and re-indexing can be performed in a controlled, repeatable way.
-- [ ] Failed processing does not expose partial indexes as successfully processed documents.
-- [ ] The schema supports both pgvector and PostgreSQL lexical retrieval.
+- [x] Documents and chunks have stable, traceable identities independent of transient frontend state.
+- [x] Page and section provenance survive storage and retrieval.
+- [x] Duplicate/re-upload behavior is deterministic and documented.
+- [x] Schema upgrades and re-indexing can be performed in a controlled, repeatable way.
+- [x] Failed processing does not expose partial indexes as successfully processed documents.
+- [x] The schema supports both pgvector and PostgreSQL lexical retrieval.
 
 ### Dependencies
 

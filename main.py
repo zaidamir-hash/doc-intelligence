@@ -4,25 +4,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import init_db, get_db
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
-from models import DocumentChunk
-from embeddings import get_embedding
 from query import search_similar_chunks, generate_answer
 from pydantic import BaseModel
 from auth import verify_api_key
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from pdf_processing import (
-    extract_pdf,
-    summarize_extraction,
-)
-from chunking import ChunkingConfig, chunk_extraction, summarize_chunks
-
-
-PRODUCTION_CHUNK_CONFIG = ChunkingConfig(
-    max_tokens=200,
-    overlap_tokens=30,
-    min_chunk_tokens=40,
+from pdf_processing import summarize_extraction
+from chunking import PRODUCTION_CHUNK_CONFIG, summarize_chunks
+from ingestion import (
+    EmbeddingGenerationError,
+    NoExtractableTextError,
+    ingest_document,
 )
 
 limiter = Limiter(key_func=get_remote_address)
@@ -70,46 +63,34 @@ async def upload_document(
                 detail="Uploaded file is empty"
             )
 
-        extraction = extract_pdf(contents)
-        chunks = chunk_extraction(extraction, PRODUCTION_CHUNK_CONFIG)
-
-        if not chunks:
+        try:
+            result = ingest_document(
+                db,
+                file.filename,
+                contents,
+                PRODUCTION_CHUNK_CONFIG,
+            )
+        except NoExtractableTextError as error:
             raise HTTPException(
                 status_code=422,
-                detail="No extractable text found. PDF may be scanned or image-based."
+                detail=str(error),
             )
-
-        # delete any existing chunks for this filename before inserting new ones
-        # (kept in the same uncommitted transaction as the inserts below —
-        # see earlier explanation: nothing is permanent until db.commit() at the end)
-        db.query(DocumentChunk).filter(
-            DocumentChunk.filename == file.filename
-        ).delete()
-
-        for i, chunk in enumerate(chunks):
-            try:
-                embedding = get_embedding(chunk.content)
-            except Exception as e:
-                raise HTTPException(
-                    status_code=502,
-                    detail=f"Embedding service failed: {str(e)}"
-                )
-
-            db_chunk = DocumentChunk(
-                filename=file.filename,
-                chunk_index=i,
-                content=chunk.content,
-                embedding=embedding
+        except EmbeddingGenerationError as error:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Embedding service failed: {str(error)}",
             )
-            db.add(db_chunk)
-
-        db.commit()
 
         return {
-            "filename": file.filename,
-            "pages": extraction.page_count,
-            "chunks_stored": len(chunks),
-            "extraction": summarize_extraction(extraction),
+            "document_id": str(result.document_id),
+            "document_content_hash": result.document_content_hash,
+            "filename": result.filename,
+            "status": "ready",
+            "reused_existing_index": result.reused_existing_index,
+            "reindexed_existing_document": result.reindexed_existing_document,
+            "pages": result.extraction.page_count,
+            "chunks_stored": len(result.chunks),
+            "extraction": summarize_extraction(result.extraction),
             "chunking": {
                 "configuration": {
                     "max_tokens": PRODUCTION_CHUNK_CONFIG.max_tokens,
@@ -118,7 +99,7 @@ async def upload_document(
                     "encoding_name": PRODUCTION_CHUNK_CONFIG.encoding_name,
                     "version": PRODUCTION_CHUNK_CONFIG.version,
                 },
-                "summary": summarize_chunks(chunks),
+                "summary": summarize_chunks(list(result.chunks)),
             },
         }
 
@@ -164,8 +145,15 @@ def query_document(
 
         sources = [
             {
-                "filename": chunk.filename,
+                "document_id": str(chunk.document_id),
+                "document_content_hash": chunk.document.content_hash,
+                "chunk_id": str(chunk.id),
+                "chunk_content_hash": chunk.content_hash,
+                "filename": chunk.document.original_filename,
                 "chunk_index": chunk.chunk_index,
+                "page_start": chunk.page_start,
+                "page_end": chunk.page_end,
+                "section_title": chunk.section_title,
                 "preview": chunk.content[:100]
             }
             for chunk in chunks
