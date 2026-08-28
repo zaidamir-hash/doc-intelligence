@@ -4,6 +4,12 @@ Phase 1 evaluates retrieval only. It never calls `generate_answer` or the chat
 model. Its purpose is to answer one narrow question: **did the current dense
 retriever rank the human-labelled evidence highly enough?**
 
+Phase 5 adds configurable two-stage dense retrieval. The selected dense-only
+command and ablation results are documented in `docs/PHASE5_DENSE_RETRIEVAL.md`.
+Diagnostics now retain candidate rank, distance metric, raw distance, and
+interpreted similarity; unanswerable empty-result behavior is reported
+separately from answerable ranking metrics.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to

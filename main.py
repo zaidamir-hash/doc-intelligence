@@ -146,14 +146,18 @@ def query_document(
         sources = [
             {
                 "document_id": str(chunk.document_id),
-                "document_content_hash": chunk.document.content_hash,
-                "chunk_id": str(chunk.id),
-                "chunk_content_hash": chunk.content_hash,
-                "filename": chunk.document.original_filename,
+                "document_content_hash": chunk.document_content_hash,
+                "chunk_id": chunk.chunk_id,
+                "chunk_content_hash": chunk.chunk_content_hash,
+                "filename": chunk.filename,
                 "chunk_index": chunk.chunk_index,
                 "page_start": chunk.page_start,
                 "page_end": chunk.page_end,
                 "section_title": chunk.section_title,
+                "dense_rank": chunk.dense_rank,
+                "distance_metric": chunk.distance_metric,
+                "distance": chunk.distance,
+                "similarity": chunk.similarity,
                 "preview": chunk.content[:100]
             }
             for chunk in chunks

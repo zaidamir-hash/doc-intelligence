@@ -39,7 +39,31 @@ def parse_args() -> argparse.Namespace:
         "--top-k",
         type=int,
         default=10,
-        help="Number of unique chunks to retain; must be at least 10",
+        help="Number of final chunks to retain (supported evaluation values: 5+)",
+    )
+    parser.add_argument(
+        "--candidate-k",
+        type=int,
+        default=30,
+        help="Broad pgvector candidate-pool size (default: 30)",
+    )
+    parser.add_argument(
+        "--metric",
+        choices=("l2", "cosine"),
+        default="cosine",
+        help="pgvector distance operator (default: cosine)",
+    )
+    parser.add_argument(
+        "--duplicate-threshold",
+        type=float,
+        default=0.8,
+        help="Suppress candidates at or above this token-Jaccard similarity",
+    )
+    parser.add_argument(
+        "--relevance-threshold",
+        type=float,
+        default=None,
+        help="Optional minimum interpreted dense similarity",
     )
     parser.add_argument(
         "--preview-characters",
@@ -55,12 +79,33 @@ def main() -> int:
     db = None
     try:
         dataset = load_dataset(args.dataset)
+        if args.candidate_k < args.top_k:
+            raise ValueError("candidate-k must be at least top-k")
+        if args.top_k < 5:
+            raise ValueError("top-k must be at least 5 for the standard metrics")
+        cutoffs = (1, 3, 5, 10) if args.top_k >= 10 else (1, 3, 5)
         db = SessionLocal()
         report = run_evaluation(
             dataset=dataset,
-            retriever=lambda case, top_k: retrieve_dense_chunks(case, db, top_k),
+            retriever=lambda case, top_k: retrieve_dense_chunks(
+                case,
+                db,
+                top_k,
+                candidate_k=args.candidate_k,
+                metric=args.metric,
+                relevance_threshold=args.relevance_threshold,
+                duplicate_similarity_threshold=args.duplicate_threshold,
+            ),
             top_k=args.top_k,
+            cutoffs=cutoffs,
             preview_characters=args.preview_characters,
+            configuration={
+                "retrieval_method": "pgvector_dense_two_stage",
+                "candidate_limit": args.candidate_k,
+                "distance_metric": args.metric,
+                "duplicate_similarity_threshold": args.duplicate_threshold,
+                "relevance_threshold": args.relevance_threshold,
+            },
         )
         json_path, markdown_path = write_reports(report, args.output_dir)
     except (DatasetValidationError, ValueError) as error:

@@ -34,7 +34,7 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         f"- Retrieval: `{configuration['retrieval_method']}`",
         f"- Embedding model: `{configuration['embedding_model']}`",
         f"- Final top-k: `{configuration['top_k']}`",
-        f"- Database candidate limit: `{configuration['candidate_limit']}`",
+        f"- Candidate limit: `{configuration.get('candidate_limit', 'not recorded')}`",
         "",
         "## Aggregate retrieval metrics",
         "",
@@ -79,8 +79,8 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         lines.extend(
             [
                 "",
-                "| Rank | Chunk | Stable hash | Pages | L2 distance | Preview |",
-                "| ---: | ---: | --- | ---: | ---: | --- |",
+                "| Rank | Candidate rank | Chunk | Stable hash | Pages | Metric | Raw distance | Similarity | Preview |",
+                "| ---: | ---: | ---: | --- | ---: | --- | ---: | ---: | --- |",
             ]
         )
         for retrieved in case["retrieved"]:
@@ -91,12 +91,15 @@ def render_markdown_report(report: dict[str, Any]) -> str:
                 else f"{retrieved['page_start']}-{retrieved['page_end']}"
             )
             lines.append(
-                f"| {retrieved['rank']} | {retrieved['chunk_index']} | "
+                f"| {retrieved['rank']} | {retrieved.get('candidate_rank')} | "
+                f"{retrieved['chunk_index']} | "
                 f"`{retrieved['chunk_content_hash'][:12]}` | {pages} | "
-                f"{retrieved['distance']:.6f} | {preview} |"
+                f"{retrieved.get('distance_metric', 'unknown')} | "
+                f"{retrieved['distance']:.6f} | "
+                f"{retrieved.get('similarity', 0.0) or 0.0:.6f} | {preview} |"
             )
         if not case["retrieved"]:
-            lines.append("| — | — | — | — | — | No chunks retrieved |")
+            lines.append("| — | — | — | — | — | — | — | — | No chunks retrieved |")
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"

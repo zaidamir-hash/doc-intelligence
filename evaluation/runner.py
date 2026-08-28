@@ -9,22 +9,26 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from typing import Callable
 
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
+from dense_retrieval import (
+    DistanceMetric,
+    retrieve_dense_candidates,
+    select_dense_context,
+)
 from embeddings import get_embedding
-from models import DOCUMENT_STATUS_READY, Document, DocumentChunk
 
 from .dataset import EvaluationCase, EvaluationDataset
 from .metrics import DEFAULT_CUTOFFS, CaseMetrics, average_metrics, calculate_case_metrics
 
 
 EMBEDDING_MODEL = "text-embedding-3-small"
-RETRIEVAL_METHOD = "pgvector_l2_exact_content_dedup"
+RETRIEVAL_METHOD = "pgvector_dense_two_stage"
 
 
 @dataclass(frozen=True)
 class RetrievedChunk:
-    """One retrieved chunk plus the raw L2 distance used to rank it."""
+    """One retrieved chunk plus its raw and interpreted dense scores."""
 
     chunk_id: str
     chunk_content_hash: str
@@ -37,6 +41,9 @@ class RetrievedChunk:
     page_end: int | None
     section_title: str | None
     distance: float
+    similarity: float | None = None
+    distance_metric: str = "l2"
+    candidate_rank: int | None = None
 
 
 EmbeddingFunction = Callable[[str], list[float]]
@@ -48,56 +55,49 @@ def retrieve_dense_chunks(
     db: Session,
     top_k: int,
     embedding_function: EmbeddingFunction = get_embedding,
+    *,
+    candidate_k: int | None = None,
+    metric: DistanceMetric = "cosine",
+    relevance_threshold: float | None = None,
+    duplicate_similarity_threshold: float = 0.8,
 ) -> list[RetrievedChunk]:
-    """Mirror production dense retrieval while exposing L2 distances.
+    """Run the shared Phase 5 candidate and context-selection stages."""
 
-    Production retrieval requests `top_k * 3` rows ordered by L2 distance,
-    removes exact duplicate content, and stops after `top_k` unique chunks.
-    These baseline rules are deliberately unchanged.
-    """
-
-    query_embedding = embedding_function(case.question)
-    distance_expression = DocumentChunk.embedding.l2_distance(query_embedding)
-    document_filters = [
-        Document.original_filename == case.filename,
-        Document.status == DOCUMENT_STATUS_READY,
-    ]
-    if case.document_content_hash:
-        document_filters.append(Document.content_hash == case.document_content_hash)
-    rows = (
-        db.query(DocumentChunk, distance_expression.label("distance"))
-        .join(Document)
-        .options(joinedload(DocumentChunk.document))
-        .filter(*document_filters)
-        .order_by(distance_expression)
-        .limit(top_k * 3)
-        .all()
+    resolved_candidate_k = candidate_k or max(top_k, top_k * 3)
+    candidates = retrieve_dense_candidates(
+        case.question,
+        db,
+        case.filename,
+        candidate_k=resolved_candidate_k,
+        metric=metric,
+        document_content_hash=case.document_content_hash,
+        embedding_function=embedding_function,
     )
-
-    seen_content: set[str] = set()
-    unique_results: list[RetrievedChunk] = []
-    for chunk, distance in rows:
-        if chunk.content in seen_content:
-            continue
-        seen_content.add(chunk.content)
-        unique_results.append(
-            RetrievedChunk(
-                chunk_id=str(chunk.id),
-                chunk_content_hash=chunk.content_hash,
-                document_id=str(chunk.document_id),
-                document_content_hash=chunk.document.content_hash,
-                chunk_index=chunk.chunk_index,
-                filename=chunk.document.original_filename,
-                content=chunk.content,
-                page_start=chunk.page_start,
-                page_end=chunk.page_end,
-                section_title=chunk.section_title,
-                distance=float(distance),
-            )
+    selection = select_dense_context(
+        candidates,
+        top_k=top_k,
+        relevance_threshold=relevance_threshold,
+        duplicate_similarity_threshold=duplicate_similarity_threshold,
+    )
+    return [
+        RetrievedChunk(
+                chunk_id=candidate.chunk_id,
+                chunk_content_hash=candidate.chunk_content_hash,
+                document_id=candidate.document_id,
+                document_content_hash=candidate.document_content_hash,
+                chunk_index=candidate.chunk_index,
+                filename=candidate.filename,
+                content=candidate.content,
+                page_start=candidate.page_start,
+                page_end=candidate.page_end,
+                section_title=candidate.section_title,
+                distance=candidate.distance,
+                similarity=candidate.similarity,
+                distance_metric=candidate.distance_metric,
+                candidate_rank=candidate.dense_rank,
         )
-        if len(unique_results) >= top_k:
-            break
-    return unique_results
+        for candidate in selection.selected
+    ]
 
 
 def _case_result(
@@ -153,6 +153,9 @@ def _case_result(
                 "page_end": chunk.page_end,
                 "section_title": chunk.section_title,
                 "distance": chunk.distance,
+                "similarity": chunk.similarity,
+                "distance_metric": chunk.distance_metric,
+                "candidate_rank": chunk.candidate_rank,
                 "preview": chunk.content[:preview_characters],
             }
             for rank, chunk in enumerate(retrieved, start=1)
@@ -173,6 +176,7 @@ def run_evaluation(
     top_k: int = 10,
     cutoffs: tuple[int, ...] = DEFAULT_CUTOFFS,
     preview_characters: int = 240,
+    configuration: dict[str, object] | None = None,
 ) -> dict[str, object]:
     """Run every case and return a serializable report."""
 
@@ -189,6 +193,7 @@ def run_evaluation(
     started_at = datetime.now(timezone.utc)
     diagnostics: list[dict[str, object]] = []
     scored_metrics: list[CaseMetrics] = []
+    unanswerable_empty_results = 0
 
     for case in dataset.cases:
         case_started = time.perf_counter()
@@ -200,12 +205,29 @@ def run_evaluation(
         diagnostics.append(diagnostic)
         if metrics is not None:
             scored_metrics.append(metrics)
+        elif not retrieved:
+            unanswerable_empty_results += 1
 
     finished_at = datetime.now(timezone.utc)
     run_seed = (
         f"{dataset.name}|{started_at.isoformat()}|{top_k}|{RETRIEVAL_METHOD}"
     )
     run_id = hashlib.sha256(run_seed.encode("utf-8")).hexdigest()[:12]
+    report_configuration: dict[str, object] = {
+        "retrieval_method": RETRIEVAL_METHOD,
+        "embedding_model": EMBEDDING_MODEL,
+        "top_k": top_k,
+        "candidate_limit": top_k,
+        "cutoffs": list(cutoffs),
+        "preview_characters": preview_characters,
+        "unanswerable_metric_policy": (
+            "Report empty-result rate separately from answerable ranking metrics."
+        ),
+    }
+    if configuration:
+        report_configuration.update(configuration)
+
+    unanswerable_count = len(dataset.cases) - len(scored_metrics)
     return {
         "run": {
             "run_id": run_id,
@@ -223,17 +245,15 @@ def run_evaluation(
             "answerable_cases": len(scored_metrics),
             "unanswerable_cases": len(dataset.cases) - len(scored_metrics),
         },
-        "configuration": {
-            "retrieval_method": RETRIEVAL_METHOD,
-            "embedding_model": EMBEDDING_MODEL,
-            "top_k": top_k,
-            "candidate_limit": top_k * 3,
-            "cutoffs": list(cutoffs),
-            "preview_characters": preview_characters,
-            "unanswerable_metric_policy": (
-                "Exclude from Hit/MRR/Recall/nDCG until retrieval has a "
-                "calibrated no-result threshold; retain diagnostics."
+        "configuration": report_configuration,
+        "unanswerable_metrics": {
+            "empty_result_rate": (
+                unanswerable_empty_results / unanswerable_count
+                if unanswerable_count
+                else None
             ),
+            "empty_results": unanswerable_empty_results,
+            "total": unanswerable_count,
         },
         "aggregate_metrics": average_metrics(scored_metrics, cutoffs),
         "cases": diagnostics,

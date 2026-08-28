@@ -1,6 +1,5 @@
-from sqlalchemy.orm import Session, joinedload
-from models import DOCUMENT_STATUS_READY, Document, DocumentChunk
-from embeddings import get_embedding
+from sqlalchemy.orm import Session
+from dense_retrieval import DenseCandidate, retrieve_dense_candidates, select_dense_context
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
@@ -9,34 +8,31 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def search_similar_chunks(query: str, db: Session, filename: str, top_k: int = 8):
-    query_embedding = get_embedding(query)
+def search_similar_chunks(
+    query: str,
+    db: Session,
+    filename: str,
+    top_k: int = 5,
+    candidate_k: int = 30,
+) -> list[DenseCandidate]:
+    """Retrieve broad dense candidates, then choose non-duplicate context."""
 
-    results = (
-        db.query(DocumentChunk)
-        .join(Document)
-        .options(joinedload(DocumentChunk.document))
-        .filter(
-            Document.original_filename == filename,
-            Document.status == DOCUMENT_STATUS_READY,
-        )
-        .order_by(DocumentChunk.embedding.l2_distance(query_embedding))
-        .limit(top_k * 3)
-        .all()
+    candidates = retrieve_dense_candidates(
+        query,
+        db,
+        filename,
+        candidate_k=candidate_k,
+        metric="cosine",
+    )
+    return list(
+        select_dense_context(
+            candidates,
+            top_k=top_k,
+            duplicate_similarity_threshold=0.9,
+        ).selected
     )
 
-    seen = set()
-    unique_results = []
-    for chunk in results:
-        if chunk.content not in seen:
-            seen.add(chunk.content)
-            unique_results.append(chunk)
-        if len(unique_results) >= top_k:
-            break
-
-    return unique_results
-
-def generate_answer(query: str, chunks: list[DocumentChunk]) -> str:
+def generate_answer(query: str, chunks: list[DenseCandidate]) -> str:
     context = "\n\n".join([chunk.content for chunk in chunks])
 
     prompt = f"""You are a helpful assistant. Answer the question based only on the context provided below.

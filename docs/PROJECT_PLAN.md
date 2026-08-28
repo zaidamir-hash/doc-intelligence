@@ -252,29 +252,29 @@ Establish the strongest understandable dense-only baseline before hybrid retriev
 
 ### Tasks
 
-- [ ] Separate candidate retrieval from final context selection.
-- [ ] Return raw distance/similarity values with every dense candidate.
-- [ ] Make candidate count and final `top_k` configurable.
-- [ ] Compare L2 and cosine ranking on the evaluation set.
-- [ ] Verify assumptions about embedding normalization rather than relying on them.
-- [ ] Test bounded candidate-pool and top-k configurations.
-- [ ] Add overlap-aware near-duplicate suppression instead of exact-content-only deduplication.
-- [ ] Evaluate heading-enriched embedding text versus content-only embedding text.
-- [ ] Add optional adjacent-chunk expansion and measure when it helps or adds noise.
-- [ ] Investigate and calibrate a dense relevance threshold, including behavior for unanswerable questions.
-- [ ] Add a pgvector similarity index when corpus size and query plans justify it.
-- [ ] Inspect database query plans before and after vector indexing.
-- [ ] Record accuracy, latency, candidate count, and configuration for each experiment.
-- [ ] Select and document the strongest dense-only configuration.
+- [x] Separate candidate retrieval from final context selection.
+- [x] Return raw distance/similarity values with every dense candidate.
+- [x] Make candidate count and final `top_k` configurable.
+- [x] Compare L2 and cosine ranking on the evaluation set.
+- [x] Verify assumptions about embedding normalization rather than relying on them.
+- [x] Test bounded candidate-pool and top-k configurations.
+- [x] Add overlap-aware near-duplicate suppression instead of exact-content-only deduplication.
+- [x] Evaluate heading-enriched embedding text versus content-only embedding text.
+- [x] Add optional adjacent-chunk expansion and measure when it helps or adds noise.
+- [x] Investigate and calibrate a dense relevance threshold, including behavior for unanswerable questions; record that no safe nonzero threshold is supported by the current labels.
+- [x] Add a pgvector similarity index when corpus size and query plans justify it; Phase 5 plans showed that HNSW was not used at 929 chunks, so the temporary test index was removed and a permanent index was explicitly deferred.
+- [x] Inspect database query plans before and after temporary vector indexing.
+- [x] Record accuracy, latency, candidate count, and configuration for each experiment.
+- [x] Select and document the strongest dense-only configuration.
 
 ### Acceptance criteria
 
-- [ ] Every dense result exposes an interpretable rank and raw score/distance.
-- [ ] Candidate retrieval is independent from final context construction.
-- [ ] The chosen distance function, chunk settings, candidate count, and top-k are justified by evaluation.
-- [ ] Near-duplicate chunks no longer consume a disproportionate share of final results in tested cases.
-- [ ] Unanswerable-query behavior is measured rather than inferred.
-- [ ] A named dense-only baseline is saved for comparison with lexical, hybrid, reranked, and expanded variants.
+- [x] Every dense result exposes an interpretable rank and raw score/distance.
+- [x] Candidate retrieval is independent from final context construction.
+- [x] The chosen distance function, chunk settings, candidate count, and top-k are justified by evaluation.
+- [x] Near-duplicate chunks no longer consume a disproportionate share of final results in tested cases.
+- [x] Unanswerable-query behavior is measured rather than inferred.
+- [x] A named dense-only baseline is saved for comparison with lexical, hybrid, reranked, and expanded variants.
 
 ### Dependencies
 
