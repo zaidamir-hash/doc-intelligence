@@ -18,6 +18,7 @@ from dense_retrieval import (
 )
 from embeddings import get_embedding
 from lexical_retrieval import LexicalCandidate, retrieve_lexical_candidates
+from hybrid_retrieval import FusedCandidate, retrieve_hybrid_candidates
 
 from .dataset import EvaluationCase, EvaluationDataset
 from .metrics import DEFAULT_CUTOFFS, CaseMetrics, average_metrics, calculate_case_metrics
@@ -51,6 +52,12 @@ class RetrievedChunk:
     exact_match_count: int = 0
     exact_terms_matched: tuple[str, ...] = ()
     parsed_search_text: str | None = None
+    dense_rank: int | None = None
+    fused_rank: int | None = None
+    fused_score: float | None = None
+    dense_rrf_contribution: float | None = None
+    lexical_rrf_contribution: float | None = None
+    source_count: int | None = None
 
 
 EmbeddingFunction = Callable[[str], list[float]]
@@ -153,6 +160,66 @@ def retrieve_lexical_chunks(
     return [_lexical_as_retrieved(candidate) for candidate in candidates[:top_k]]
 
 
+def hybrid_candidate_to_retrieved(candidate: FusedCandidate) -> RetrievedChunk:
+    return RetrievedChunk(
+        chunk_id=candidate.chunk_id,
+        chunk_content_hash=candidate.chunk_content_hash,
+        document_id=candidate.document_id,
+        document_content_hash=candidate.document_content_hash,
+        chunk_index=candidate.chunk_index,
+        filename=candidate.filename,
+        content=candidate.content,
+        page_start=candidate.page_start,
+        page_end=candidate.page_end,
+        section_title=candidate.section_title,
+        distance=candidate.dense_distance,
+        similarity=candidate.dense_similarity,
+        distance_metric="cosine",
+        candidate_rank=candidate.fused_rank,
+        dense_rank=candidate.dense_rank,
+        lexical_rank=candidate.lexical_rank,
+        lexical_score=candidate.lexical_score,
+        fts_score=candidate.fts_score,
+        exact_match_count=candidate.exact_match_count,
+        exact_terms_matched=candidate.exact_terms_matched,
+        parsed_search_text=candidate.parsed_search_text,
+        fused_rank=candidate.fused_rank,
+        fused_score=candidate.fused_score,
+        dense_rrf_contribution=candidate.dense_rrf_contribution,
+        lexical_rrf_contribution=candidate.lexical_rrf_contribution,
+        source_count=candidate.source_count,
+    )
+
+
+def retrieve_hybrid_chunks(
+    case: EvaluationCase,
+    db: Session,
+    top_k: int,
+    embedding_function: EmbeddingFunction = get_embedding,
+    *,
+    dense_candidate_k: int = 30,
+    lexical_candidate_k: int = 30,
+    rrf_k: int = 60,
+) -> list[RetrievedChunk]:
+    """Run both independent retrievers and return the top fused ranking."""
+
+    result = retrieve_hybrid_candidates(
+        case.question,
+        db,
+        case.filename,
+        dense_candidate_k=dense_candidate_k,
+        lexical_candidate_k=lexical_candidate_k,
+        fused_top_k=top_k,
+        rrf_k=rrf_k,
+        document_content_hash=case.document_content_hash,
+        embedding_function=embedding_function,
+    )
+    return [
+        hybrid_candidate_to_retrieved(candidate)
+        for candidate in result.fused_candidates
+    ]
+
+
 def _case_result(
     case: EvaluationCase,
     retrieved: list[RetrievedChunk],
@@ -215,6 +282,12 @@ def _case_result(
                 "exact_match_count": chunk.exact_match_count,
                 "exact_terms_matched": list(chunk.exact_terms_matched),
                 "parsed_search_text": chunk.parsed_search_text,
+                "dense_rank": chunk.dense_rank,
+                "fused_rank": chunk.fused_rank,
+                "fused_score": chunk.fused_score,
+                "dense_rrf_contribution": chunk.dense_rrf_contribution,
+                "lexical_rrf_contribution": chunk.lexical_rrf_contribution,
+                "source_count": chunk.source_count,
                 "preview": chunk.content[:preview_characters],
             }
             for rank, chunk in enumerate(retrieved, start=1)

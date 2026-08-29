@@ -1,0 +1,1290 @@
+{
+  "dataset": "lexis-phase3-small",
+  "selection_rule": "Use development Hit@5, MRR, Recall@5, then nDCG@5; prefer the smaller total candidate pool only on a complete metric tie.",
+  "selected_configuration": "d20-l20-rrf10",
+  "named_hybrid_run_id": "8d6a5317d321",
+  "experiments": {
+    "d10-l10-rrf10": {
+      "configuration": {
+        "name": "d10-l10-rrf10",
+        "dense_candidate_k": 10,
+        "lexical_candidate_k": 10,
+        "rrf_k": 10,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.75,
+          "ndcg_at_5": 0.5377302324517831,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6384760158512162
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 15.6
+        },
+        "duration_ms": 586.146
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8504239161075406,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.8504239161075406
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 14.0
+        },
+        "duration_ms": 956.211
+      }
+    },
+    "d10-l10-rrf30": {
+      "configuration": {
+        "name": "d10-l10-rrf30",
+        "dense_candidate_k": 10,
+        "lexical_candidate_k": 10,
+        "rrf_k": 30,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.75,
+          "ndcg_at_5": 0.5377302324517831,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6384760158512162
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 15.6
+        },
+        "duration_ms": 499.854
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8504239161075406,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.8504239161075406
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 14.0
+        },
+        "duration_ms": 940.36
+      }
+    },
+    "d10-l10-rrf60": {
+      "configuration": {
+        "name": "d10-l10-rrf60",
+        "dense_candidate_k": 10,
+        "lexical_candidate_k": 10,
+        "rrf_k": 60,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.75,
+          "ndcg_at_5": 0.5377302324517831,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6384760158512162
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 15.6
+        },
+        "duration_ms": 554.15
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8504239161075406,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.8504239161075406
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 14.0
+        },
+        "duration_ms": 1044.887
+      }
+    },
+    "d10-l10-rrf100": {
+      "configuration": {
+        "name": "d10-l10-rrf100",
+        "dense_candidate_k": 10,
+        "lexical_candidate_k": 10,
+        "rrf_k": 100,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.75,
+          "ndcg_at_5": 0.5377302324517831,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6384760158512162
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 15.6
+        },
+        "duration_ms": 532.65
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8504239161075406,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.8504239161075406
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 14.0
+        },
+        "duration_ms": 915.131
+      }
+    },
+    "d20-l20-rrf10": {
+      "configuration": {
+        "name": "d20-l20-rrf10",
+        "dense_candidate_k": 20,
+        "lexical_candidate_k": 20,
+        "rrf_k": 10,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6481252600412287
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 31.6
+        },
+        "duration_ms": 651.047
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 30.77777777777778
+        },
+        "duration_ms": 1100.553
+      }
+    },
+    "d20-l20-rrf60": {
+      "configuration": {
+        "name": "d20-l20-rrf60",
+        "dense_candidate_k": 20,
+        "lexical_candidate_k": 20,
+        "rrf_k": 60,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6453862615484249
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 31.6
+        },
+        "duration_ms": 611.92
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 30.77777777777778
+        },
+        "duration_ms": 1138.748
+      }
+    },
+    "d30-l30-rrf10": {
+      "configuration": {
+        "name": "d30-l30-rrf10",
+        "dense_candidate_k": 30,
+        "lexical_candidate_k": 30,
+        "rrf_k": 10,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6481252600412287
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.0
+        },
+        "duration_ms": 718.688
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.888888888888886
+        },
+        "duration_ms": 1425.956
+      }
+    },
+    "d30-l30-rrf30": {
+      "configuration": {
+        "name": "d30-l30-rrf30",
+        "dense_candidate_k": 30,
+        "lexical_candidate_k": 30,
+        "rrf_k": 30,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6453862615484249
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.0
+        },
+        "duration_ms": 768.802
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.888888888888886
+        },
+        "duration_ms": 1388.051
+      }
+    },
+    "d30-l30-rrf60": {
+      "configuration": {
+        "name": "d30-l30-rrf60",
+        "dense_candidate_k": 30,
+        "lexical_candidate_k": 30,
+        "rrf_k": 60,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6453862615484249
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.0
+        },
+        "duration_ms": 822.215
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.888888888888886
+        },
+        "duration_ms": 1312.959
+      }
+    },
+    "d30-l30-rrf100": {
+      "configuration": {
+        "name": "d30-l30-rrf100",
+        "dense_candidate_k": 30,
+        "lexical_candidate_k": 30,
+        "rrf_k": 100,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6453862615484249
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.0
+        },
+        "duration_ms": 787.851
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 46.888888888888886
+        },
+        "duration_ms": 1444.403
+      }
+    },
+    "d30-l10-rrf60": {
+      "configuration": {
+        "name": "d30-l10-rrf60",
+        "dense_candidate_k": 30,
+        "lexical_candidate_k": 10,
+        "rrf_k": 60,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.75,
+          "ndcg_at_5": 0.5377302324517831,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6371824327532223
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 33.8
+        },
+        "duration_ms": 584.691
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9444444444444444,
+          "ndcg_at_5": 0.8240686146887299,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.848336107668526
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 32.666666666666664
+        },
+        "duration_ms": 1090.575
+      }
+    },
+    "d10-l30-rrf60": {
+      "configuration": {
+        "name": "d10-l30-rrf60",
+        "dense_candidate_k": 10,
+        "lexical_candidate_k": 30,
+        "rrf_k": 60,
+        "top_k": 10
+      },
+      "calibration": {
+        "aggregate_metrics": {
+          "mrr": 0.5208333333333334,
+          "hit_at_1": 0.25,
+          "recall_at_1": 0.25,
+          "ndcg_at_1": 0.25,
+          "hit_at_3": 0.75,
+          "recall_at_3": 0.625,
+          "ndcg_at_3": 0.4717132018086354,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5970296606441072,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.6431735848389992
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 31.2
+        },
+        "duration_ms": 662.982
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 0.7962962962962963,
+          "hit_at_1": 0.6666666666666666,
+          "recall_at_1": 0.6111111111111112,
+          "ndcg_at_1": 0.6666666666666666,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.8518518518518519,
+          "ndcg_at_3": 0.7722713403472701,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8504239161075406,
+          "hit_at_10": 1.0,
+          "recall_at_10": 1.0,
+          "ndcg_at_10": 0.8504239161075406
+        },
+        "union_metrics": {
+          "hit_rate": 1.0,
+          "mean_recall": 1.0,
+          "mean_unique_candidates": 32.22222222222222
+        },
+        "duration_ms": 1363.864
+      }
+    }
+  },
+  "selected_full_union": {
+    "hit_rate": 1.0,
+    "mean_recall": 1.0,
+    "mean_unique_candidates": 31.071428571428573,
+    "cases": {
+      "gov-ncpi-fy25-vs-fy24": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 33,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-policy-rate-reduction": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 26,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-public-debt-ratio": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 34,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-m2-growth": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 35,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-january-2025-projections": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 25,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-securities-sale-gains": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 29,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-climate-risk-fund-purpose": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 35,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-ifsb-adoption": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 31,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-aaoifi-adoption": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 30,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-financial-literacy-reach": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 33,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-prism-plus-expansion": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 18,
+        "union_candidates": 27,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-statutory-submission": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 31,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-nfis-2028-targets": {
+        "answerable": true,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 29,
+        "union_hit": true,
+        "union_recall": 1.0
+      },
+      "gov-bitcoin-reserve-target-unanswerable": {
+        "answerable": false,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "union_candidates": 37,
+        "union_hit": false,
+        "union_recall": 0.0
+      }
+    }
+  },
+  "named_baselines": {
+    "dense_phase5": {
+      "mrr": 0.517948717948718,
+      "hit_at_1": 0.23076923076923078,
+      "recall_at_1": 0.23076923076923078,
+      "ndcg_at_1": 0.23076923076923078,
+      "hit_at_3": 0.8461538461538461,
+      "recall_at_3": 0.7051282051282051,
+      "ndcg_at_3": 0.5225062139323199,
+      "hit_at_5": 1.0,
+      "recall_at_5": 0.9230769230769231,
+      "ndcg_at_5": 0.6246157294589563
+    },
+    "lexical_phase6": {
+      "mrr": 0.7243589743589743,
+      "hit_at_1": 0.5384615384615384,
+      "recall_at_1": 0.5,
+      "ndcg_at_1": 0.5384615384615384,
+      "hit_at_3": 0.9230769230769231,
+      "recall_at_3": 0.7564102564102565,
+      "ndcg_at_3": 0.6757104464338229,
+      "hit_at_5": 1.0,
+      "recall_at_5": 0.8974358974358974,
+      "ndcg_at_5": 0.7485470426224252,
+      "hit_at_10": 1.0,
+      "recall_at_10": 0.9615384615384616,
+      "ndcg_at_10": 0.7773804025320982
+    },
+    "hybrid_phase7": {
+      "mrr": 0.7115384615384616,
+      "hit_at_1": 0.5384615384615384,
+      "recall_at_1": 0.5,
+      "ndcg_at_1": 0.5384615384615384,
+      "hit_at_3": 0.9230769230769231,
+      "recall_at_3": 0.782051282051282,
+      "ndcg_at_3": 0.6797919131046133,
+      "hit_at_5": 1.0,
+      "recall_at_5": 0.9230769230769231,
+      "ndcg_at_5": 0.7542104749826921,
+      "hit_at_10": 1.0,
+      "recall_at_10": 1.0,
+      "ndcg_at_10": 0.7867327699370499
+    }
+  },
+  "category_metrics": {
+    "dense_phase5": {
+      "acronym": {
+        "cases": 5,
+        "mrr": 0.5066666666666666,
+        "hit_at_5": 1.0
+      },
+      "clause": {
+        "cases": 1,
+        "mrr": 0.3333333333333333,
+        "hit_at_5": 1.0
+      },
+      "date": {
+        "cases": 4,
+        "mrr": 0.3833333333333333,
+        "hit_at_5": 1.0
+      },
+      "exact-term": {
+        "cases": 3,
+        "mrr": 0.3444444444444444,
+        "hit_at_5": 1.0
+      },
+      "long-document": {
+        "cases": 13,
+        "mrr": 0.517948717948718,
+        "hit_at_5": 1.0
+      },
+      "multiple-evidence": {
+        "cases": 8,
+        "mrr": 0.44166666666666665,
+        "hit_at_5": 1.0
+      },
+      "multiple-fact": {
+        "cases": 2,
+        "mrr": 0.41666666666666663,
+        "hit_at_5": 1.0
+      },
+      "name": {
+        "cases": 2,
+        "mrr": 0.75,
+        "hit_at_5": 1.0
+      },
+      "number": {
+        "cases": 10,
+        "mrr": 0.52,
+        "hit_at_5": 1.0
+      },
+      "paraphrase": {
+        "cases": 3,
+        "mrr": 0.7777777777777778,
+        "hit_at_5": 1.0
+      }
+    },
+    "lexical_phase6": {
+      "acronym": {
+        "cases": 5,
+        "mrr": 0.65,
+        "hit_at_5": 1.0
+      },
+      "clause": {
+        "cases": 1,
+        "mrr": 0.3333333333333333,
+        "hit_at_5": 1.0
+      },
+      "date": {
+        "cases": 4,
+        "mrr": 0.75,
+        "hit_at_5": 1.0
+      },
+      "exact-term": {
+        "cases": 3,
+        "mrr": 0.3055555555555555,
+        "hit_at_5": 1.0
+      },
+      "long-document": {
+        "cases": 13,
+        "mrr": 0.7243589743589743,
+        "hit_at_5": 1.0
+      },
+      "multiple-evidence": {
+        "cases": 8,
+        "mrr": 0.6145833333333334,
+        "hit_at_5": 1.0
+      },
+      "multiple-fact": {
+        "cases": 2,
+        "mrr": 0.75,
+        "hit_at_5": 1.0
+      },
+      "name": {
+        "cases": 2,
+        "mrr": 1.0,
+        "hit_at_5": 1.0
+      },
+      "number": {
+        "cases": 10,
+        "mrr": 0.7833333333333333,
+        "hit_at_5": 1.0
+      },
+      "paraphrase": {
+        "cases": 3,
+        "mrr": 1.0,
+        "hit_at_5": 1.0
+      }
+    },
+    "hybrid_phase7": {
+      "acronym": {
+        "cases": 5,
+        "mrr": 0.6166666666666667,
+        "hit_at_5": 1.0
+      },
+      "clause": {
+        "cases": 1,
+        "mrr": 0.3333333333333333,
+        "hit_at_5": 1.0
+      },
+      "date": {
+        "cases": 4,
+        "mrr": 0.7083333333333334,
+        "hit_at_5": 1.0
+      },
+      "exact-term": {
+        "cases": 3,
+        "mrr": 0.5277777777777778,
+        "hit_at_5": 1.0
+      },
+      "long-document": {
+        "cases": 13,
+        "mrr": 0.7115384615384616,
+        "hit_at_5": 1.0
+      },
+      "multiple-evidence": {
+        "cases": 8,
+        "mrr": 0.6145833333333334,
+        "hit_at_5": 1.0
+      },
+      "multiple-fact": {
+        "cases": 2,
+        "mrr": 0.75,
+        "hit_at_5": 1.0
+      },
+      "name": {
+        "cases": 2,
+        "mrr": 1.0,
+        "hit_at_5": 1.0
+      },
+      "number": {
+        "cases": 10,
+        "mrr": 0.7666666666666667,
+        "hit_at_5": 1.0
+      },
+      "paraphrase": {
+        "cases": 3,
+        "mrr": 0.8333333333333334,
+        "hit_at_5": 1.0
+      }
+    }
+  },
+  "rank_analysis": {
+    "dense_phase5": {
+      "helped": [
+        {
+          "case_id": "gov-ncpi-fy25-vs-fy24",
+          "parent_rank": 3,
+          "hybrid_rank": 2,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-policy-rate-reduction",
+          "parent_rank": 5,
+          "hybrid_rank": 3,
+          "tags": [
+            "long-document",
+            "number",
+            "date"
+          ]
+        },
+        {
+          "case_id": "gov-january-2025-projections",
+          "parent_rank": 3,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "multiple-fact",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-securities-sale-gains",
+          "parent_rank": 2,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "number",
+            "exact-term",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-aaoifi-adoption",
+          "parent_rank": 2,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number"
+          ]
+        },
+        {
+          "case_id": "gov-financial-literacy-reach",
+          "parent_rank": 2,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "name"
+          ]
+        },
+        {
+          "case_id": "gov-prism-plus-expansion",
+          "parent_rank": 5,
+          "hybrid_rank": 4,
+          "tags": [
+            "long-document",
+            "acronym",
+            "exact-term",
+            "multiple-evidence"
+          ]
+        }
+      ],
+      "unchanged": [
+        {
+          "case_id": "gov-public-debt-ratio",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase"
+          ]
+        },
+        {
+          "case_id": "gov-m2-growth",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-climate-risk-fund-purpose",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "name",
+            "paraphrase"
+          ]
+        },
+        {
+          "case_id": "gov-ifsb-adoption",
+          "parent_rank": 3,
+          "hybrid_rank": 3,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-statutory-submission",
+          "parent_rank": 3,
+          "hybrid_rank": 3,
+          "tags": [
+            "long-document",
+            "clause",
+            "exact-term",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-nfis-2028-targets",
+          "parent_rank": 2,
+          "hybrid_rank": 2,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "date",
+            "multiple-fact",
+            "multiple-evidence"
+          ]
+        }
+      ],
+      "harmed": []
+    },
+    "lexical_phase6": {
+      "helped": [
+        {
+          "case_id": "gov-securities-sale-gains",
+          "parent_rank": 3,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "number",
+            "exact-term",
+            "multiple-evidence"
+          ]
+        }
+      ],
+      "unchanged": [
+        {
+          "case_id": "gov-public-debt-ratio",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase"
+          ]
+        },
+        {
+          "case_id": "gov-m2-growth",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-january-2025-projections",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "multiple-fact",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-climate-risk-fund-purpose",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "name",
+            "paraphrase"
+          ]
+        },
+        {
+          "case_id": "gov-aaoifi-adoption",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number"
+          ]
+        },
+        {
+          "case_id": "gov-financial-literacy-reach",
+          "parent_rank": 1,
+          "hybrid_rank": 1,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "name"
+          ]
+        },
+        {
+          "case_id": "gov-prism-plus-expansion",
+          "parent_rank": 4,
+          "hybrid_rank": 4,
+          "tags": [
+            "long-document",
+            "acronym",
+            "exact-term",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-statutory-submission",
+          "parent_rank": 3,
+          "hybrid_rank": 3,
+          "tags": [
+            "long-document",
+            "clause",
+            "exact-term",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-nfis-2028-targets",
+          "parent_rank": 2,
+          "hybrid_rank": 2,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "date",
+            "multiple-fact",
+            "multiple-evidence"
+          ]
+        }
+      ],
+      "harmed": [
+        {
+          "case_id": "gov-ncpi-fy25-vs-fy24",
+          "parent_rank": 1,
+          "hybrid_rank": 2,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase",
+            "multiple-evidence"
+          ]
+        },
+        {
+          "case_id": "gov-policy-rate-reduction",
+          "parent_rank": 2,
+          "hybrid_rank": 3,
+          "tags": [
+            "long-document",
+            "number",
+            "date"
+          ]
+        },
+        {
+          "case_id": "gov-ifsb-adoption",
+          "parent_rank": 2,
+          "hybrid_rank": 3,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ]
+        }
+      ]
+    }
+  }
+}

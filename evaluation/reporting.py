@@ -79,8 +79,8 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         lines.extend(
             [
                 "",
-                "| Rank | Candidate rank | Chunk | Stable hash | Pages | Dense metric | Raw distance | Similarity | Lexical score | FTS score | Exact matches | Preview |",
-                "| ---: | ---: | ---: | --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- |",
+                "| Rank | Chunk | Stable hash | Pages | Fused score | Dense rank | Dense similarity | Dense RRF | Lexical rank | Lexical score | Lexical RRF | FTS score | Exact matches | Preview |",
+                "| ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
             ]
         )
         for retrieved in case["retrieved"]:
@@ -94,23 +94,38 @@ def render_markdown_report(report: dict[str, Any]) -> str:
             similarity = retrieved.get("similarity")
             lexical_score = retrieved.get("lexical_score")
             fts_score = retrieved.get("fts_score")
+            fused_score = retrieved.get("fused_score")
+            dense_contribution = retrieved.get("dense_rrf_contribution")
+            lexical_contribution = retrieved.get("lexical_rrf_contribution")
             row = [
                 str(retrieved["rank"]),
-                str(retrieved.get("candidate_rank") or "—"),
                 str(retrieved["chunk_index"]),
                 f"`{retrieved['chunk_content_hash'][:12]}`",
                 pages,
-                retrieved.get("distance_metric") if distance is not None else "—",
-                f"{distance:.6f}" if distance is not None else "—",
+                f"{fused_score:.8f}" if fused_score is not None else "—",
+                str(retrieved.get("dense_rank") or retrieved.get("candidate_rank") or "—")
+                if distance is not None
+                else "—",
                 f"{similarity:.6f}" if similarity is not None else "—",
+                (
+                    f"{dense_contribution:.8f}"
+                    if dense_contribution is not None
+                    else "—"
+                ),
+                str(retrieved.get("lexical_rank") or "—"),
                 f"{lexical_score:.6f}" if lexical_score is not None else "—",
+                (
+                    f"{lexical_contribution:.8f}"
+                    if lexical_contribution is not None
+                    else "—"
+                ),
                 f"{fts_score:.6f}" if fts_score is not None else "—",
                 str(retrieved.get("exact_match_count", 0)),
                 preview,
             ]
             lines.append("| " + " | ".join(row) + " |")
         if not case["retrieved"]:
-            lines.append("| — | — | — | — | — | — | — | — | — | — | — | No chunks retrieved |")
+            lines.append("| — | — | — | — | — | — | — | — | — | — | — | — | — | No chunks retrieved |")
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"

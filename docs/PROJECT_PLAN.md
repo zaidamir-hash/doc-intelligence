@@ -323,25 +323,25 @@ Combine the complementary recall of dense and lexical retrieval without directly
 
 ### Tasks
 
-- [ ] Retrieve configurable dense and lexical candidate pools independently.
-- [ ] Implement Reciprocal Rank Fusion explicitly using rank positions and a configurable RRF constant.
-- [ ] Deduplicate fused results by stable chunk identity.
-- [ ] Define behavior for chunks present in only one candidate list.
-- [ ] Preserve dense and lexical raw ranks/scores alongside the fused score.
-- [ ] Expose each retriever's RRF contribution and final fused rank.
-- [ ] Test candidate-pool sizes and RRF constant values in a bounded experiment.
-- [ ] Compare union recall before fusion ranking with final hybrid Hit@K/MRR/Recall/nDCG.
-- [ ] Analyze questions helped, unchanged, and harmed by fusion.
-- [ ] Retain standalone dense and lexical modes for debugging and ablation.
-- [ ] Document the RRF formula and walk through example calculations by hand and in code.
+- [x] Retrieve configurable dense and lexical candidate pools independently.
+- [x] Implement Reciprocal Rank Fusion explicitly using rank positions and a configurable RRF constant.
+- [x] Deduplicate fused results by stable chunk identity.
+- [x] Define behavior for chunks present in only one candidate list.
+- [x] Preserve dense and lexical raw ranks/scores alongside the fused score.
+- [x] Expose each retriever's RRF contribution and final fused rank.
+- [x] Test candidate-pool sizes and RRF constant values in a bounded experiment.
+- [x] Compare union recall before fusion ranking with final hybrid Hit@K/MRR/Recall/nDCG.
+- [x] Analyze questions helped, unchanged, and harmed by fusion.
+- [x] Retain standalone dense and lexical modes for debugging and ablation.
+- [x] Document the RRF formula and walk through example calculations by hand and in code.
 
 ### Acceptance criteria
 
-- [ ] A result can be traced from its original dense/lexical ranks to its exact fused score.
-- [ ] Hybrid evaluation is reproducible and directly comparable with named dense-only and lexical-only baselines.
-- [ ] Hybrid retrieval meaningfully improves aggregate or targeted-category performance, or its lack of improvement is diagnosed before proceeding.
-- [ ] Retrieval modes remain independently callable for ablation testing.
-- [ ] No opaque framework hides rank fusion behavior.
+- [x] A result can be traced from its original dense/lexical ranks to its exact fused score.
+- [x] Hybrid evaluation is reproducible and directly comparable with named dense-only and lexical-only baselines.
+- [x] Hybrid retrieval meaningfully improves aggregate or targeted-category performance, or its lack of improvement is diagnosed before proceeding.
+- [x] Retrieval modes remain independently callable for ablation testing.
+- [x] No opaque framework hides rank fusion behavior.
 
 ### Dependencies
 

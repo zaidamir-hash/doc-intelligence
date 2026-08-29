@@ -16,6 +16,13 @@ documented in `docs/PHASE6_LEXICAL_RETRIEVAL.md`. Lexical diagnostics expose
 lexical rank, combined score, raw FTS score, and matched identifier signals;
 they never require question embeddings.
 
+Phase 7 combines independent dense and lexical candidate lists with transparent
+Reciprocal Rank Fusion. The selected `20/20` pools and `k=10` configuration,
+source-rank contribution traces, bounded ablation, union-recall analysis, and
+standalone commands are documented in `docs/PHASE7_HYBRID_RRF.md`. The named
+hybrid run `8d6a5317d321` produced 1.0000 Hit@5, 0.7115 MRR, 0.9231 Recall@5,
+and 0.7542 nDCG@5.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to
