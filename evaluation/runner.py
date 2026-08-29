@@ -17,6 +17,7 @@ from dense_retrieval import (
     select_dense_context,
 )
 from embeddings import get_embedding
+from lexical_retrieval import LexicalCandidate, retrieve_lexical_candidates
 
 from .dataset import EvaluationCase, EvaluationDataset
 from .metrics import DEFAULT_CUTOFFS, CaseMetrics, average_metrics, calculate_case_metrics
@@ -40,10 +41,16 @@ class RetrievedChunk:
     page_start: int | None
     page_end: int | None
     section_title: str | None
-    distance: float
+    distance: float | None = None
     similarity: float | None = None
     distance_metric: str = "l2"
     candidate_rank: int | None = None
+    lexical_rank: int | None = None
+    lexical_score: float | None = None
+    fts_score: float | None = None
+    exact_match_count: int = 0
+    exact_terms_matched: tuple[str, ...] = ()
+    parsed_search_text: str | None = None
 
 
 EmbeddingFunction = Callable[[str], list[float]]
@@ -98,6 +105,52 @@ def retrieve_dense_chunks(
         )
         for candidate in selection.selected
     ]
+
+
+def _lexical_as_retrieved(candidate: LexicalCandidate) -> RetrievedChunk:
+    return RetrievedChunk(
+        chunk_id=candidate.chunk_id,
+        chunk_content_hash=candidate.chunk_content_hash,
+        document_id=candidate.document_id,
+        document_content_hash=candidate.document_content_hash,
+        chunk_index=candidate.chunk_index,
+        filename=candidate.filename,
+        content=candidate.content,
+        page_start=candidate.page_start,
+        page_end=candidate.page_end,
+        section_title=candidate.section_title,
+        lexical_rank=candidate.lexical_rank,
+        lexical_score=candidate.lexical_score,
+        fts_score=candidate.fts_score,
+        exact_match_count=candidate.exact_match_count,
+        exact_terms_matched=candidate.exact_terms_matched,
+        parsed_search_text=candidate.parsed_search_text,
+        candidate_rank=candidate.lexical_rank,
+    )
+
+
+def retrieve_lexical_chunks(
+    case: EvaluationCase,
+    db: Session,
+    top_k: int,
+    *,
+    candidate_k: int | None = None,
+    exact_matching: str = "supplement",
+    exact_match_boost: float = 0.25,
+) -> list[RetrievedChunk]:
+    """Run lexical retrieval without invoking embeddings or vector search."""
+
+    resolved_candidate_k = candidate_k or top_k
+    candidates = retrieve_lexical_candidates(
+        case.question,
+        db,
+        case.filename,
+        candidate_k=resolved_candidate_k,
+        document_content_hash=case.document_content_hash,
+        exact_matching=exact_matching,
+        exact_match_boost=exact_match_boost,
+    )
+    return [_lexical_as_retrieved(candidate) for candidate in candidates[:top_k]]
 
 
 def _case_result(
@@ -156,6 +209,12 @@ def _case_result(
                 "similarity": chunk.similarity,
                 "distance_metric": chunk.distance_metric,
                 "candidate_rank": chunk.candidate_rank,
+                "lexical_rank": chunk.lexical_rank,
+                "lexical_score": chunk.lexical_score,
+                "fts_score": chunk.fts_score,
+                "exact_match_count": chunk.exact_match_count,
+                "exact_terms_matched": list(chunk.exact_terms_matched),
+                "parsed_search_text": chunk.parsed_search_text,
                 "preview": chunk.content[:preview_characters],
             }
             for rank, chunk in enumerate(retrieved, start=1)

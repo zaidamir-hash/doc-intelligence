@@ -289,25 +289,25 @@ Add an independently testable lexical retriever for exact terms and identifiers 
 
 ### Tasks
 
-- [ ] Define and populate a PostgreSQL text-search representation for chunks.
-- [ ] Choose and document text-search configuration, tokenization, normalization, and weighting behavior.
-- [ ] Implement query parsing suitable for user questions without making unsafe raw SQL expressions.
-- [ ] Implement lexical candidate retrieval independently of vector search.
-- [ ] Return lexical ranks and scores.
-- [ ] Test names, numbers, dates, acronyms, clause identifiers, exact phrases, rare terms, and common-word-heavy questions.
-- [ ] Document limitations of PostgreSQL full-text search, especially punctuation-heavy identifiers and exact phrase behavior.
-- [ ] Add explicit fallback or supplementary matching only where tests justify it.
-- [ ] Add the required lexical indexes and inspect query plans.
-- [ ] Evaluate lexical retrieval independently using the Phase 1 dataset.
-- [ ] Compare category-level dense and lexical performance.
+- [x] Define and populate a PostgreSQL text-search representation for chunks.
+- [x] Choose and document text-search configuration, tokenization, normalization, and weighting behavior.
+- [x] Implement query parsing suitable for user questions without making unsafe raw SQL expressions.
+- [x] Implement lexical candidate retrieval independently of vector search.
+- [x] Return lexical ranks and scores.
+- [x] Test names, numbers, dates, acronyms, clause identifiers, exact phrases, rare terms, and common-word-heavy questions.
+- [x] Document limitations of PostgreSQL full-text search, especially punctuation-heavy identifiers and exact phrase behavior.
+- [x] Add explicit fallback or supplementary matching only where tests justify it.
+- [x] Add the required lexical indexes and inspect query plans.
+- [x] Evaluate lexical retrieval independently using the Phase 1 dataset.
+- [x] Compare category-level dense and lexical performance.
 
 ### Acceptance criteria
 
-- [ ] Lexical search can run and be evaluated without dense search.
-- [ ] Every result includes lexical score and rank diagnostics.
-- [ ] The implementation improves or clearly complements dense retrieval on exact-signal question categories.
-- [ ] Known lexical limitations are documented with examples.
-- [ ] Dense and lexical metrics are stored as separate named baselines.
+- [x] Lexical search can run and be evaluated without dense search.
+- [x] Every result includes lexical score and rank diagnostics.
+- [x] The implementation improves or clearly complements dense retrieval on exact-signal question categories.
+- [x] Known lexical limitations are documented with examples.
+- [x] Dense and lexical metrics are stored as separate named baselines.
 
 ### Dependencies
 

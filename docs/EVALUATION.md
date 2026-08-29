@@ -10,6 +10,12 @@ Diagnostics now retain candidate rank, distance metric, raw distance, and
 interpreted similarity; unanswerable empty-result behavior is reported
 separately from answerable ranking metrics.
 
+Phase 6 adds an independently runnable PostgreSQL lexical baseline. Its
+configuration, exact-identifier ablation, category comparison, and commands are
+documented in `docs/PHASE6_LEXICAL_RETRIEVAL.md`. Lexical diagnostics expose
+lexical rank, combined score, raw FTS score, and matched identifier signals;
+they never require question embeddings.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to

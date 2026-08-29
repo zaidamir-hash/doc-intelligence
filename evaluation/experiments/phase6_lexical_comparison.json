@@ -1,0 +1,890 @@
+{
+  "dataset": "lexis-phase3-small",
+  "selection_decision": "Keep exact identifier supplementation because it improves Hit@5 and MRR over pure FTS on the fixed dataset.",
+  "baselines": {
+    "dense_phase5": {
+      "run_id": "ae70de100568",
+      "configuration": {
+        "retrieval_method": "pgvector_dense_two_stage",
+        "embedding_model": "text-embedding-3-small",
+        "top_k": 5,
+        "candidate_limit": 30,
+        "cutoffs": [
+          1,
+          3,
+          5
+        ],
+        "preview_characters": 240,
+        "unanswerable_metric_policy": "Report empty-result rate separately from answerable ranking metrics.",
+        "distance_metric": "cosine",
+        "duplicate_similarity_threshold": 0.9,
+        "relevance_threshold": null
+      },
+      "aggregate_metrics": {
+        "mrr": 0.517948717948718,
+        "hit_at_1": 0.23076923076923078,
+        "recall_at_1": 0.23076923076923078,
+        "ndcg_at_1": 0.23076923076923078,
+        "hit_at_3": 0.8461538461538461,
+        "recall_at_3": 0.7051282051282051,
+        "ndcg_at_3": 0.5225062139323199,
+        "hit_at_5": 1.0,
+        "recall_at_5": 0.9230769230769231,
+        "ndcg_at_5": 0.6246157294589563
+      },
+      "unanswerable_metrics": {
+        "empty_result_rate": 0.0,
+        "empty_results": 0,
+        "total": 1
+      },
+      "category_metrics": {
+        "acronym": {
+          "cases": 5,
+          "mrr": 0.5066666666666666,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9,
+          "ndcg_at_5": 0.620191217363709
+        },
+        "clause": {
+          "cases": 1,
+          "mrr": 0.3333333333333333,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.5706417189553201
+        },
+        "date": {
+          "cases": 4,
+          "mrr": 0.3833333333333333,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.5626527953209476
+        },
+        "exact-term": {
+          "cases": 3,
+          "mrr": 0.3444444444444444,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.6666666666666666,
+          "ndcg_at_5": 0.3982307463197193
+        },
+        "long-document": {
+          "cases": 13,
+          "mrr": 0.517948717948718,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9230769230769231,
+          "ndcg_at_5": 0.6246157294589563
+        },
+        "multiple-evidence": {
+          "cases": 8,
+          "mrr": 0.44166666666666665,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.5589115210736219
+        },
+        "multiple-fact": {
+          "cases": 2,
+          "mrr": 0.41666666666666663,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.6164143102388955
+        },
+        "name": {
+          "cases": 2,
+          "mrr": 0.75,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8154648767857288
+        },
+        "number": {
+          "cases": 10,
+          "mrr": 0.52,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.95,
+          "ndcg_at_5": 0.6312165051241815
+        },
+        "paraphrase": {
+          "cases": 3,
+          "mrr": 0.7777777777777778,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.8479237697173417
+        }
+      },
+      "cases": {
+        "gov-ncpi-fy25-vs-fy24": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-policy-rate-reduction": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "date"
+          ],
+          "first_relevant_rank": 5,
+          "reciprocal_rank": 0.2,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-public-debt-ratio": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-m2-growth": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-january-2025-projections": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "multiple-fact",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-securities-sale-gains": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-climate-risk-fund-purpose": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "name",
+            "paraphrase"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-ifsb-adoption": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-aaoifi-adoption": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-financial-literacy-reach": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "name"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-prism-plus-expansion": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 5,
+          "reciprocal_rank": 0.2,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-statutory-submission": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "clause",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-nfis-2028-targets": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "date",
+            "multiple-fact",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 5,
+          "top_score": null
+        },
+        "gov-bitcoin-reserve-target-unanswerable": {
+          "answerable": false,
+          "tags": [
+            "long-document",
+            "unanswerable",
+            "exact-term"
+          ],
+          "first_relevant_rank": null,
+          "reciprocal_rank": null,
+          "returned_chunks": 5,
+          "top_score": null
+        }
+      }
+    },
+    "lexical_pure_fts": {
+      "run_id": "9b87597ceb5b",
+      "configuration": {
+        "retrieval_method": "postgresql_lexical",
+        "embedding_model": null,
+        "top_k": 10,
+        "candidate_limit": 30,
+        "cutoffs": [
+          1,
+          3,
+          5,
+          10
+        ],
+        "preview_characters": 240,
+        "unanswerable_metric_policy": "Report empty-result rate separately from answerable ranking metrics.",
+        "text_search_configuration": "english",
+        "query_parser": "OR-style websearch_to_tsquery",
+        "rank_function": "ts_rank_cd",
+        "rank_normalization": 32,
+        "exact_matching": "disabled",
+        "exact_match_boost": 0.25
+      },
+      "aggregate_metrics": {
+        "mrr": 0.4558608058608059,
+        "hit_at_1": 0.23076923076923078,
+        "recall_at_1": 0.23076923076923078,
+        "ndcg_at_1": 0.23076923076923078,
+        "hit_at_3": 0.6153846153846154,
+        "recall_at_3": 0.5128205128205129,
+        "ndcg_at_3": 0.4158252287604321,
+        "hit_at_5": 0.7692307692307693,
+        "recall_at_5": 0.7051282051282051,
+        "ndcg_at_5": 0.5057590830823225,
+        "hit_at_10": 0.9230769230769231,
+        "recall_at_10": 0.8589743589743589,
+        "ndcg_at_10": 0.5630796349106894
+      },
+      "unanswerable_metrics": {
+        "empty_result_rate": 0.0,
+        "empty_results": 0,
+        "total": 1
+      },
+      "category_metrics": {
+        "acronym": {
+          "cases": 5,
+          "mrr": 0.4619047619047619,
+          "hit_at_5": 0.6,
+          "recall_at_5": 0.5333333333333333,
+          "ndcg_at_5": 0.4323302055097402
+        },
+        "clause": {
+          "cases": 1,
+          "mrr": 0.3333333333333333,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.5706417189553201
+        },
+        "date": {
+          "cases": 4,
+          "mrr": 0.75,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9166666666666666,
+          "ndcg_at_5": 0.7904127568871753
+        },
+        "exact-term": {
+          "cases": 3,
+          "mrr": 0.27777777777777773,
+          "hit_at_5": 0.6666666666666666,
+          "recall_at_5": 0.6666666666666666,
+          "ndcg_at_5": 0.3714710093691152
+        },
+        "long-document": {
+          "cases": 13,
+          "mrr": 0.4558608058608059,
+          "hit_at_5": 0.7692307692307693,
+          "recall_at_5": 0.7051282051282051,
+          "ndcg_at_5": 0.5057590830823225
+        },
+        "multiple-evidence": {
+          "cases": 8,
+          "mrr": 0.5041666666666667,
+          "hit_at_5": 0.875,
+          "recall_at_5": 0.7708333333333334,
+          "ndcg_at_5": 0.5641577210531679
+        },
+        "multiple-fact": {
+          "cases": 2,
+          "mrr": 0.75,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8333333333333333,
+          "ndcg_at_5": 0.7653606369886217
+        },
+        "name": {
+          "cases": 2,
+          "mrr": 0.5,
+          "hit_at_5": 0.5,
+          "recall_at_5": 0.5,
+          "ndcg_at_5": 0.5
+        },
+        "number": {
+          "cases": 10,
+          "mrr": 0.5426190476190477,
+          "hit_at_5": 0.9,
+          "recall_at_5": 0.8166666666666667,
+          "ndcg_at_5": 0.6004226361114873
+        },
+        "paraphrase": {
+          "cases": 3,
+          "mrr": 0.15,
+          "hit_at_5": 0.6666666666666666,
+          "recall_at_5": 0.5,
+          "ndcg_at_5": 0.2226247569475631
+        }
+      },
+      "cases": {
+        "gov-ncpi-fy25-vs-fy24": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 5,
+          "reciprocal_rank": 0.2,
+          "returned_chunks": 10,
+          "top_score": 0.8333333
+        },
+        "gov-policy-rate-reduction": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "date"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 10,
+          "top_score": 0.8913044
+        },
+        "gov-public-debt-ratio": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase"
+          ],
+          "first_relevant_rank": 4,
+          "reciprocal_rank": 0.25,
+          "returned_chunks": 10,
+          "top_score": 0.83870965
+        },
+        "gov-m2-growth": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 0.8333333
+        },
+        "gov-january-2025-projections": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "multiple-fact",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 0.8780488
+        },
+        "gov-securities-sale-gains": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 10,
+          "top_score": 0.8484849
+        },
+        "gov-climate-risk-fund-purpose": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "name",
+            "paraphrase"
+          ],
+          "first_relevant_rank": null,
+          "reciprocal_rank": 0.0,
+          "returned_chunks": 10,
+          "top_score": 0.8214286
+        },
+        "gov-ifsb-adoption": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 10,
+          "top_score": 0.9019608
+        },
+        "gov-aaoifi-adoption": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number"
+          ],
+          "first_relevant_rank": 7,
+          "reciprocal_rank": 0.14285714285714285,
+          "returned_chunks": 10,
+          "top_score": 0.91525424
+        },
+        "gov-financial-literacy-reach": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "name"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 0.8958333
+        },
+        "gov-prism-plus-expansion": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 6,
+          "reciprocal_rank": 0.16666666666666666,
+          "returned_chunks": 10,
+          "top_score": 0.64285713
+        },
+        "gov-statutory-submission": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "clause",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 10,
+          "top_score": 0.75
+        },
+        "gov-nfis-2028-targets": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "date",
+            "multiple-fact",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 10,
+          "top_score": 0.89361703
+        },
+        "gov-bitcoin-reserve-target-unanswerable": {
+          "answerable": false,
+          "tags": [
+            "long-document",
+            "unanswerable",
+            "exact-term"
+          ],
+          "first_relevant_rank": null,
+          "reciprocal_rank": null,
+          "returned_chunks": 10,
+          "top_score": 0.7368421
+        }
+      }
+    },
+    "lexical_supplemented": {
+      "run_id": "e9ccf0353cc7",
+      "configuration": {
+        "retrieval_method": "postgresql_lexical",
+        "embedding_model": null,
+        "top_k": 10,
+        "candidate_limit": 30,
+        "cutoffs": [
+          1,
+          3,
+          5,
+          10
+        ],
+        "preview_characters": 240,
+        "unanswerable_metric_policy": "Report empty-result rate separately from answerable ranking metrics.",
+        "text_search_configuration": "english",
+        "query_parser": "OR-style websearch_to_tsquery",
+        "rank_function": "ts_rank_cd",
+        "rank_normalization": 32,
+        "exact_matching": "supplement",
+        "exact_match_boost": 0.25
+      },
+      "aggregate_metrics": {
+        "mrr": 0.7243589743589743,
+        "hit_at_1": 0.5384615384615384,
+        "recall_at_1": 0.5,
+        "ndcg_at_1": 0.5384615384615384,
+        "hit_at_3": 0.9230769230769231,
+        "recall_at_3": 0.7564102564102565,
+        "ndcg_at_3": 0.6757104464338229,
+        "hit_at_5": 1.0,
+        "recall_at_5": 0.8974358974358974,
+        "ndcg_at_5": 0.7485470426224252,
+        "hit_at_10": 1.0,
+        "recall_at_10": 0.9615384615384616,
+        "ndcg_at_10": 0.7773804025320982
+      },
+      "unanswerable_metrics": {
+        "empty_result_rate": 0.0,
+        "empty_results": 0,
+        "total": 1
+      },
+      "category_metrics": {
+        "acronym": {
+          "cases": 5,
+          "mrr": 0.65,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8333333333333334,
+          "ndcg_at_5": 0.6745243159294533
+        },
+        "clause": {
+          "cases": 1,
+          "mrr": 0.3333333333333333,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.5706417189553201
+        },
+        "date": {
+          "cases": 4,
+          "mrr": 0.75,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9166666666666666,
+          "ndcg_at_5": 0.7771383642686689
+        },
+        "exact-term": {
+          "cases": 3,
+          "mrr": 0.3055555555555555,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8333333333333334,
+          "ndcg_at_5": 0.45949371689331214
+        },
+        "long-document": {
+          "cases": 13,
+          "mrr": 0.7243589743589743,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8974358974358974,
+          "ndcg_at_5": 0.7485470426224252
+        },
+        "multiple-evidence": {
+          "cases": 8,
+          "mrr": 0.6145833333333334,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8333333333333334,
+          "ndcg_at_5": 0.6375227250650087
+        },
+        "multiple-fact": {
+          "cases": 2,
+          "mrr": 0.75,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8333333333333333,
+          "ndcg_at_5": 0.7388118517516089
+        },
+        "name": {
+          "cases": 2,
+          "mrr": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        "number": {
+          "cases": 10,
+          "mrr": 0.7833333333333333,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.9166666666666666,
+          "ndcg_at_5": 0.7896401712563617
+        },
+        "paraphrase": {
+          "cases": 3,
+          "mrr": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8333333333333334,
+          "ndcg_at_5": 0.8710490642551528
+        }
+      },
+      "cases": {
+        "gov-ncpi-fy25-vs-fy24": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 1.5648148
+        },
+        "gov-policy-rate-reduction": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "date"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 10,
+          "top_score": 1.1413044
+        },
+        "gov-public-debt-ratio": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "paraphrase"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 1.55
+        },
+        "gov-m2-growth": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 1.0833333
+        },
+        "gov-january-2025-projections": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "multiple-fact",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 1.3780488
+        },
+        "gov-securities-sale-gains": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "number",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 10,
+          "top_score": 1.0984848999999999
+        },
+        "gov-climate-risk-fund-purpose": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "name",
+            "paraphrase"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 1.0119048
+        },
+        "gov-ifsb-adoption": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 10,
+          "top_score": 1.4019608
+        },
+        "gov-aaoifi-adoption": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 1.5648148
+        },
+        "gov-financial-literacy-reach": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "date",
+            "number",
+            "name"
+          ],
+          "first_relevant_rank": 1,
+          "reciprocal_rank": 1.0,
+          "returned_chunks": 10,
+          "top_score": 0.8958333
+        },
+        "gov-prism-plus-expansion": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 4,
+          "reciprocal_rank": 0.25,
+          "returned_chunks": 10,
+          "top_score": 0.89285713
+        },
+        "gov-statutory-submission": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "clause",
+            "exact-term",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 3,
+          "reciprocal_rank": 0.3333333333333333,
+          "returned_chunks": 10,
+          "top_score": 0.75
+        },
+        "gov-nfis-2028-targets": {
+          "answerable": true,
+          "tags": [
+            "long-document",
+            "acronym",
+            "number",
+            "date",
+            "multiple-fact",
+            "multiple-evidence"
+          ],
+          "first_relevant_rank": 2,
+          "reciprocal_rank": 0.5,
+          "returned_chunks": 10,
+          "top_score": 1.3936170300000001
+        },
+        "gov-bitcoin-reserve-target-unanswerable": {
+          "answerable": false,
+          "tags": [
+            "long-document",
+            "unanswerable",
+            "exact-term"
+          ],
+          "first_relevant_rank": null,
+          "reciprocal_rank": null,
+          "returned_chunks": 10,
+          "top_score": 1.2058824000000001
+        }
+      }
+    }
+  }
+}

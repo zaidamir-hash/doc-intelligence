@@ -102,14 +102,16 @@ Important constraints/indexes include:
 - document and page-range B-tree indexes;
 - GIN index over `search_vector`.
 
-`search_vector` is a PostgreSQL generated column:
+`search_vector` was introduced in Phase 4 as a PostgreSQL generated column.
+Phase 6 migration `0004` refined it to weight headings and passage text:
 
 ```sql
-to_tsvector('english', coalesce(passage_text, ''))
+setweight(to_tsvector('english', coalesce(section_title, '')), 'A')
+|| setweight(to_tsvector('english', coalesce(passage_text, '')), 'B')
 ```
 
-PostgreSQL updates it automatically whenever passage text changes. Phase 4 only
-prepares lexical storage; Phase 6 will implement and evaluate lexical ranking.
+PostgreSQL updates it automatically whenever the heading or passage changes.
+Phase 4 prepared lexical storage; Phase 6 implements and evaluates ranking.
 No approximate pgvector index was added because choosing and measuring dense
 index/search behavior belongs to Phase 5.
 

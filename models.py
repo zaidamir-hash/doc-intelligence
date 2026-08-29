@@ -151,7 +151,11 @@ class DocumentChunk(Base):
     boundary_kinds = Column(JSONB, nullable=False, default=list, server_default="[]")
     search_vector = Column(
         TSVECTOR,
-        Computed("to_tsvector('english', coalesce(passage_text, ''))", persisted=True),
+        Computed(
+            "setweight(to_tsvector('english', coalesce(section_title, '')), 'A') "
+            "|| setweight(to_tsvector('english', coalesce(passage_text, '')), 'B')",
+            persisted=True,
+        ),
     )
     embedding = Column(Vector(1536), nullable=False)
     created_at = Column(
