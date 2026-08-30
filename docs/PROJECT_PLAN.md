@@ -356,27 +356,27 @@ Improve precision and ordering by evaluating the question and each fused passage
 
 ### Tasks
 
-- [ ] Select a reranking approach after comparing quality, cost, latency, local/hosted operation, and educational clarity.
-- [ ] Keep reranking in a separate function/module from candidate retrieval.
-- [ ] Construct explicit question-passage pairs.
-- [ ] Rerank a configurable number of fused candidates.
-- [ ] Return reranker scores, original fused ranks, and final ranks.
-- [ ] Select a configurable number of final evidence chunks.
-- [ ] Calibrate a reranker relevance cutoff, especially for unanswerable questions.
-- [ ] Measure candidate recall before reranking.
-- [ ] Measure MRR, Hit@K, Recall@K, and nDCG after reranking.
-- [ ] Record latency and monetary/computational cost.
-- [ ] Inspect examples promoted and demoted by the reranker.
-- [ ] Add fallback behavior for reranker failure without silently changing retrieval semantics.
-- [ ] Compare hybrid-without-reranking and hybrid-with-reranking as separate named runs.
+- [x] Select a reranking approach after comparing quality, cost, latency, local/hosted operation, and educational clarity.
+- [x] Keep reranking in a separate function/module from candidate retrieval.
+- [x] Construct explicit question-passage pairs.
+- [x] Rerank a configurable number of fused candidates.
+- [x] Return reranker scores, original fused ranks, and final ranks.
+- [x] Select a configurable number of final evidence chunks.
+- [x] Calibrate a reranker relevance cutoff, especially for unanswerable questions.
+- [x] Measure candidate recall before reranking.
+- [x] Measure MRR, Hit@K, Recall@K, and nDCG after reranking.
+- [x] Record latency and monetary/computational cost.
+- [x] Inspect examples promoted and demoted by the reranker.
+- [x] Add fallback behavior for reranker failure without silently changing retrieval semantics.
+- [x] Compare hybrid-without-reranking and hybrid-with-reranking as separate named runs.
 
 ### Acceptance criteria
 
-- [ ] The correct evidence is measured for presence in the candidate pool before judging reranker quality.
-- [ ] Every reranked result exposes its input rank, output rank, and reranker score.
-- [ ] Reranking provides measurable benefit or a documented reason not to keep it.
-- [ ] Relevance cutoff behavior is tested on answerable and unanswerable questions.
-- [ ] Added latency and cost are measured and considered acceptable for the project.
+- [x] The correct evidence is measured for presence in the candidate pool before judging reranker quality.
+- [x] Every reranked result exposes its input rank, output rank, and reranker score.
+- [x] Reranking provides measurable benefit or a documented reason not to keep it.
+- [x] Relevance cutoff behavior is tested on answerable and unanswerable questions.
+- [x] Added latency and cost are measured and considered acceptable for the project.
 
 ### Dependencies
 

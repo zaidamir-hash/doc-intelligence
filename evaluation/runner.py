@@ -19,6 +19,7 @@ from dense_retrieval import (
 from embeddings import get_embedding
 from lexical_retrieval import LexicalCandidate, retrieve_lexical_candidates
 from hybrid_retrieval import FusedCandidate, retrieve_hybrid_candidates
+from reranking import RerankedCandidate
 
 from .dataset import EvaluationCase, EvaluationDataset
 from .metrics import DEFAULT_CUTOFFS, CaseMetrics, average_metrics, calculate_case_metrics
@@ -58,6 +59,10 @@ class RetrievedChunk:
     dense_rrf_contribution: float | None = None
     lexical_rrf_contribution: float | None = None
     source_count: int | None = None
+    original_fused_rank: int | None = None
+    reranker_score: int | None = None
+    reranker_rationale: str | None = None
+    reranker_used_fallback: bool = False
 
 
 EmbeddingFunction = Callable[[str], list[float]]
@@ -220,6 +225,22 @@ def retrieve_hybrid_chunks(
     ]
 
 
+def reranked_candidate_to_retrieved(candidate: RerankedCandidate) -> RetrievedChunk:
+    """Preserve Phase 7 diagnostics while adding the Phase 8 ranking trace."""
+
+    retrieved = hybrid_candidate_to_retrieved(candidate.candidate)
+    return RetrievedChunk(
+        **{
+            **asdict(retrieved),
+            "candidate_rank": candidate.final_rank,
+            "original_fused_rank": candidate.original_fused_rank,
+            "reranker_score": candidate.reranker_score,
+            "reranker_rationale": candidate.reranker_rationale,
+            "reranker_used_fallback": candidate.used_fallback,
+        }
+    )
+
+
 def _case_result(
     case: EvaluationCase,
     retrieved: list[RetrievedChunk],
@@ -288,6 +309,10 @@ def _case_result(
                 "dense_rrf_contribution": chunk.dense_rrf_contribution,
                 "lexical_rrf_contribution": chunk.lexical_rrf_contribution,
                 "source_count": chunk.source_count,
+                "original_fused_rank": chunk.original_fused_rank,
+                "reranker_score": chunk.reranker_score,
+                "reranker_rationale": chunk.reranker_rationale,
+                "reranker_used_fallback": chunk.reranker_used_fallback,
                 "preview": chunk.content[:preview_characters],
             }
             for rank, chunk in enumerate(retrieved, start=1)

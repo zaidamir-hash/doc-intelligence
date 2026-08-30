@@ -23,6 +23,13 @@ standalone commands are documented in `docs/PHASE7_HYBRID_RRF.md`. The named
 hybrid run `8d6a5317d321` produced 1.0000 Hit@5, 0.7115 MRR, 0.9231 Recall@5,
 and 0.7542 nDCG@5.
 
+Phase 8 reranks the ten fused candidates with explicit question-passage scores.
+The selected cutoff, pre-rerank candidate recall, rank movements, failure
+fallback, measured tokens/cost/latency, and reproducible commands are documented
+in `docs/PHASE8_RERANKING.md`. Named run `81754b6e9c15` achieved 1.0000 MRR,
+1.0000 Hit@5, 0.9615 Recall@5, and 0.9579 nDCG@5, with complete candidate recall
+before reranking.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to

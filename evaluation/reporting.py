@@ -79,8 +79,8 @@ def render_markdown_report(report: dict[str, Any]) -> str:
         lines.extend(
             [
                 "",
-                "| Rank | Chunk | Stable hash | Pages | Fused score | Dense rank | Dense similarity | Dense RRF | Lexical rank | Lexical score | Lexical RRF | FTS score | Exact matches | Preview |",
-                "| ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+                "| Rank | Input fused rank | Reranker score | Chunk | Stable hash | Pages | Fused score | Dense rank | Dense similarity | Dense RRF | Lexical rank | Lexical score | Lexical RRF | FTS score | Exact matches | Preview |",
+                "| ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
             ]
         )
         for retrieved in case["retrieved"]:
@@ -99,6 +99,8 @@ def render_markdown_report(report: dict[str, Any]) -> str:
             lexical_contribution = retrieved.get("lexical_rrf_contribution")
             row = [
                 str(retrieved["rank"]),
+                str(retrieved.get("original_fused_rank") or "—"),
+                str(retrieved.get("reranker_score") if retrieved.get("reranker_score") is not None else "—"),
                 str(retrieved["chunk_index"]),
                 f"`{retrieved['chunk_content_hash'][:12]}`",
                 pages,
@@ -125,7 +127,7 @@ def render_markdown_report(report: dict[str, Any]) -> str:
             ]
             lines.append("| " + " | ".join(row) + " |")
         if not case["retrieved"]:
-            lines.append("| — | — | — | — | — | — | — | — | — | — | — | — | — | No chunks retrieved |")
+            lines.append("| — | — | — | — | — | — | — | — | — | — | — | — | — | — | — | No chunks retrieved |")
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"

@@ -1,0 +1,289 @@
+{
+  "selection_rule": "On the fixed development subset, maximize unanswerable empty rate, then Hit@5, Recall@5, and nDCG@5; on a complete tie prefer score 2 because the fixed rubric defines it as useful supporting evidence.",
+  "selected_relevance_cutoff": 2,
+  "named_reranked_run_id": "81754b6e9c15",
+  "reranker_model": "gpt-4o-mini-2024-07-18",
+  "candidate_pool": {
+    "size": 10,
+    "hit_rate": 1.0,
+    "mean_recall": 1.0
+  },
+  "named_baselines": {
+    "hybrid_phase7": {
+      "mrr": 0.7115384615384616,
+      "hit_at_1": 0.5384615384615384,
+      "recall_at_1": 0.5,
+      "ndcg_at_1": 0.5384615384615384,
+      "hit_at_3": 0.9230769230769231,
+      "recall_at_3": 0.782051282051282,
+      "ndcg_at_3": 0.6797919131046133,
+      "hit_at_5": 1.0,
+      "recall_at_5": 0.9230769230769231,
+      "ndcg_at_5": 0.7542104749826921,
+      "hit_at_10": 1.0,
+      "recall_at_10": 1.0,
+      "ndcg_at_10": 0.7867327699370499
+    },
+    "reranked_phase8": {
+      "mrr": 1.0,
+      "hit_at_1": 1.0,
+      "recall_at_1": 0.7948717948717949,
+      "ndcg_at_1": 1.0,
+      "hit_at_3": 1.0,
+      "recall_at_3": 0.9615384615384616,
+      "ndcg_at_3": 0.9578914439278333,
+      "hit_at_5": 1.0,
+      "recall_at_5": 0.9615384615384616,
+      "ndcg_at_5": 0.9578914439278333,
+      "hit_at_10": 1.0,
+      "recall_at_10": 1.0,
+      "ndcg_at_10": 0.9736131668192554
+    }
+  },
+  "cutoff_experiments": {
+    "0": {
+      "development": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.75,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.875,
+          "ndcg_at_3": 0.8832169954784115,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.8832169954784115
+        },
+        "unanswerable_empty_rate": 0.0,
+        "mean_selected_evidence": 5.0
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.8148148148148148,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "ndcg_at_3": 0.9910800876831318,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.9910800876831318
+        },
+        "unanswerable_empty_rate": null,
+        "mean_selected_evidence": 5.0
+      }
+    },
+    "1": {
+      "development": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.75,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.875,
+          "ndcg_at_3": 0.8832169954784115,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.8832169954784115
+        },
+        "unanswerable_empty_rate": 1.0,
+        "mean_selected_evidence": 3.6
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.8148148148148148,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "ndcg_at_3": 0.9910800876831318,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.9910800876831318
+        },
+        "unanswerable_empty_rate": null,
+        "mean_selected_evidence": 2.7777777777777777
+      }
+    },
+    "2": {
+      "development": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.75,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.875,
+          "ndcg_at_3": 0.8832169954784115,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.8832169954784115
+        },
+        "unanswerable_empty_rate": 1.0,
+        "mean_selected_evidence": 2.8
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.8148148148148148,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "ndcg_at_3": 0.9910800876831318,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.9910800876831318
+        },
+        "unanswerable_empty_rate": null,
+        "mean_selected_evidence": 2.3333333333333335
+      }
+    },
+    "3": {
+      "development": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.75,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 0.875,
+          "ndcg_at_3": 0.8832169954784115,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.875,
+          "ndcg_at_5": 0.8832169954784115
+        },
+        "unanswerable_empty_rate": 1.0,
+        "mean_selected_evidence": 1.4
+      },
+      "held_out": {
+        "aggregate_metrics": {
+          "mrr": 1.0,
+          "hit_at_1": 1.0,
+          "recall_at_1": 0.8148148148148148,
+          "ndcg_at_1": 1.0,
+          "hit_at_3": 1.0,
+          "recall_at_3": 1.0,
+          "ndcg_at_3": 0.9910800876831318,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "ndcg_at_5": 0.9910800876831318
+        },
+        "unanswerable_empty_rate": null,
+        "mean_selected_evidence": 2.0
+      }
+    }
+  },
+  "rank_analysis": {
+    "promoted": [
+      {
+        "case_id": "gov-ncpi-fy25-vs-fy24",
+        "hybrid_rank": 2,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 2,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-policy-rate-reduction",
+        "hybrid_rank": 3,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 3,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-ifsb-adoption",
+        "hybrid_rank": 3,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 3,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-prism-plus-expansion",
+        "hybrid_rank": 4,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 4,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-statutory-submission",
+        "hybrid_rank": 3,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 3,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-nfis-2028-targets",
+        "hybrid_rank": 2,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 2,
+        "top_output_score": 3
+      }
+    ],
+    "unchanged": [
+      {
+        "case_id": "gov-public-debt-ratio",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-m2-growth",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-january-2025-projections",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-securities-sale-gains",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-climate-risk-fund-purpose",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-aaoifi-adoption",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      },
+      {
+        "case_id": "gov-financial-literacy-reach",
+        "hybrid_rank": 1,
+        "reranked_rank": 1,
+        "top_output_original_fused_rank": 1,
+        "top_output_score": 3
+      }
+    ],
+    "demoted": []
+  },
+  "cost_and_latency": {
+    "requests": 14,
+    "input_tokens": 35068,
+    "output_tokens": 10552,
+    "estimated_cost_usd": 0.0115914,
+    "total_run_duration_ms": 115383.358,
+    "total_reranker_latency_ms": 104794.12589996355,
+    "mean_reranker_latency_ms": 7485.294707140253,
+    "fallback_cases": 0
+  }
+}
