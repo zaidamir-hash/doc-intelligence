@@ -391,26 +391,26 @@ Reduce vocabulary mismatch and improve ambiguous retrieval without allowing a re
 
 ### Tasks
 
-- [ ] Define when query expansion is used and when the original query alone is sufficient.
-- [ ] Always preserve and search the original user question.
-- [ ] Generate one controlled retrieval-oriented alternative query initially.
-- [ ] Preserve exact names, numbers, dates, acronyms, and identifiers.
-- [ ] Optionally extract important lexical terms/entities as an inspectable signal.
-- [ ] Add validation or fallback when an expansion is empty, malformed, or meaning-shifted.
-- [ ] Expose original and expanded queries in diagnostics.
-- [ ] Retrieve candidates for each query through the appropriate dense/lexical paths.
-- [ ] Fuse multi-query results without allowing duplicate passages to dominate.
-- [ ] Evaluate expansion enabled versus disabled on the same dataset.
-- [ ] Analyze vocabulary-mismatch improvements and precise-query regressions.
-- [ ] Defer conversational standalone-question rewriting until backend conversation context exists and is explicitly required.
+- [x] Define when query expansion is used and when the original query alone is sufficient.
+- [x] Always preserve and search the original user question.
+- [x] Generate one controlled retrieval-oriented alternative query initially.
+- [x] Preserve exact names, numbers, dates, acronyms, and identifiers.
+- [x] Optionally extract important lexical terms/entities as an inspectable signal.
+- [x] Add validation or fallback when an expansion is empty, malformed, or meaning-shifted.
+- [x] Expose original and expanded queries in diagnostics.
+- [x] Retrieve candidates for each query through the appropriate dense/lexical paths.
+- [x] Fuse multi-query results without allowing duplicate passages to dominate.
+- [x] Evaluate expansion enabled versus disabled on the same dataset.
+- [x] Analyze vocabulary-mismatch improvements and precise-query regressions.
+- [x] Defer conversational standalone-question rewriting until backend conversation context exists and is explicitly required.
 
 ### Acceptance criteria
 
-- [ ] The original query is never discarded.
-- [ ] Every generated expansion is visible in evaluation/debug output.
-- [ ] Exact entities and identifiers are preserved in tested cases.
-- [ ] Query expansion measurably improves difficult query categories without unacceptable regression elsewhere.
-- [ ] Failures fall back safely to the original-query pipeline.
+- [x] The original query is never discarded.
+- [x] Every generated expansion is visible in evaluation/debug output.
+- [x] Exact entities and identifiers are preserved in tested cases.
+- [x] Query expansion measurably improves difficult query categories without unacceptable regression elsewhere.
+- [x] Failures fall back safely to the original-query pipeline.
 
 ### Dependencies
 

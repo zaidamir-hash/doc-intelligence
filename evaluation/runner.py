@@ -63,6 +63,12 @@ class RetrievedChunk:
     reranker_score: int | None = None
     reranker_rationale: str | None = None
     reranker_used_fallback: bool = False
+    expanded_dense_rank: int | None = None
+    expanded_dense_similarity: float | None = None
+    expanded_dense_rrf_contribution: float | None = None
+    expanded_lexical_rank: int | None = None
+    expanded_lexical_score: float | None = None
+    expanded_lexical_rrf_contribution: float | None = None
 
 
 EmbeddingFunction = Callable[[str], list[float]]
@@ -193,6 +199,20 @@ def hybrid_candidate_to_retrieved(candidate: FusedCandidate) -> RetrievedChunk:
         dense_rrf_contribution=candidate.dense_rrf_contribution,
         lexical_rrf_contribution=candidate.lexical_rrf_contribution,
         source_count=candidate.source_count,
+        expanded_dense_rank=getattr(candidate, "expanded_dense_rank", None),
+        expanded_dense_similarity=getattr(
+            candidate, "expanded_dense_similarity", None
+        ),
+        expanded_dense_rrf_contribution=getattr(
+            candidate, "expanded_dense_rrf_contribution", None
+        ),
+        expanded_lexical_rank=getattr(candidate, "expanded_lexical_rank", None),
+        expanded_lexical_score=getattr(
+            candidate, "expanded_lexical_score", None
+        ),
+        expanded_lexical_rrf_contribution=getattr(
+            candidate, "expanded_lexical_rrf_contribution", None
+        ),
     )
 
 
@@ -313,6 +333,12 @@ def _case_result(
                 "reranker_score": chunk.reranker_score,
                 "reranker_rationale": chunk.reranker_rationale,
                 "reranker_used_fallback": chunk.reranker_used_fallback,
+                "expanded_dense_rank": chunk.expanded_dense_rank,
+                "expanded_dense_similarity": chunk.expanded_dense_similarity,
+                "expanded_dense_rrf_contribution": chunk.expanded_dense_rrf_contribution,
+                "expanded_lexical_rank": chunk.expanded_lexical_rank,
+                "expanded_lexical_score": chunk.expanded_lexical_score,
+                "expanded_lexical_rrf_contribution": chunk.expanded_lexical_rrf_contribution,
                 "preview": chunk.content[:preview_characters],
             }
             for rank, chunk in enumerate(retrieved, start=1)

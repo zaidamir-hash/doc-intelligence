@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "name": "lexis-phase9-vocabulary-mismatch-development",
+  "description": "Development-only vocabulary-mismatch stress variants derived from four Phase 3 questions. Each variant preserves its parent question's intent and reuses the same previously verified stable evidence hashes; it is not a new held-out test set.",
+  "split": "development",
+  "cases": [
+    {
+      "id": "phase9-vocab-monetary-easing",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What cumulative monetary easing occurred over the year ending in mid-2025?",
+      "answerable": true,
+      "relevant_chunk_indices": [12],
+      "relevance_grades": {"12": 1},
+      "reference_answer": "The MPC reduced policy rates by 1,100 basis points.",
+      "notes": "Vocabulary-mismatch variant of gov-policy-rate-reduction. Reuses its fixed Phase 3 evidence label and replaces policy-rate/MPC/basis-point wording with monetary-easing language.",
+      "tags": ["long-document", "vocabulary-mismatch", "paraphrase", "development-derived"],
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": ["5127416ebc53297d55c87eaf3b05629156a209053e04f21675e2f175af66e172"]
+    },
+    {
+      "id": "phase9-vocab-flood-farming-support",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What support was designed to help small farmers recover from flood disruptions and adopt more resilient agriculture?",
+      "answerable": true,
+      "relevant_chunk_indices": [18],
+      "relevance_grades": {"18": 1},
+      "reference_answer": "It is intended to promote climate-resilient farming and provide liquidity support to small farmers affected by floods.",
+      "notes": "Vocabulary-mismatch variant of gov-climate-risk-fund-purpose. Reuses its fixed Phase 3 evidence label without naming Climate Risk Fund-I or microfinance banks.",
+      "tags": ["long-document", "vocabulary-mismatch", "paraphrase", "development-derived"],
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": ["4c6393ebe0fe179a29991c46aef949d96a07b93b20f000cefe6d8c0146bc9f93"]
+    },
+    {
+      "id": "phase9-vocab-public-money-skills",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "How broadly did the central bank's public money-skills initiative reach people, including women?",
+      "answerable": true,
+      "relevant_chunk_indices": [334],
+      "relevance_grades": {"334": 1},
+      "reference_answer": "Nearly 4.4 million people had been trained, half of whom were women.",
+      "notes": "Vocabulary-mismatch variant of gov-financial-literacy-reach. Reuses its fixed Phase 3 evidence label without the official program name or date.",
+      "tags": ["long-document", "vocabulary-mismatch", "paraphrase", "development-derived"],
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": ["2a08a4a8313044550a115a4ffc27428d3a437948937ce79ca0976d8f6cd81aed"]
+    },
+    {
+      "id": "phase9-vocab-yearly-report-law",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "Which law clause requires the central bank chief's yearly report to be presented to lawmakers?",
+      "answerable": true,
+      "relevant_chunk_indices": [5, 6],
+      "relevance_grades": {"5": 1, "6": 1},
+      "reference_answer": "It was submitted under Section 39(1) of the State Bank of Pakistan Act, 1956.",
+      "notes": "Vocabulary-mismatch variant of gov-statutory-submission. Reuses its two fixed Phase 3 evidence labels while avoiding the exact Governor's Annual Report and Parliament wording.",
+      "tags": ["long-document", "vocabulary-mismatch", "paraphrase", "development-derived", "multiple-evidence"],
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "relevant_chunk_hashes": [
+        "fec5fd88b8dbef7ea58e757a61bb5f7c77215650904c96b66d4b85b63d346cf5",
+        "1bc4cd19bf8840b1cd45860c49936cf6596f1ccd1908578272b203efc7026e97"
+      ]
+    }
+  ]
+}

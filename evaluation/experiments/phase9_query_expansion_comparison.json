@@ -1,0 +1,344 @@
+{
+  "method": "Compare expansion off/on with identical dense=20, lexical=20, RRF k=10, rerank k=10, reranker batch=5 settings. Candidate metrics isolate retrieval/fusion; final metrics include hosted reranking.",
+  "precise_queries": {
+    "disabled": {
+      "run_id": "2ad2cdc1a4ca",
+      "candidate_metrics": {
+        "hit_at_1": 0.5384615384615384,
+        "hit_at_5": 1.0,
+        "hit_at_10": 1.0,
+        "mrr": 0.7115384615384616,
+        "mean_recall_at_10": 1.0
+      },
+      "final_metrics": {
+        "mrr": 1.0,
+        "hit_at_1": 1.0,
+        "recall_at_1": 0.7948717948717949,
+        "ndcg_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "ndcg_at_3": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "ndcg_at_5": 1.0,
+        "hit_at_10": 1.0,
+        "recall_at_10": 1.0,
+        "ndcg_at_10": 1.0
+      },
+      "cost": {
+        "duration_ms": 138563.477,
+        "expansion_requests": 0,
+        "expansion_input_tokens": 0,
+        "expansion_output_tokens": 0,
+        "expansion_cost_usd": 0.0,
+        "reranker_requests": 28,
+        "reranker_cost_usd": 0.012419399999999999,
+        "total_model_cost_usd": 0.012419399999999999,
+        "expansion_used_cases": 0,
+        "expansion_fallback_cases": 0,
+        "reranker_fallback_cases": 0
+      }
+    },
+    "enabled": {
+      "run_id": "5332eb857d15",
+      "candidate_metrics": {
+        "hit_at_1": 0.46153846153846156,
+        "hit_at_5": 1.0,
+        "hit_at_10": 1.0,
+        "mrr": 0.6858974358974359,
+        "mean_recall_at_10": 1.0
+      },
+      "final_metrics": {
+        "mrr": 1.0,
+        "hit_at_1": 1.0,
+        "recall_at_1": 0.7948717948717949,
+        "ndcg_at_1": 1.0,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "ndcg_at_3": 0.993824676088322,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "ndcg_at_5": 0.993824676088322,
+        "hit_at_10": 1.0,
+        "recall_at_10": 1.0,
+        "ndcg_at_10": 0.993824676088322
+      },
+      "cost": {
+        "duration_ms": 183681.665,
+        "expansion_requests": 14,
+        "expansion_input_tokens": 2943,
+        "expansion_output_tokens": 1154,
+        "expansion_cost_usd": 0.00113385,
+        "reranker_requests": 28,
+        "reranker_cost_usd": 0.0124107,
+        "total_model_cost_usd": 0.01354455,
+        "expansion_used_cases": 12,
+        "expansion_fallback_cases": 2,
+        "reranker_fallback_cases": 0
+      }
+    },
+    "candidate_rank_changes": {
+      "helped": [
+        {
+          "case_id": "gov-policy-rate-reduction",
+          "original_rank": 3,
+          "expanded_rank": 2,
+          "original_query": "By how many basis points did the MPC reduce policy rates between June 2024 and June 2025?",
+          "generated_query": "What was the basis point reduction in policy rates by the MPC from June 2024 to June 2025?",
+          "expanded_query": "What was the basis point reduction in policy rates by the MPC from June 2024 to June 2025?",
+          "used_expansion": true,
+          "fallback_reason": null
+        }
+      ],
+      "unchanged": [
+        {
+          "case_id": "gov-ncpi-fy25-vs-fy24",
+          "original_rank": 2,
+          "expanded_rank": 2,
+          "original_query": "What were Pakistan's average NCPI inflation rates in FY25 and FY24?",
+          "generated_query": "What were the average NCPI inflation rates for Pakistan in FY25 and FY24?",
+          "expanded_query": null,
+          "used_expansion": false,
+          "fallback_reason": "ValueError: generated expansion removed protected terms: [\"Pakistan's\"]"
+        },
+        {
+          "case_id": "gov-public-debt-ratio",
+          "original_rank": 1,
+          "expanded_rank": 1,
+          "original_query": "How did Pakistan's public debt-to-GDP ratio change from FY24 to FY25?",
+          "generated_query": "What was the change in Pakistan's debt-to-GDP ratio between FY24 and FY25?",
+          "expanded_query": "What was the change in Pakistan's debt-to-GDP ratio between FY24 and FY25?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-m2-growth",
+          "original_rank": 1,
+          "expanded_rank": 1,
+          "original_query": "To what rate did broad money (M2) growth decelerate in FY25, and what was its rate in the previous year?",
+          "generated_query": "What was the rate of broad money (M2) growth deceleration in FY25 compared to the previous year?",
+          "expanded_query": "What was the rate of broad money (M2) growth deceleration in FY25 compared to the previous year?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-january-2025-projections",
+          "original_rank": 1,
+          "expanded_rank": 1,
+          "original_query": "After the January 2025 revision, what inflation projection range did the MPC adopt, and what real GDP growth range did it maintain?",
+          "generated_query": "What inflation forecast range was adopted by the MPC following the January 2025 update, and what real GDP growth range was retained?",
+          "expanded_query": "What inflation forecast range was adopted by the MPC following the January 2025 update, and what real GDP growth range was retained?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-climate-risk-fund-purpose",
+          "original_rank": 1,
+          "expanded_rank": 1,
+          "original_query": "What is Climate Risk Fund-I for microfinance banks intended to achieve?",
+          "generated_query": "What objectives does Climate Risk Fund-I aim to fulfill for microfinance banks?",
+          "expanded_query": "What objectives does Climate Risk Fund-I aim to fulfill for microfinance banks?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-ifsb-adoption",
+          "original_rank": 3,
+          "expanded_rank": 3,
+          "original_query": "How many new IFSB standards did SBP adopt during FY2024-25, and what total did that bring the adopted standards to?",
+          "generated_query": "What is the count of new IFSB standards adopted by SBP in FY2024-25, and what is the cumulative total of adopted standards?",
+          "expanded_query": "What is the count of new IFSB standards adopted by SBP in FY2024-25, and what is the cumulative total of adopted standards?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-aaoifi-adoption",
+          "original_rank": 1,
+          "expanded_rank": 1,
+          "original_query": "How many AAOIFI Shariah standards did SBP adopt during FY2024-25?",
+          "generated_query": "What is the count of AAOIFI Shariah standards adopted by SBP in the fiscal year 2024-25?",
+          "expanded_query": null,
+          "used_expansion": false,
+          "fallback_reason": "ValueError: generated expansion removed protected terms: ['FY2024-25']"
+        },
+        {
+          "case_id": "gov-financial-literacy-reach",
+          "original_rank": 1,
+          "expanded_rank": 1,
+          "original_query": "By the end of June 2025, how many people had received training under the National Financial Literacy Program, and what share were women?",
+          "generated_query": "What was the total number of individuals trained in the National Financial Literacy Program by June 2025, and what percentage were women?",
+          "expanded_query": "What was the total number of individuals trained in the National Financial Literacy Program by June 2025, and what percentage were women?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-prism-plus-expansion",
+          "original_rank": 4,
+          "expanded_rank": 4,
+          "original_query": "What does the acronym PRISM+ stand for?",
+          "generated_query": "What is the meaning of the acronym PRISM+?",
+          "expanded_query": "What is the meaning of the acronym PRISM+?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-statutory-submission",
+          "original_rank": 3,
+          "expanded_rank": 3,
+          "original_query": "Under which statutory provision was the Governor's Annual Report submitted to Parliament?",
+          "generated_query": "What legal provision governs the submission of the Governor's Annual Report to Parliament?",
+          "expanded_query": "What legal provision governs the submission of the Governor's Annual Report to Parliament?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "gov-nfis-2028-targets",
+          "original_rank": 2,
+          "expanded_rank": 2,
+          "original_query": "What financial inclusion level and gender-gap targets does NFIS 2024-28 set for 2028?",
+          "generated_query": "What targets for financial inclusion levels and gender-gap does NFIS 2024-28 establish for the year 2028?",
+          "expanded_query": "What targets for financial inclusion levels and gender-gap does NFIS 2024-28 establish for the year 2028?",
+          "used_expansion": true,
+          "fallback_reason": null
+        }
+      ],
+      "harmed": [
+        {
+          "case_id": "gov-securities-sale-gains",
+          "original_rank": 1,
+          "expanded_rank": 2,
+          "original_query": "How much did the banking sector gain from the sale of government securities during FY25?",
+          "generated_query": "What was the profit of the banking sector from the sale of government securities in FY25?",
+          "expanded_query": "What was the profit of the banking sector from the sale of government securities in FY25?",
+          "used_expansion": true,
+          "fallback_reason": null
+        }
+      ]
+    }
+  },
+  "vocabulary_mismatch": {
+    "disabled": {
+      "run_id": "9ee0d45a5939",
+      "candidate_metrics": {
+        "hit_at_1": 0.0,
+        "hit_at_5": 0.5,
+        "hit_at_10": 1.0,
+        "mrr": 0.2604166666666667,
+        "mean_recall_at_10": 1.0
+      },
+      "final_metrics": {
+        "mrr": 0.5833333333333334,
+        "hit_at_1": 0.25,
+        "recall_at_1": 0.125,
+        "ndcg_at_1": 0.25,
+        "hit_at_3": 1.0,
+        "recall_at_3": 1.0,
+        "ndcg_at_3": 0.6904648767857288,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "ndcg_at_5": 0.6904648767857288,
+        "hit_at_10": 1.0,
+        "recall_at_10": 1.0,
+        "ndcg_at_10": 0.6904648767857288
+      },
+      "cost": {
+        "duration_ms": 43537.232,
+        "expansion_requests": 0,
+        "expansion_input_tokens": 0,
+        "expansion_output_tokens": 0,
+        "expansion_cost_usd": 0.0,
+        "reranker_requests": 8,
+        "reranker_cost_usd": 0.00362175,
+        "total_model_cost_usd": 0.00362175,
+        "expansion_used_cases": 0,
+        "expansion_fallback_cases": 0,
+        "reranker_fallback_cases": 0
+      }
+    },
+    "enabled": {
+      "run_id": "adf34b91969a",
+      "candidate_metrics": {
+        "hit_at_1": 0.0,
+        "hit_at_5": 0.5,
+        "hit_at_10": 1.0,
+        "mrr": 0.2708333333333333,
+        "mean_recall_at_10": 1.0
+      },
+      "final_metrics": {
+        "mrr": 0.7916666666666666,
+        "hit_at_1": 0.75,
+        "recall_at_1": 0.625,
+        "ndcg_at_1": 0.75,
+        "hit_at_3": 0.75,
+        "recall_at_3": 0.75,
+        "ndcg_at_3": 0.75,
+        "hit_at_5": 0.75,
+        "recall_at_5": 0.75,
+        "ndcg_at_5": 0.75,
+        "hit_at_10": 1.0,
+        "recall_at_10": 1.0,
+        "ndcg_at_10": 0.8390517967770056
+      },
+      "cost": {
+        "duration_ms": 53053.837,
+        "expansion_requests": 4,
+        "expansion_input_tokens": 789,
+        "expansion_output_tokens": 318,
+        "expansion_cost_usd": 0.00030915,
+        "reranker_requests": 8,
+        "reranker_cost_usd": 0.00354495,
+        "total_model_cost_usd": 0.0038541,
+        "expansion_used_cases": 4,
+        "expansion_fallback_cases": 0,
+        "reranker_fallback_cases": 0
+      }
+    },
+    "candidate_rank_changes": {
+      "helped": [
+        {
+          "case_id": "phase9-vocab-flood-farming-support",
+          "original_rank": 8,
+          "expanded_rank": 6,
+          "original_query": "What support was designed to help small farmers recover from flood disruptions and adopt more resilient agriculture?",
+          "generated_query": null,
+          "expanded_query": "What assistance was created to aid small farmers in recovering from flood impacts and implementing more resilient farming practices?",
+          "used_expansion": true,
+          "fallback_reason": null
+        }
+      ],
+      "unchanged": [
+        {
+          "case_id": "phase9-vocab-monetary-easing",
+          "original_rank": 4,
+          "expanded_rank": 4,
+          "original_query": "What cumulative monetary easing occurred over the year ending in mid-2025?",
+          "generated_query": null,
+          "expanded_query": "What total financial easing took place during the year concluding in mid-2025?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "phase9-vocab-public-money-skills",
+          "original_rank": 6,
+          "expanded_rank": 6,
+          "original_query": "How broadly did the central bank's public money-skills initiative reach people, including women?",
+          "generated_query": null,
+          "expanded_query": "What was the extent of the central bank's public money-skills initiative in reaching individuals, particularly women?",
+          "used_expansion": true,
+          "fallback_reason": null
+        },
+        {
+          "case_id": "phase9-vocab-yearly-report-law",
+          "original_rank": 2,
+          "expanded_rank": 2,
+          "original_query": "Which law clause requires the central bank chief's yearly report to be presented to lawmakers?",
+          "generated_query": null,
+          "expanded_query": "What legal provision mandates the annual report of the central bank governor to be submitted to legislators?",
+          "used_expansion": true,
+          "fallback_reason": null
+        }
+      ],
+      "harmed": []
+    }
+  }
+}

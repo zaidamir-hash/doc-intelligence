@@ -30,6 +30,16 @@ in `docs/PHASE8_RERANKING.md`. Named run `81754b6e9c15` achieved 1.0000 MRR,
 1.0000 Hit@5, 0.9615 Recall@5, and 0.9579 nDCG@5, with complete candidate recall
 before reranking.
 
+Phase 9 optionally adds one validated retrieval-oriented alternative while
+always searching the original question. Original and expanded dense/lexical
+ranks are fused by the same transparent RRF mechanics and deduplicated by stable
+chunk identity. On the four-query development vocabulary-mismatch stress set,
+candidate MRR improved from 0.2604 to 0.2708 while candidate Hit@5 remained
+0.5000. On the fixed precise-query benchmark, final Hit@5, MRR, and Recall@5
+remained 1.0000; nDCG@5 changed from 1.0000 to 0.9938. Full diagnostics,
+safe-fallback cases, cost, limitations, and commands are documented in
+`docs/PHASE9_QUERY_EXPANSION.md`.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to
