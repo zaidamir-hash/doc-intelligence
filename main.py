@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import init_db, get_db
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
-from query import search_similar_chunks, generate_answer
+from query import answer_document_question, build_query_response
 from pydantic import BaseModel
 from auth import verify_api_key
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -130,44 +130,19 @@ def query_document(
                 detail="Question cannot be empty"
             )
 
-        chunks = search_similar_chunks(body.question, db, body.filename)
-
-        if not chunks:
-            return {"answer": "No relevant documents found. Please upload a document first."}
-
         try:
-            answer = generate_answer(body.question, chunks)
+            result = answer_document_question(
+                body.question,
+                db,
+                body.filename,
+            )
         except Exception as e:
             raise HTTPException(
                 status_code=502,
-                detail=f"Answer generation failed: {str(e)}"
+                detail=f"Query pipeline failed: {str(e)}"
             )
 
-        sources = [
-            {
-                "document_id": str(chunk.document_id),
-                "document_content_hash": chunk.document_content_hash,
-                "chunk_id": chunk.chunk_id,
-                "chunk_content_hash": chunk.chunk_content_hash,
-                "filename": chunk.filename,
-                "chunk_index": chunk.chunk_index,
-                "page_start": chunk.page_start,
-                "page_end": chunk.page_end,
-                "section_title": chunk.section_title,
-                "dense_rank": chunk.dense_rank,
-                "distance_metric": chunk.distance_metric,
-                "distance": chunk.distance,
-                "similarity": chunk.similarity,
-                "preview": chunk.content[:100]
-            }
-            for chunk in chunks
-        ]
-
-        return {
-            "question": body.question,
-            "answer": answer,
-            "sources": sources
-        }
+        return build_query_response(body.question, result)
 
     except HTTPException:
         raise

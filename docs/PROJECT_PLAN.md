@@ -426,28 +426,28 @@ Generate answers only from selected, sufficiently relevant evidence and make the
 
 ### Tasks
 
-- [ ] Separate candidate retrieval, final evidence selection, context construction, and answer generation.
-- [ ] Build structured context containing stable chunk ID, document identity, filename, page/page range, section title, and passage text.
-- [ ] Order context to preserve relevance while using document order where it improves coherence.
-- [ ] Prevent duplicate or overlapping context from wasting the model's context window.
-- [ ] Apply the calibrated relevance/refusal decision before answer generation.
-- [ ] Strengthen grounding instructions so answers use only provided evidence.
-- [ ] Instruct the model to cite factual claims using the supplied page-aware source labels.
-- [ ] Define and validate a machine-readable answer/citation response structure where appropriate.
-- [ ] Return page-aware citations through the API.
-- [ ] Improve the insufficient-evidence response.
-- [ ] Add protection against instructions embedded inside uploaded document content.
-- [ ] Ensure source previews correspond to evidence actually used/sent, not merely every broad candidate.
-- [ ] Test answers spanning adjacent chunks or pages.
-- [ ] Test unanswerable, partially answerable, conflicting-evidence, and prompt-injection cases.
+- [x] Separate candidate retrieval, final evidence selection, context construction, and answer generation.
+- [x] Build structured context containing stable chunk ID, document identity, filename, page/page range, section title, and passage text.
+- [x] Order context to preserve relevance while using document order where it improves coherence.
+- [x] Prevent duplicate or overlapping context from wasting the model's context window.
+- [x] Apply the calibrated relevance/refusal decision before answer generation.
+- [x] Strengthen grounding instructions so answers use only provided evidence.
+- [x] Instruct the model to cite factual claims using the supplied page-aware source labels.
+- [x] Define and validate a machine-readable answer/citation response structure where appropriate.
+- [x] Return page-aware citations through the API.
+- [x] Improve the insufficient-evidence response.
+- [x] Add protection against instructions embedded inside uploaded document content.
+- [x] Ensure source previews correspond to evidence actually used/sent, not merely every broad candidate.
+- [x] Test answers spanning adjacent chunks or pages.
+- [x] Test unanswerable, partially answerable, conflicting-evidence, and prompt-injection cases.
 
 ### Acceptance criteria
 
-- [ ] Every citation maps to stored evidence and correct page metadata.
-- [ ] The API distinguishes broad retrieval candidates from evidence selected for generation.
-- [ ] Weak-evidence queries refuse or qualify appropriately instead of confidently answering from noise.
-- [ ] Generated factual claims are supported by supplied context in the labelled test cases.
-- [ ] Instructions found inside documents do not override system grounding behavior in tested cases.
+- [x] Every citation maps to stored evidence and correct page metadata.
+- [x] The API distinguishes broad retrieval candidates from evidence selected for generation.
+- [x] Weak-evidence queries refuse or qualify appropriately instead of confidently answering from noise.
+- [x] Generated factual claims are supported by supplied context in the labelled test cases.
+- [x] Instructions found inside documents do not override system grounding behavior in tested cases.
 
 ### Dependencies
 

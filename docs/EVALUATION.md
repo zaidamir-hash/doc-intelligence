@@ -40,6 +40,15 @@ remained 1.0000; nDCG@5 changed from 1.0000 to 0.9938. Full diagnostics,
 safe-fallback cases, cost, limitations, and commands are documented in
 `docs/PHASE9_QUERY_EXPANSION.md`.
 
+Phase 10 connects the advanced retrieval pipeline to grounded answer
+generation. Only reranker score-2-or-3 passages enter a page-aware structured
+context; every factual claim must cite a supplied stable evidence ID, and the
+API exposes broad candidates, generation evidence, and citations separately.
+A bounded six-case validation covered two labelled answers, an unanswerable
+question, a partial question, conflicting evidence, and a document prompt
+injection; all six structural checks passed. This is a smoke validation rather
+than Phase 11 answer scoring. See `docs/PHASE10_GROUNDED_GENERATION.md`.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to
