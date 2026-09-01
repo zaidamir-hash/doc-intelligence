@@ -56,7 +56,8 @@ function StatCard({ label, value, icon, color, glow }) {
 }
 
 function Dashboard({ uploadedDocs, queryCount }) {
-  const totalChunks = uploadedDocs.reduce((sum, doc) => sum + (doc.chunks || 0), 0)
+  const readyDocuments = uploadedDocs.filter((doc) => doc.status === "ready")
+  const totalChunks = readyDocuments.reduce((sum, doc) => sum + (doc.chunks_stored || 0), 0)
   const totalPages = uploadedDocs.reduce((sum, doc) => sum + (doc.pages || 0), 0)
 
   return (
@@ -105,7 +106,7 @@ function Dashboard({ uploadedDocs, queryCount }) {
       }}>
         <StatCard
           label="Documents Uploaded"
-          value={uploadedDocs.length}
+          value={readyDocuments.length}
           icon="📁"
           color={theme.colors.accentBlue}
           glow={true}
@@ -197,8 +198,8 @@ function Dashboard({ uploadedDocs, queryCount }) {
               </tr>
             </thead>
             <tbody>
-              {uploadedDocs.map((doc, i) => (
-                <tr key={i} style={{
+              {uploadedDocs.map((doc) => (
+                <tr key={doc.document_id} style={{
                   borderTop: `1px solid ${theme.colors.border}`,
                   transition: "background 0.15s ease",
                 }}>
@@ -223,7 +224,7 @@ function Dashboard({ uploadedDocs, queryCount }) {
                     fontSize: "13px",
                     color: theme.colors.textSecondary,
                   }}>
-                    {doc.chunks}
+                    {doc.chunks_stored}
                   </td>
                   <td style={{
                     padding: "14px 24px",
@@ -234,19 +235,27 @@ function Dashboard({ uploadedDocs, queryCount }) {
                       gap: "6px",
                       padding: "3px 10px",
                       borderRadius: "20px",
-                      backgroundColor: "rgba(16,185,129,0.1)",
-                      border: "1px solid rgba(16,185,129,0.2)",
+                      backgroundColor: doc.status === "ready"
+                        ? "rgba(16,185,129,0.1)"
+                        : doc.status === "processing"
+                          ? "rgba(245,158,11,0.1)"
+                          : "rgba(239,68,68,0.1)",
+                      border: `1px solid ${doc.status === "ready" ? "rgba(16,185,129,0.2)" : "rgba(239,68,68,0.2)"}`,
                       fontSize: "11px",
                       fontWeight: "600",
-                      color: theme.colors.success,
+                      color: doc.status === "ready"
+                        ? theme.colors.success
+                        : doc.status === "processing" ? "#F59E0B" : "#F87171",
                     }}>
                       <div style={{
                         width: "5px",
                         height: "5px",
                         borderRadius: "50%",
-                        backgroundColor: theme.colors.success,
+                        backgroundColor: doc.status === "ready"
+                          ? theme.colors.success
+                          : doc.status === "processing" ? "#F59E0B" : "#F87171",
                       }} />
-                      Indexed
+                      {doc.status === "ready" ? "Indexed" : doc.status}
                     </span>
                   </td>
                 </tr>

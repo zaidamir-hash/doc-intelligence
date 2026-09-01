@@ -13,9 +13,10 @@ from pydantic import BaseModel, Field
 
 from dense_retrieval import token_jaccard
 from reranking import RerankedCandidate, estimate_cost_usd
+from settings import APP_SETTINGS
 
 
-DEFAULT_ANSWER_MODEL = "gpt-4o-mini-2024-07-18"
+DEFAULT_ANSWER_MODEL = APP_SETTINGS.answer_model
 DEFAULT_REQUEST_TIMEOUT_SECONDS = 30.0
 DEFAULT_RELEVANCE_CUTOFF = 2
 DEFAULT_DUPLICATE_SIMILARITY_THRESHOLD = 0.82

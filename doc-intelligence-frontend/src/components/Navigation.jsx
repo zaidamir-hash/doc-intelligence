@@ -6,9 +6,28 @@ const navItems = [
   { id: "query", label: "Query", icon: "💬" },
 ]
 
-function Navigation({ activePage, setActivePage, apiKey, setApiKey }) {
+const statusPresentation = {
+  authenticated: { label: "Connected", color: theme.colors.success },
+  checking: { label: "Checking...", color: "#F59E0B" },
+  invalid: { label: "Not connected", color: "#F87171" },
+  unvalidated: { label: "Not validated", color: "#F59E0B" },
+  disconnected: { label: "Not connected", color: theme.colors.textMuted },
+}
+
+function Navigation({
+  activePage,
+  setActivePage,
+  apiKey,
+  setApiKey,
+  authStatus,
+  authMessage,
+  onConnect,
+  onDisconnect,
+}) {
+  const status = statusPresentation[authStatus] || statusPresentation.disconnected
+
   return (
-    <div style={{
+    <aside style={{
       width: "240px",
       minWidth: "240px",
       height: "100vh",
@@ -16,154 +35,110 @@ function Navigation({ activePage, setActivePage, apiKey, setApiKey }) {
       borderRight: `1px solid ${theme.colors.border}`,
       display: "flex",
       flexDirection: "column",
-      padding: "0",
     }}>
-      {/* Logo */}
-      <div style={{
-        padding: "28px 24px",
-        borderBottom: `1px solid ${theme.colors.border}`,
-      }}>
-        <div style={{
-          fontSize: "22px",
-          fontWeight: "700",
-          letterSpacing: "-0.8px",
-          color: theme.colors.textPrimary,
-        }}>
-          Lex<span style={{
-            color: theme.colors.accentBlue,
-            position: "relative",
-          }}>is</span>
+      <div style={{ padding: "28px 24px", borderBottom: `1px solid ${theme.colors.border}` }}>
+        <div style={{ fontSize: "22px", fontWeight: "700", color: theme.colors.textPrimary }}>
+          Lex<span style={{ color: theme.colors.accentBlue }}>is</span>
         </div>
-        <div style={{
-          fontSize: "11px",
-          color: theme.colors.textMuted,
-          marginTop: "4px",
-          letterSpacing: "0.5px",
-        }}>
+        <div style={{ fontSize: "11px", color: theme.colors.textMuted, marginTop: "4px" }}>
           Document Intelligence
         </div>
       </div>
 
-      {/* Nav Items */}
-      <nav style={{
-        padding: "16px 12px",
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-      }}>
-        {navItems.map(item => (
+      <nav style={{ padding: "16px 12px", flex: 1 }}>
+        {navItems.map((item) => (
           <button
+            type="button"
             key={item.id}
             onClick={() => setActivePage(item.id)}
             style={{
               display: "flex",
-              alignItems: "center",
               gap: "12px",
+              alignItems: "center",
+              width: "100%",
               padding: "10px 12px",
+              marginBottom: "4px",
               borderRadius: theme.radius.md,
               border: "none",
-              cursor: "pointer",
+              borderLeft: activePage === item.id
+                ? `2px solid ${theme.colors.accentBlue}`
+                : "2px solid transparent",
               backgroundColor: activePage === item.id
                 ? theme.colors.accentGlow
                 : "transparent",
               color: activePage === item.id
                 ? theme.colors.accentBlue
                 : theme.colors.textSecondary,
-              fontSize: "14px",
-              fontWeight: activePage === item.id ? "600" : "400",
+              cursor: "pointer",
               fontFamily: theme.fonts.sans,
-              textAlign: "left",
-              width: "100%",
-              transition: "all 0.15s ease",
-              borderLeft: activePage === item.id
-                ? `2px solid ${theme.colors.accentBlue}`
-                : "2px solid transparent",
+              fontWeight: activePage === item.id ? "600" : "400",
             }}
           >
-            <span style={{ fontSize: "16px" }}>{item.icon}</span>
-            {item.label}
+            <span>{item.icon}</span>{item.label}
           </button>
         ))}
       </nav>
 
-      {/* API Key Section */}
-      <div style={{
-        padding: "16px",
-        borderTop: `1px solid ${theme.colors.border}`,
-      }}>
-        <div style={{
+      <div style={{ padding: "16px", borderTop: `1px solid ${theme.colors.border}` }}>
+        <label htmlFor="api-key" style={{
+          display: "block",
           fontSize: "10px",
           fontWeight: "600",
           color: theme.colors.textMuted,
           textTransform: "uppercase",
-          letterSpacing: "1px",
           marginBottom: "8px",
         }}>
-          API Key
-        </div>
+          Backend API Key
+        </label>
         <input
+          id="api-key"
           type="password"
+          autoComplete="off"
           placeholder="Enter API key"
           value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          onChange={(event) => setApiKey(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") onConnect()
+          }}
           style={{
             width: "100%",
+            boxSizing: "border-box",
             padding: "9px 12px",
             backgroundColor: theme.colors.bg,
             border: `1px solid ${theme.colors.border}`,
             borderRadius: theme.radius.sm,
             color: theme.colors.textPrimary,
-            fontSize: "12px",
-            outline: "none",
-            fontFamily: theme.fonts.mono,
-            boxSizing: "border-box",
           }}
         />
-        {/* Status indicator */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          marginTop: "8px",
-        }}>
-          <div style={{
-            width: "6px",
-            height: "6px",
-            borderRadius: "50%",
-            backgroundColor: apiKey.trim() ? theme.colors.success : theme.colors.textMuted,
-            boxShadow: apiKey.trim() ? `0 0 6px ${theme.colors.success}` : "none",
-            transition: "all 0.3s ease",
-          }} />
-          <span style={{
-            fontSize: "11px",
-            color: apiKey.trim() ? theme.colors.success : theme.colors.textMuted,
-          }}>
-            {apiKey.trim() ? "Connected" : "Not connected"}
-          </span>
+        <button
+          type="button"
+          onClick={authStatus === "authenticated" ? onDisconnect : onConnect}
+          disabled={authStatus === "checking"}
+          style={{
+            width: "100%",
+            marginTop: "8px",
+            padding: "8px",
+            borderRadius: theme.radius.sm,
+            border: `1px solid ${theme.colors.accentBlue}`,
+            backgroundColor: theme.colors.accentGlow,
+            color: theme.colors.accentBlue,
+            cursor: authStatus === "checking" ? "wait" : "pointer",
+            fontWeight: "600",
+          }}
+        >
+          {authStatus === "authenticated" ? "Disconnect" : "Connect"}
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "9px" }}>
+          <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: status.color }} />
+          <span style={{ fontSize: "11px", color: status.color }}>{status.label}</span>
         </div>
+        {authMessage && (
+          <div style={{ fontSize: "10px", color: theme.colors.textMuted, marginTop: "5px", lineHeight: "1.4" }}>
+            {authMessage}
+          </div>
+        )}
       </div>
-
-      {/* Footer */}
-      <div style={{
-        padding: "12px 16px",
-        borderTop: `1px solid ${theme.colors.border}`,
-        fontSize: "10px",
-        color: theme.colors.textMuted,
-        display: "flex",
-        alignItems: "center",
-        gap: "6px",
-      }}>
-        <div style={{
-          width: "6px",
-          height: "6px",
-          borderRadius: "50%",
-          backgroundColor: theme.colors.success,
-          boxShadow: `0 0 6px ${theme.colors.success}`,
-        }} />
-        System operational
-      </div>
-    </div>
+    </aside>
   )
 }
 

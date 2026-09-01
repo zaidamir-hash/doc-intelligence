@@ -2,10 +2,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 
+from settings import APP_SETTINGS
+
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-EMBEDDING_MODEL = "text-embedding-3-small"
+EMBEDDING_MODEL = APP_SETTINGS.embedding_model
 
 
 def get_embeddings(

@@ -469,7 +469,16 @@ class GroundedAnswerTests(unittest.TestCase):
 class QueryPipelineTests(unittest.TestCase):
     def test_reranker_failure_cannot_send_unscored_candidates_to_generation(self) -> None:
         fused = candidate(1)
-        retrieval = SimpleNamespace(fused_candidates=(fused,))
+        retrieval = SimpleNamespace(
+            fused_candidates=(fused,),
+            expansion=SimpleNamespace(
+                original_query="What happened?",
+                generated_query=None,
+                expanded_query=None,
+                used_expansion=False,
+                fallback_reason="RuntimeError: provider secret detail",
+            ),
+        )
         fallback = reranked(fused, score=None)
 
         def retrieve(_question, _db, _filename, **_kwargs):
@@ -497,6 +506,9 @@ class QueryPipelineTests(unittest.TestCase):
         self.assertEqual(result.context.evidence, ())
         self.assertEqual(result.answer.status, "insufficient_evidence")
         self.assertEqual(result.answer.usage.requests, 0)
+        response = build_query_response("What happened?", result)
+        self.assertNotIn("service unavailable", str(response))
+        self.assertNotIn("provider secret detail", str(response))
 
     def test_api_response_separates_candidates_evidence_and_citations(self) -> None:
         first = candidate(1, page=7, passage="Evidence sent to the model.")
@@ -558,6 +570,17 @@ class QueryPipelineTests(unittest.TestCase):
         self.assertFalse(
             response["retrieval_candidates"][1]["selected_for_generation"]
         )
+
+        normal_response = build_query_response(
+            "What happened?",
+            result,
+            document_id="document-1",
+            include_debug=False,
+        )
+        self.assertEqual(normal_response["document_id"], "document-1")
+        self.assertNotIn("retrieval_candidates", normal_response)
+        self.assertNotIn("diagnostics", normal_response)
+        self.assertEqual(normal_response["citations"][0]["page_start"], 7)
 
 
 if __name__ == "__main__":

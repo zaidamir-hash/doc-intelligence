@@ -24,15 +24,16 @@ from reranking import (
     RerankResult,
     rerank_candidates,
 )
+from settings import APP_SETTINGS
 
 
-DEFAULT_DENSE_CANDIDATE_K = 20
-DEFAULT_LEXICAL_CANDIDATE_K = 20
-DEFAULT_RRF_K = 10
-DEFAULT_RERANK_K = 10
-DEFAULT_FINAL_EVIDENCE_K = 5
-DEFAULT_RELEVANCE_CUTOFF = 2
-DEFAULT_RERANKER_BATCH_SIZE = 5
+DEFAULT_DENSE_CANDIDATE_K = APP_SETTINGS.dense_candidate_k
+DEFAULT_LEXICAL_CANDIDATE_K = APP_SETTINGS.lexical_candidate_k
+DEFAULT_RRF_K = APP_SETTINGS.rrf_k
+DEFAULT_RERANK_K = APP_SETTINGS.rerank_k
+DEFAULT_FINAL_EVIDENCE_K = APP_SETTINGS.final_evidence_k
+DEFAULT_RELEVANCE_CUTOFF = APP_SETTINGS.relevance_cutoff
+DEFAULT_RERANKER_BATCH_SIZE = APP_SETTINGS.reranker_batch_size
 
 
 @dataclass(frozen=True)
@@ -124,8 +125,13 @@ def answer_document_question(
 def build_query_response(
     question: str,
     result: GroundedQueryResult,
+    *,
+    document_id: str | None = None,
+    retrieval_mode: str = "hybrid_rrf_rerank_expansion",
+    include_debug: bool = True,
+    retrieval_configuration: dict[str, object] | None = None,
 ) -> dict[str, object]:
-    """Expose broad candidates separately from evidence sent to generation."""
+    """Build the normal answer contract and optional learning diagnostics."""
 
     cited_source_ids = {
         citation.source_id for citation in result.answer.citations
@@ -154,8 +160,27 @@ def build_query_response(
         (item.document_id, item.chunk_content_hash)
         for item in result.context.evidence
     }
-    retrieval_candidates = [
-        {
+    relevance_cutoff = (
+        retrieval_configuration.get("relevance_cutoff")
+        if retrieval_configuration
+        else DEFAULT_RELEVANCE_CUTOFF
+    )
+    retrieval_candidates = []
+    for item in result.reranking.ranked_candidates:
+        selected = (
+            item.candidate.document_id,
+            item.candidate.chunk_content_hash,
+        ) in evidence_identities
+        if selected:
+            relevance_decision = "selected_evidence"
+        elif item.reranker_score is None:
+            relevance_decision = "unscored_fallback"
+        elif item.reranker_score < relevance_cutoff:
+            relevance_decision = "below_relevance_cutoff"
+        else:
+            relevance_decision = "eligible_not_selected"
+        retrieval_candidates.append(
+            {
             "document_id": item.candidate.document_id,
             "document_content_hash": item.candidate.document_content_hash,
             "chunk_id": item.candidate.chunk_id,
@@ -165,19 +190,29 @@ def build_query_response(
             "page_start": item.candidate.page_start,
             "page_end": item.candidate.page_end,
             "section_title": item.candidate.section_title,
+            "dense_rank": item.candidate.dense_rank,
+            "dense_similarity": item.candidate.dense_similarity,
+            "lexical_rank": item.candidate.lexical_rank,
+            "lexical_score": item.candidate.lexical_score,
             "fused_rank": item.candidate.fused_rank,
+            "fused_score": item.candidate.fused_score,
+            "expanded_dense_rank": getattr(
+                item.candidate, "expanded_dense_rank", None
+            ),
+            "expanded_lexical_rank": getattr(
+                item.candidate, "expanded_lexical_rank", None
+            ),
             "reranked_rank": item.final_rank,
             "reranker_score": item.reranker_score,
-            "selected_for_generation": (
-                item.candidate.document_id,
-                item.candidate.chunk_content_hash,
-            )
-            in evidence_identities,
+            "selected_for_generation": selected,
+            "relevance_decision": relevance_decision,
         }
-        for item in result.reranking.ranked_candidates
-    ]
-    return {
+        )
+
+    response: dict[str, object] = {
         "question": question,
+        "document_id": document_id,
+        "retrieval_mode": retrieval_mode,
         "status": result.answer.status,
         "answer": result.answer.answer,
         "refusal_reason": result.answer.refusal_reason,
@@ -211,17 +246,32 @@ def build_query_response(
         # Compatibility alias for the current frontend. These are only the
         # passages sent to generation, never every broad candidate.
         "sources": evidence,
-        "retrieval_candidates": retrieval_candidates,
-        "diagnostics": {
+    }
+    if include_debug:
+        expansion_fallback = result.retrieval.expansion.fallback_reason
+        if expansion_fallback and expansion_fallback != "expansion disabled":
+            expansion_fallback = (
+                "Expansion was rejected or failed; the original query was used."
+            )
+        response["retrieval_candidates"] = retrieval_candidates
+        response["retrieval_configuration"] = retrieval_configuration or {
+            "active_mode": retrieval_mode,
+            "relevance_cutoff": relevance_cutoff,
+        }
+        response["diagnostics"] = {
             "query_expansion": {
                 "original_query": result.retrieval.expansion.original_query,
                 "generated_query": result.retrieval.expansion.generated_query,
                 "expanded_query": result.retrieval.expansion.expanded_query,
                 "used_expansion": result.retrieval.expansion.used_expansion,
-                "fallback_reason": result.retrieval.expansion.fallback_reason,
+                "fallback_reason": expansion_fallback,
             },
             "reranker_used_fallback": result.reranking.used_fallback,
-            "reranker_fallback_error": result.reranking.fallback_error,
+            "reranker_fallback_error": (
+                "Reranking failed; fused order was retained."
+                if result.reranking.fallback_error
+                else None
+            ),
             "suppressed_evidence": [
                 {
                     "chunk_id": item.chunk_id,
@@ -233,7 +283,11 @@ def build_query_response(
                 for item in result.context.suppressed
             ],
             "generation_used_fallback": result.answer.used_fallback,
-            "generation_fallback_error": result.answer.fallback_error,
+            "generation_fallback_error": (
+                "Answer generation failed; Lexis returned a grounded refusal."
+                if result.answer.fallback_error
+                else None
+            ),
             "rejected_claims": [
                 {
                     "text": claim.text,
@@ -242,5 +296,5 @@ def build_query_response(
                 }
                 for claim in result.answer.rejected_claims
             ],
-        },
-    }
+        }
+    return response

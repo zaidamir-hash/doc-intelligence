@@ -11,9 +11,10 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 
 from hybrid_retrieval import FusedCandidate
+from settings import APP_SETTINGS
 
 
-DEFAULT_RERANKER_MODEL = "gpt-4o-mini-2024-07-18"
+DEFAULT_RERANKER_MODEL = APP_SETTINGS.reranker_model
 DEFAULT_REQUEST_TIMEOUT_SECONDS = 30.0
 INPUT_USD_PER_MILLION_TOKENS = 0.15
 OUTPUT_USD_PER_MILLION_TOKENS = 0.60

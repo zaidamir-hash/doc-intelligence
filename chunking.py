@@ -11,6 +11,7 @@ from statistics import mean
 import tiktoken
 
 from pdf_processing import ExtractedPage, ExtractionResult
+from settings import APP_SETTINGS
 
 
 TOKENIZER_ENCODING = "cl100k_base"
@@ -45,9 +46,10 @@ class ChunkingConfig:
 
 
 PRODUCTION_CHUNK_CONFIG = ChunkingConfig(
-    max_tokens=200,
-    overlap_tokens=30,
-    min_chunk_tokens=40,
+    max_tokens=APP_SETTINGS.chunk_max_tokens,
+    overlap_tokens=APP_SETTINGS.chunk_overlap_tokens,
+    min_chunk_tokens=APP_SETTINGS.chunk_min_tokens,
+    encoding_name=APP_SETTINGS.chunk_encoding_name,
 )
 
 

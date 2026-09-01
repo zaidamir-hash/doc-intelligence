@@ -1,366 +1,223 @@
-import { useState, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
-import axios from "axios"
+import {
+  apiErrorMessage,
+  deleteIndexedDocument,
+  uploadPdf,
+} from "../api"
 import { theme } from "../styles/theme"
 
-const API_URL = "http://127.0.0.1:8000"
+const statusStyles = {
+  ready: { label: "Indexed", color: "#10B981", background: "rgba(16,185,129,0.1)" },
+  processing: { label: "Processing", color: "#F59E0B", background: "rgba(245,158,11,0.1)" },
+  failed: { label: "Failed", color: "#F87171", background: "rgba(239,68,68,0.1)" },
+}
 
-function Documents({ apiKey, uploadedDocs, setUploadedDocs }) {
+function Documents({
+  apiKey,
+  authenticated,
+  uploadedDocs,
+  documentsLoading,
+  documentsError,
+  onRefresh,
+  onQuery,
+}) {
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState("")
   const [uploadSuccess, setUploadSuccess] = useState("")
+  const [pendingDeleteId, setPendingDeleteId] = useState("")
+  const [deleteError, setDeleteError] = useState("")
+
+  useEffect(() => {
+    if (!uploading) return undefined
+    const timer = window.setInterval(() => {
+      void onRefresh().catch(() => {})
+    }, 1500)
+    return () => window.clearInterval(timer)
+  }, [onRefresh, uploading])
 
   const onDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0]
     if (!file) return
-
-    if (!apiKey.trim()) {
-      setUploadError("Please enter your API key in the sidebar first")
+    if (!authenticated) {
+      setUploadError("Connect with a valid backend API key first.")
       return
     }
 
     setUploading(true)
     setUploadError("")
     setUploadSuccess("")
-
-    const formData = new FormData()
-    formData.append("file", file)
-
     try {
-      const response = await axios.post(`${API_URL}/upload`, formData, {
-        headers: {
-          "X-API-Key": apiKey,
-          "Content-Type": "multipart/form-data"
-        }
-      })
-
-      setUploadedDocs(prev => [...prev, {
-        filename: response.data.filename,
-        pages: response.data.pages,
-        chunks: response.data.chunks_stored
-      }])
-      setUploadSuccess(`Successfully indexed ${response.data.filename} — ${response.data.chunks_stored} chunks created`)
-    } catch (err) {
-      setUploadError(err.response?.data?.detail || "Upload failed")
+      const result = await uploadPdf(apiKey, file)
+      setUploadSuccess(
+        `${result.filename} is indexed with ${result.chunks_stored} chunks.`,
+      )
+    } catch (error) {
+      setUploadError(apiErrorMessage(error, "Upload failed."))
     } finally {
       setUploading(false)
+      try {
+        await onRefresh()
+      } catch {
+        // The shared document-list error already gives the actionable message.
+      }
     }
-  }, [apiKey, setUploadedDocs])
+  }, [apiKey, authenticated, onRefresh])
+
+  const handleDelete = async (documentId) => {
+    setDeleteError("")
+    try {
+      await deleteIndexedDocument(apiKey, documentId)
+      setPendingDeleteId("")
+      await onRefresh()
+    } catch (error) {
+      setDeleteError(apiErrorMessage(error, "Document deletion failed."))
+    }
+  }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { "application/pdf": [".pdf"] },
-    maxFiles: 1
+    maxFiles: 1,
+    disabled: uploading,
   })
 
   return (
-    <div style={{
-      flex: 1,
-      overflowY: "auto",
-      padding: "32px 40px",
-      backgroundColor: theme.colors.bg,
-    }}>
-      {/* Header */}
-      <div style={{ marginBottom: "32px" }}>
-        <div style={{
-          fontSize: "11px",
-          fontWeight: "600",
-          color: theme.colors.accentBlue,
-          textTransform: "uppercase",
-          letterSpacing: "1.5px",
-          marginBottom: "8px",
-        }}>
+    <div style={{ flex: 1, overflowY: "auto", padding: "32px 40px", backgroundColor: theme.colors.bg }}>
+      <div style={{ marginBottom: "24px" }}>
+        <div style={{ fontSize: "11px", color: theme.colors.accentBlue, textTransform: "uppercase", letterSpacing: "1.5px" }}>
           Knowledge Base
         </div>
-        <h1 style={{
-          fontSize: "28px",
-          fontWeight: "700",
-          color: theme.colors.textPrimary,
-          letterSpacing: "-0.8px",
-          margin: 0,
-        }}>
-          Documents
-        </h1>
-        <p style={{
-          fontSize: "14px",
-          color: theme.colors.textSecondary,
-          marginTop: "6px",
-        }}>
-          Upload and manage your document knowledge base
+        <h1 style={{ color: theme.colors.textPrimary, margin: "8px 0 6px" }}>Documents</h1>
+        <p style={{ color: theme.colors.textSecondary, margin: 0 }}>
+          The backend database is the source of truth for every row below.
         </p>
       </div>
 
-      {/* Upload Zone */}
-      <div
-        {...getRootProps()}
-        style={{
-          border: `2px dashed ${isDragActive ? theme.colors.accentBlue : theme.colors.border}`,
-          borderRadius: theme.radius.xl,
-          padding: "48px 32px",
-          textAlign: "center",
-          cursor: "pointer",
-          backgroundColor: isDragActive ? theme.colors.accentGlow : theme.colors.surface,
-          transition: "all 0.2s ease",
-          marginBottom: "24px",
-          boxShadow: isDragActive ? theme.shadows.glow : "none",
-        }}
-      >
-        <input {...getInputProps()} />
-        <div style={{ fontSize: "40px", marginBottom: "16px" }}>
-          {uploading ? "⏳" : isDragActive ? "📂" : "📄"}
-        </div>
-        <div style={{
-          fontSize: "16px",
-          fontWeight: "600",
-          color: isDragActive ? theme.colors.accentBlue : theme.colors.textPrimary,
-          marginBottom: "8px",
-        }}>
-          {uploading
-            ? "Processing document..."
-            : isDragActive
-            ? "Release to upload"
-            : "Drop your PDF here"}
-        </div>
-        <div style={{
-          fontSize: "13px",
-          color: theme.colors.textSecondary,
-          marginBottom: "20px",
-        }}>
-          {uploading
-            ? "Extracting text, generating embeddings and indexing chunks"
-            : "or click to browse files"}
-        </div>
-        {!uploading && (
-          <div style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "8px 20px",
-            backgroundColor: theme.colors.accentGlow,
-            border: `1px solid ${theme.colors.accentBlue}`,
-            borderRadius: theme.radius.md,
-            fontSize: "13px",
-            fontWeight: "600",
-            color: theme.colors.accentBlue,
-          }}>
-            Browse Files
-          </div>
-        )}
-
-        {uploading && (
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "6px",
-            marginTop: "8px",
-          }}>
-            {[0, 1, 2].map(i => (
-              <div key={i} style={{
-                width: "8px",
-                height: "8px",
-                backgroundColor: theme.colors.accentBlue,
-                borderRadius: "50%",
-                animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite`
-              }} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Error / Success Messages */}
-      {uploadError && (
-        <div style={{
-          padding: "12px 16px",
-          backgroundColor: "rgba(239,68,68,0.08)",
-          border: "1px solid rgba(239,68,68,0.2)",
-          borderRadius: theme.radius.md,
-          fontSize: "13px",
-          color: "#F87171",
-          marginBottom: "16px",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-        }}>
-          ⚠️ {uploadError}
-        </div>
-      )}
-
-      {uploadSuccess && (
-        <div style={{
-          padding: "12px 16px",
-          backgroundColor: "rgba(16,185,129,0.08)",
-          border: "1px solid rgba(16,185,129,0.2)",
-          borderRadius: theme.radius.md,
-          fontSize: "13px",
-          color: theme.colors.success,
-          marginBottom: "16px",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-        }}>
-          ✅ {uploadSuccess}
-        </div>
-      )}
-
-      {/* Documents Table */}
-      <div style={{
-        backgroundColor: theme.colors.surface,
-        border: `1px solid ${theme.colors.border}`,
-        borderRadius: theme.radius.lg,
-        overflow: "hidden",
+      <div {...getRootProps()} style={{
+        border: `2px dashed ${isDragActive ? theme.colors.accentBlue : theme.colors.border}`,
+        borderRadius: theme.radius.xl,
+        padding: "38px 24px",
+        textAlign: "center",
+        cursor: uploading ? "wait" : "pointer",
+        backgroundColor: isDragActive ? theme.colors.accentGlow : theme.colors.surface,
+        marginBottom: "18px",
       }}>
-        <div style={{
-          padding: "20px 24px",
-          borderBottom: `1px solid ${theme.colors.border}`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}>
-          <div style={{
-            fontSize: "14px",
-            fontWeight: "600",
-            color: theme.colors.textPrimary,
-          }}>
-            Indexed Documents
-          </div>
-          <div style={{
-            padding: "4px 12px",
-            backgroundColor: theme.colors.accentGlow,
-            border: `1px solid ${theme.colors.accentBlue}`,
-            borderRadius: "20px",
-            fontSize: "12px",
-            fontWeight: "600",
-            color: theme.colors.accentBlue,
-          }}>
-            {uploadedDocs.length} documents
-          </div>
+        <input {...getInputProps()} />
+        <div style={{ fontSize: "34px", marginBottom: "10px" }}>{uploading ? "⏳" : "📄"}</div>
+        <div style={{ color: theme.colors.textPrimary, fontWeight: "600" }}>
+          {uploading ? "Extracting, chunking, embedding, and indexing..." : "Drop one PDF here or click to browse"}
         </div>
-
-        {uploadedDocs.length === 0 ? (
-          <div style={{
-            padding: "64px 24px",
-            textAlign: "center",
-          }}>
-            <div style={{ fontSize: "40px", marginBottom: "12px" }}>📭</div>
-            <div style={{
-              fontSize: "15px",
-              fontWeight: "600",
-              color: theme.colors.textSecondary,
-              marginBottom: "6px",
-            }}>
-              No documents indexed yet
-            </div>
-            <div style={{
-              fontSize: "13px",
-              color: theme.colors.textMuted,
-            }}>
-              Upload a PDF above to get started
-            </div>
-          </div>
-        ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ backgroundColor: theme.colors.surfaceElevated }}>
-                {["Document", "Pages", "Chunks", "Status", "Action"].map(h => (
-                  <th key={h} style={{
-                    padding: "12px 24px",
-                    textAlign: "left",
-                    fontSize: "11px",
-                    fontWeight: "600",
-                    color: theme.colors.textMuted,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.8px",
-                  }}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {uploadedDocs.map((doc, i) => (
-                <tr key={i} style={{
-                  borderTop: `1px solid ${theme.colors.border}`,
-                }}>
-                  <td style={{
-                    padding: "16px 24px",
-                    fontSize: "13px",
-                    color: theme.colors.textPrimary,
-                    fontWeight: "500",
-                    fontFamily: theme.fonts.mono,
-                  }}>
-                    📄 {doc.filename}
-                  </td>
-                  <td style={{
-                    padding: "16px 24px",
-                    fontSize: "13px",
-                    color: theme.colors.textSecondary,
-                  }}>
-                    {doc.pages}
-                  </td>
-                  <td style={{
-                    padding: "16px 24px",
-                    fontSize: "13px",
-                    color: theme.colors.textSecondary,
-                  }}>
-                    {doc.chunks}
-                  </td>
-                  <td style={{
-                    padding: "16px 24px",
-                  }}>
-                    <span style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "3px 10px",
-                      borderRadius: "20px",
-                      backgroundColor: "rgba(16,185,129,0.1)",
-                      border: "1px solid rgba(16,185,129,0.2)",
-                      fontSize: "11px",
-                      fontWeight: "600",
-                      color: theme.colors.success,
-                    }}>
-                      <div style={{
-                        width: "5px",
-                        height: "5px",
-                        borderRadius: "50%",
-                        backgroundColor: theme.colors.success,
-                        boxShadow: `0 0 4px ${theme.colors.success}`,
-                      }} />
-                      Indexed
-                    </span>
-                  </td>
-                  <td style={{
-                    padding: "16px 24px",
-                  }}>
-                    <button style={{
-                      padding: "5px 14px",
-                      backgroundColor: theme.colors.accentGlow,
-                      border: `1px solid ${theme.colors.accentBlue}`,
-                      borderRadius: theme.radius.sm,
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      color: theme.colors.accentBlue,
-                      cursor: "pointer",
-                      fontFamily: theme.fonts.sans,
-                    }}>
-                      Query →
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+        <div style={{ color: theme.colors.textMuted, fontSize: "12px", marginTop: "7px" }}>
+          Scanned/image-only PDFs need OCR, which is not enabled.
+        </div>
       </div>
 
-      <style>{`
-        @keyframes bounce {
-          0%, 60%, 100% { transform: translateY(0); }
-          30% { transform: translateY(-8px); }
-        }
-      `}</style>
+      {(uploadError || uploadSuccess || deleteError || documentsError) && (
+        <div role="alert" style={{
+          padding: "11px 14px",
+          borderRadius: theme.radius.md,
+          marginBottom: "16px",
+          backgroundColor: uploadSuccess ? "rgba(16,185,129,0.08)" : "rgba(239,68,68,0.08)",
+          color: uploadSuccess ? theme.colors.success : "#F87171",
+          fontSize: "13px",
+        }}>
+          {uploadError || deleteError || documentsError || uploadSuccess}
+        </div>
+      )}
+
+      <section style={{ backgroundColor: theme.colors.surface, border: `1px solid ${theme.colors.border}`, borderRadius: theme.radius.lg, overflow: "hidden" }}>
+        <div style={{ padding: "18px 22px", display: "flex", justifyContent: "space-between", borderBottom: `1px solid ${theme.colors.border}` }}>
+          <strong style={{ color: theme.colors.textPrimary }}>Current documents</strong>
+          <button type="button" onClick={() => void onRefresh()} disabled={!authenticated || documentsLoading} style={{
+            border: `1px solid ${theme.colors.border}`,
+            borderRadius: theme.radius.sm,
+            background: theme.colors.surfaceElevated,
+            color: theme.colors.textSecondary,
+            padding: "6px 10px",
+            cursor: "pointer",
+          }}>
+            {documentsLoading ? "Refreshing..." : `Refresh · ${uploadedDocs.length}`}
+          </button>
+        </div>
+
+        {!authenticated ? (
+          <EmptyState text="Connect with a validated API key to restore indexed documents." />
+        ) : uploadedDocs.length === 0 ? (
+          <EmptyState text={documentsLoading ? "Loading documents..." : "No current documents are indexed."} />
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ backgroundColor: theme.colors.surfaceElevated }}>
+                  {["Document", "Pages", "Chunks", "Status", "Actions"].map((heading) => (
+                    <th key={heading} style={{ padding: "11px 18px", textAlign: "left", fontSize: "11px", color: theme.colors.textMuted }}>
+                      {heading}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {uploadedDocs.map((document) => {
+                  const status = statusStyles[document.status] || statusStyles.failed
+                  return (
+                    <tr key={document.document_id} style={{ borderTop: `1px solid ${theme.colors.border}` }}>
+                      <td style={{ padding: "14px 18px", color: theme.colors.textPrimary, fontFamily: theme.fonts.mono, fontSize: "12px" }}>
+                        {document.filename}
+                        {document.processing_error && (
+                          <div style={{ color: "#F87171", fontFamily: theme.fonts.sans, marginTop: "5px" }}>
+                            {document.processing_error}
+                          </div>
+                        )}
+                      </td>
+                      <td style={cellStyle}>{document.pages}</td>
+                      <td style={cellStyle}>{document.chunks_stored}</td>
+                      <td style={cellStyle}>
+                        <span style={{ padding: "4px 9px", borderRadius: "20px", color: status.color, backgroundColor: status.background, fontWeight: "600", fontSize: "11px" }}>
+                          {status.label}
+                        </span>
+                      </td>
+                      <td style={{ ...cellStyle, whiteSpace: "nowrap" }}>
+                        <button type="button" disabled={document.status !== "ready"} onClick={() => onQuery(document.document_id)} style={actionStyle(document.status === "ready")}>
+                          Query →
+                        </button>
+                        {pendingDeleteId === document.document_id ? (
+                          <>
+                            <button type="button" onClick={() => void handleDelete(document.document_id)} style={dangerStyle}>Confirm delete</button>
+                            <button type="button" onClick={() => setPendingDeleteId("")} style={plainStyle}>Cancel</button>
+                          </>
+                        ) : (
+                          <button type="button" disabled={document.status === "processing"} onClick={() => setPendingDeleteId(document.document_id)} style={plainStyle}>
+                            Delete
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </div>
   )
 }
+
+function EmptyState({ text }) {
+  return <div style={{ padding: "48px", textAlign: "center", color: theme.colors.textMuted }}>{text}</div>
+}
+
+const cellStyle = { padding: "14px 18px", color: "#9CA3AF", fontSize: "13px" }
+const plainStyle = { marginLeft: "7px", padding: "5px 9px", border: "1px solid #1E2D4A", borderRadius: "5px", color: "#9CA3AF", background: "transparent", cursor: "pointer" }
+const dangerStyle = { ...plainStyle, color: "#F87171", borderColor: "rgba(239,68,68,0.5)" }
+const actionStyle = (enabled) => ({
+  padding: "5px 10px",
+  border: "1px solid #3B82F6",
+  borderRadius: "5px",
+  color: enabled ? "#3B82F6" : "#4B5563",
+  background: "rgba(59,130,246,0.08)",
+  cursor: enabled ? "pointer" : "not-allowed",
+})
 
 export default Documents

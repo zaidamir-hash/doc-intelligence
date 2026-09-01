@@ -502,38 +502,38 @@ Expose the advanced pipeline accurately and make retrieval behavior inspectable 
 
 #### Backend/API
 
-- [ ] Add a persistent document-list endpoint.
-- [ ] Add a document-delete endpoint with clear database and UI behavior.
-- [ ] Expose document processing/indexing status.
-- [ ] Use stable document IDs rather than filename-only selection.
-- [ ] Add a retrieval debug mode or dedicated diagnostics endpoint.
-- [ ] Expose configured retrieval mode: dense, lexical, hybrid, hybrid plus reranking, and expansion where useful for learning/ablation.
-- [ ] Return page-aware selected evidence and citations.
-- [ ] Centralize configurable API, model, chunking, retrieval, and threshold settings.
-- [ ] Add better filename/content-type/file-size validation and safer error messages.
-- [ ] Define behavior for scanned/image-only PDFs clearly.
-- [ ] Keep rate limiting and API-key protection, but make configuration explicit.
+- [x] Add a persistent document-list endpoint.
+- [x] Add a document-delete endpoint with clear database and UI behavior.
+- [x] Expose document processing/indexing status.
+- [x] Use stable document IDs rather than filename-only selection.
+- [x] Add a retrieval debug mode or dedicated diagnostics endpoint.
+- [x] Expose configured retrieval mode: dense, lexical, hybrid, hybrid plus reranking, and expansion where useful for learning/ablation.
+- [x] Return page-aware selected evidence and citations.
+- [x] Centralize configurable API, model, chunking, retrieval, and threshold settings.
+- [x] Add better filename/content-type/file-size validation and safer error messages.
+- [x] Define behavior for scanned/image-only PDFs clearly.
+- [x] Keep rate limiting and API-key protection, but make configuration explicit.
 
 #### Frontend
 
-- [ ] Restore indexed documents from the backend after refresh.
-- [ ] Fix the query counter so successful queries increment it.
-- [ ] Make the Documents table's `Query →` action select the document and navigate to Query.
-- [ ] Prevent duplicate document rows after re-upload.
-- [ ] Validate the API key against the backend rather than treating any non-empty value as connected.
-- [ ] Display processing, failure, and indexed states accurately.
-- [ ] Display page-aware citations and selected evidence.
-- [ ] Add an optional learning/debug panel showing dense rank, lexical rank, fused rank, reranker score, relevance decision, and query expansions.
-- [ ] Show the active retrieval mode/configuration in debug mode.
-- [ ] Avoid exposing secrets in logs, state diagnostics, or error messages.
+- [x] Restore indexed documents from the backend after refresh.
+- [x] Fix the query counter so successful queries increment it.
+- [x] Make the Documents table's `Query →` action select the document and navigate to Query.
+- [x] Prevent duplicate document rows after re-upload.
+- [x] Validate the API key against the backend rather than treating any non-empty value as connected.
+- [x] Display processing, failure, and indexed states accurately.
+- [x] Display page-aware citations and selected evidence.
+- [x] Add an optional learning/debug panel showing dense rank, lexical rank, fused rank, reranker score, relevance decision, and query expansions.
+- [x] Show the active retrieval mode/configuration in debug mode.
+- [x] Avoid exposing secrets in logs, state diagnostics, or error messages.
 
 ### Acceptance criteria
 
-- [ ] Refreshing the frontend does not lose the list of indexed documents.
-- [ ] Re-upload, deletion, navigation, query count, and API-key state behave consistently with backend state.
-- [ ] Users can trace a displayed answer to page-aware evidence.
-- [ ] Debug mode explains the retrieval path without being required for normal use.
-- [ ] API validation and errors are safe and actionable.
+- [x] Refreshing the frontend does not lose the list of indexed documents.
+- [x] Re-upload, deletion, navigation, query count, and API-key state behave consistently with backend state.
+- [x] Users can trace a displayed answer to page-aware evidence.
+- [x] Debug mode explains the retrieval path without being required for normal use.
+- [x] API validation and errors are safe and actionable.
 
 ### Dependencies
 

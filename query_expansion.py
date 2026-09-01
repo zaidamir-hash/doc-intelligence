@@ -11,9 +11,10 @@ from openai import OpenAI
 from pydantic import BaseModel, Field
 
 from reranking import estimate_cost_usd
+from settings import APP_SETTINGS
 
 
-DEFAULT_EXPANSION_MODEL = "gpt-4o-mini-2024-07-18"
+DEFAULT_EXPANSION_MODEL = APP_SETTINGS.expansion_model
 DEFAULT_REQUEST_TIMEOUT_SECONDS = 30.0
 MAX_EXPANSION_CHARACTERS = 500
 
