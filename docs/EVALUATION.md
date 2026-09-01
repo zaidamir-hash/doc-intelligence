@@ -49,6 +49,19 @@ question, a partial question, conflicting evidence, and a document prompt
 injection; all six structural checks passed. This is a smoke validation rather
 than Phase 11 answer scoring. See `docs/PHASE10_GROUNDED_GENERATION.md`.
 
+Phase 11 adds a separate, versioned answer-quality evaluation over six bounded
+cases: indexed answerable/unanswerable questions plus controlled partial and
+conflicting evidence. Fixed gold facts and stable evidence—not an LLM
+judge—score correctness, faithfulness, citation accuracy, completeness,
+refusal accuracy, and unsupported-claim rate independently. The JSON report
+preserves exact generation passages, raw outputs, grader checks, configurations,
+and stage traces locally; it is intentionally Git-ignored because it contains
+uploaded-document text. The versioned Markdown report keeps the non-sensitive
+summary. Run `01903932da6b` recorded retrieval success `1.0000` and
+answer success `0.8333` (5/6); one answer-model timeout was correctly classified
+as generation after successful retrieval, and unsupported-claim rate was
+`0.0000`. See `docs/PHASE11_ANSWER_EVALUATION.md`.
+
 ## Baseline history and limitation
 
 The repository did not contain the questions or complete human labels used to

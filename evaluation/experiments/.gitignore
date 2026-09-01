@@ -1,0 +1,3 @@
+# Phase 11 stores complete passages sent to the answer model. Keep this raw
+# reproducibility artifact local so uploaded-document content is not published.
+phase11_answer_evaluation.json

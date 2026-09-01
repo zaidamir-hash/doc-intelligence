@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "name": "lexis-phase11-answer-quality-v1",
+  "description": "A bounded answer-quality set with fixed gold facts and evidence for three indexed questions plus controlled unanswerable, partial, and conflicting-evidence behavior.",
+  "split": "test",
+  "source_retrieval_dataset": "evaluation/datasets/phase3.json",
+  "label_policy": "Gold facts and stable evidence hashes were fixed from the existing human-labelled Phase 3 retrieval set before the Phase 11 answer run. Synthetic cases use fixed passages solely to isolate partial and conflicting generation behavior.",
+  "cases": [
+    {
+      "id": "gov-public-debt-ratio",
+      "run_mode": "pipeline",
+      "case_type": "answerable",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "How did Pakistan's public debt-to-GDP ratio change from FY24 to FY25?",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "reference_answer": "It rose from 67.7 percent in FY24 to 70.8 percent in FY25.",
+      "expected_statuses": [
+        "answered"
+      ],
+      "expected_evidence_hashes": [
+        "3c65ed2e3d4bc96bd65a1f52caa9f505a2924ce697dfc8bb5b1afd97be54bad9"
+      ],
+      "expected_claims": [
+        {
+          "id": "fy24_ratio",
+          "description": "The public debt-to-GDP ratio was 67.7 percent in FY24.",
+          "required": true,
+          "term_groups": [
+            ["67.7"],
+            ["FY24", "fiscal year 2024"]
+          ],
+          "evidence_hashes": [
+            "3c65ed2e3d4bc96bd65a1f52caa9f505a2924ce697dfc8bb5b1afd97be54bad9"
+          ]
+        },
+        {
+          "id": "fy25_ratio",
+          "description": "The public debt-to-GDP ratio reached 70.8 percent in FY25.",
+          "required": true,
+          "term_groups": [
+            ["70.8"],
+            ["FY25", "fiscal year 2025"]
+          ],
+          "evidence_hashes": [
+            "3c65ed2e3d4bc96bd65a1f52caa9f505a2924ce697dfc8bb5b1afd97be54bad9"
+          ]
+        },
+        {
+          "id": "increase_reason",
+          "description": "Slower nominal-GDP growth and slight PKR depreciation contributed to the increase.",
+          "required": false,
+          "term_groups": [
+            ["slower growth", "slower nominal GDP growth"],
+            ["nominal GDP"],
+            ["PKR depreciation", "rupee depreciation"]
+          ],
+          "evidence_hashes": [
+            "3c65ed2e3d4bc96bd65a1f52caa9f505a2924ce697dfc8bb5b1afd97be54bad9"
+          ]
+        }
+      ],
+      "synthetic_evidence": [],
+      "tags": ["answerable", "number", "multiple-fact"],
+      "notes": "Optional causal detail is accepted when the model includes it, but the two fiscal-year values are required."
+    },
+    {
+      "id": "gov-january-2025-projections",
+      "run_mode": "pipeline",
+      "case_type": "answerable",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "After the January 2025 revision, what inflation projection range did the MPC adopt, and what real GDP growth range did it maintain?",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "reference_answer": "The MPC revised inflation to 5.5-7.5 percent and maintained real GDP growth at 2.5-3.5 percent.",
+      "expected_statuses": ["answered"],
+      "expected_evidence_hashes": [
+        "b2165fe19eda0a070468dfafa10960fed6fb3f88cd7835d031461ff0d3205e69"
+      ],
+      "expected_claims": [
+        {
+          "id": "inflation_projection",
+          "description": "The revised inflation projection was 5.5-7.5 percent.",
+          "required": true,
+          "term_groups": [
+            ["inflation"],
+            ["5.5"],
+            ["7.5"]
+          ],
+          "evidence_hashes": [
+            "b2165fe19eda0a070468dfafa10960fed6fb3f88cd7835d031461ff0d3205e69"
+          ]
+        },
+        {
+          "id": "gdp_projection",
+          "description": "The maintained real-GDP growth projection was 2.5-3.5 percent.",
+          "required": true,
+          "term_groups": [
+            ["GDP", "gross domestic product"],
+            ["2.5"],
+            ["3.5"]
+          ],
+          "evidence_hashes": [
+            "b2165fe19eda0a070468dfafa10960fed6fb3f88cd7835d031461ff0d3205e69"
+          ]
+        }
+      ],
+      "synthetic_evidence": [],
+      "tags": ["answerable", "multiple-fact", "completeness"],
+      "notes": "Both requested ranges are required, which lets completeness differ from correctness."
+    },
+    {
+      "id": "gov-statutory-submission",
+      "run_mode": "pipeline",
+      "case_type": "answerable",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "Under which statutory provision was the Governor's Annual Report submitted to Parliament?",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "reference_answer": "It was submitted under Section 39(1) of the State Bank of Pakistan Act, 1956.",
+      "expected_statuses": ["answered"],
+      "expected_evidence_hashes": [
+        "fec5fd88b8dbef7ea58e757a61bb5f7c77215650904c96b66d4b85b63d346cf5",
+        "1bc4cd19bf8840b1cd45860c49936cf6596f1ccd1908578272b203efc7026e97"
+      ],
+      "expected_claims": [
+        {
+          "id": "statutory_provision",
+          "description": "The report was submitted under Section 39(1) of the State Bank of Pakistan Act, 1956.",
+          "required": true,
+          "term_groups": [
+            ["Section 39(1)", "Section 39 1"],
+            ["State Bank of Pakistan Act"],
+            ["1956"]
+          ],
+          "evidence_hashes": [
+            "fec5fd88b8dbef7ea58e757a61bb5f7c77215650904c96b66d4b85b63d346cf5",
+            "1bc4cd19bf8840b1cd45860c49936cf6596f1ccd1908578272b203efc7026e97"
+          ]
+        }
+      ],
+      "synthetic_evidence": [],
+      "tags": ["answerable", "clause", "multiple-evidence"],
+      "notes": "Either of the two adjacent human-labelled chunks may support the provision."
+    },
+    {
+      "id": "gov-bitcoin-reserve-target-unanswerable",
+      "run_mode": "pipeline",
+      "case_type": "unanswerable",
+      "filename": "Gov-AR_1 test.pdf",
+      "question": "What Bitcoin reserve target did SBP set for FY25?",
+      "document_content_hash": "dd784d0aeb42939384ec433cef08498bbfe6e30649a2963e360519ce0b291074",
+      "reference_answer": null,
+      "expected_statuses": ["insufficient_evidence"],
+      "expected_evidence_hashes": [],
+      "expected_claims": [],
+      "synthetic_evidence": [],
+      "tags": ["unanswerable", "refusal", "exact-term"],
+      "notes": "The complete fixed document contains no Bitcoin reserve target."
+    },
+    {
+      "id": "partial-policy-rate-and-bitcoin",
+      "run_mode": "synthetic_context",
+      "case_type": "partially_answerable",
+      "filename": "synthetic-phase11.txt",
+      "question": "How much was the policy rate reduced, and what Bitcoin reserve target was announced?",
+      "document_content_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "reference_answer": "The policy rate was reduced by 1,100 basis points; the evidence contains no Bitcoin reserve target.",
+      "expected_statuses": ["partially_answered"],
+      "expected_evidence_hashes": [
+        "0000000000000000000000000000000000000000000000000000000000000001"
+      ],
+      "expected_claims": [
+        {
+          "id": "policy_rate_reduction",
+          "description": "The policy rate was reduced by 1,100 basis points.",
+          "required": true,
+          "term_groups": [
+            ["policy rate"],
+            ["1,100", "1100"],
+            ["basis points"]
+          ],
+          "evidence_hashes": [
+            "0000000000000000000000000000000000000000000000000000000000000001"
+          ]
+        }
+      ],
+      "synthetic_evidence": [
+        {
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000001",
+          "page_start": 1,
+          "page_end": 1,
+          "section_title": "Policy decision",
+          "passage_text": "The policy rate was reduced by 1,100 basis points."
+        }
+      ],
+      "tags": ["partially-answerable", "refusal", "multiple-part"],
+      "notes": "The answer should preserve the supported part and qualify the unsupported part."
+    },
+    {
+      "id": "conflicting-inflation-rates",
+      "run_mode": "synthetic_context",
+      "case_type": "conflicting_evidence",
+      "filename": "synthetic-phase11.txt",
+      "question": "What inflation rate did the report state?",
+      "document_content_hash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "reference_answer": "One passage says 10 percent and another says 12 percent; the conflict must be reported rather than silently resolved.",
+      "expected_statuses": ["partially_answered"],
+      "expected_evidence_hashes": [
+        "0000000000000000000000000000000000000000000000000000000000000001",
+        "0000000000000000000000000000000000000000000000000000000000000002"
+      ],
+      "expected_claims": [
+        {
+          "id": "inflation_10_percent",
+          "description": "One source states that inflation was 10 percent.",
+          "required": true,
+          "term_groups": [
+            ["inflation"],
+            ["10"]
+          ],
+          "evidence_hashes": [
+            "0000000000000000000000000000000000000000000000000000000000000001"
+          ]
+        },
+        {
+          "id": "inflation_12_percent",
+          "description": "Another source states that inflation was 12 percent.",
+          "required": true,
+          "term_groups": [
+            ["inflation"],
+            ["12"]
+          ],
+          "evidence_hashes": [
+            "0000000000000000000000000000000000000000000000000000000000000002"
+          ]
+        }
+      ],
+      "synthetic_evidence": [
+        {
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000001",
+          "page_start": 1,
+          "page_end": 1,
+          "section_title": "Inflation statement A",
+          "passage_text": "The report states that inflation was 10 percent."
+        },
+        {
+          "content_hash": "0000000000000000000000000000000000000000000000000000000000000002",
+          "page_start": 2,
+          "page_end": 2,
+          "section_title": "Inflation statement B",
+          "passage_text": "The report states that inflation was 12 percent."
+        }
+      ],
+      "tags": ["conflicting-evidence", "multiple-evidence", "qualification"],
+      "notes": "Both conflicting values and both citations are required."
+    }
+  ]
+}

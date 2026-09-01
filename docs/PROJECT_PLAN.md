@@ -463,23 +463,29 @@ Measure generation independently from retrieval so that good retrieval is not co
 
 ### Tasks
 
-- [ ] Extend the evaluation dataset with reference answers and claim/evidence expectations for a bounded subset.
-- [ ] Define human-readable rubrics for correctness, faithfulness, citation accuracy, completeness, and refusal accuracy.
-- [ ] Measure unsupported-claim rate.
-- [ ] Evaluate answerable, unanswerable, partially answerable, and conflicting-evidence cases.
-- [ ] Record the exact retrieved evidence alongside every evaluated answer.
-- [ ] Start with human-labelled checks for the core dataset.
-- [ ] If model-assisted grading is added, treat it as a supporting signal rather than unquestioned ground truth.
-- [ ] Version judge prompts/models and preserve raw grader outputs.
-- [ ] Report retrieval success and answer success separately.
-- [ ] Classify failures by extraction, chunking, candidate retrieval, fusion, reranking, evidence selection, or generation.
+- [x] Extend the evaluation dataset with reference answers and claim/evidence expectations for a bounded subset.
+- [x] Define human-readable rubrics for correctness, faithfulness, citation accuracy, completeness, and refusal accuracy.
+- [x] Measure unsupported-claim rate.
+- [x] Evaluate answerable, unanswerable, partially answerable, and conflicting-evidence cases.
+- [x] Record the exact retrieved evidence alongside every evaluated answer.
+- [x] Start with human-labelled checks for the core dataset.
+- [x] If model-assisted grading is added, treat it as a supporting signal rather than unquestioned ground truth.
+- [x] Version judge prompts/models and preserve raw grader outputs.
+- [x] Report retrieval success and answer success separately.
+- [x] Classify failures by extraction, chunking, candidate retrieval, fusion, reranking, evidence selection, or generation.
+
+Phase 11 grading decision: no model-assisted judge was added. Core decisions
+use fixed gold facts/evidence and the versioned deterministic grader
+`phase11-deterministic-gold-v1`; reports record the model-judge field as `null`
+and preserve the raw deterministic checks. The conditional judge requirements
+are therefore satisfied without an unvalidated judge prompt/model.
 
 ### Acceptance criteria
 
-- [ ] A report can distinguish retrieval failure from generation failure for every evaluated question.
-- [ ] Correctness, faithfulness, citations, completeness, refusal accuracy, and unsupported claims are reported separately.
-- [ ] Core acceptance decisions are not based solely on an unvalidated model judge.
-- [ ] Evaluation inputs, outputs, configurations, and grader versions are reproducible.
+- [x] A report can distinguish retrieval failure from generation failure for every evaluated question.
+- [x] Correctness, faithfulness, citations, completeness, refusal accuracy, and unsupported claims are reported separately.
+- [x] Core acceptance decisions are not based solely on an unvalidated model judge.
+- [x] Evaluation inputs, outputs, configurations, and grader versions are reproducible.
 
 ### Dependencies
 
