@@ -772,10 +772,16 @@ def regrade_answer_report(
     report["dataset"]["sha256"] = dataset.sha256
     report["configuration"]["grader_version"] = GRADER_VERSION
     report["configuration"]["model_assisted_judge"] = MODEL_JUDGE
-    report["run"]["regraded_at"] = datetime.now(timezone.utc).isoformat()
-    report["run"]["git_commit"] = _git_commit()
-    report["run"]["working_tree_dirty"] = _working_tree_dirty()
-    report["run"]["implementation_sha256"] = _implementation_hashes()
+    # The saved run metadata describes when retrieval/generation happened and
+    # must remain immutable. Record the deterministic regrade separately so a
+    # later grader review cannot masquerade as a new model run.
+    report["regrade"] = {
+        "regraded_at": datetime.now(timezone.utc).isoformat(),
+        "git_commit": _git_commit(),
+        "working_tree_dirty": _working_tree_dirty(),
+        "implementation_sha256": _implementation_hashes(),
+        "grader_version": GRADER_VERSION,
+    }
     return report
 
 

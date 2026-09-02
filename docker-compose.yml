@@ -3,9 +3,9 @@ services:
     image: pgvector/pgvector:pg17
     container_name: doc_intelligence_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: doc_intelligence
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-doc_intelligence}
     ports:
       - "5432:5432"
     volumes:

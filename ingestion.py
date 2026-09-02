@@ -177,6 +177,11 @@ def ingest_document(
                 ]
         except Exception as error:
             raise EmbeddingGenerationError(str(error)) from error
+        if len(embeddings) != len(generated_chunks):
+            raise EmbeddingGenerationError(
+                "Embedding service returned a different number of vectors "
+                "than the number of generated chunks."
+            )
 
         previous_ready_documents = (
             database.query(Document)

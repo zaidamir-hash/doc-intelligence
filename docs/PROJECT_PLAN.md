@@ -550,39 +550,39 @@ Make Lexis reproducible, understandable, and complete as a learning artifact, th
 
 ### Tasks
 
-- [ ] Add a pinned or suitably constrained Python dependency manifest.
-- [ ] Add an `.env.example` containing variable names and safe placeholders only.
-- [ ] Centralize settings and remove unnecessary hard-coded URLs, model names, chunk sizes, top-k values, and thresholds.
-- [ ] Document local database, backend, frontend, migration, ingestion, re-indexing, evaluation, and test commands.
-- [ ] Add focused unit tests for cleaning, chunking, metrics, RRF, deduplication, thresholds, and citation mapping.
-- [ ] Add integration tests for document upload/indexing, listing, retrieval, querying, and deletion.
-- [ ] Add regression tests for the labelled evaluation corpus.
-- [ ] Review transaction handling and failure cleanup.
-- [ ] Review CORS, API-key behavior, file limits, rate limits, and secret handling.
-- [ ] Remove or archive obsolete code such as the unused `Sidebar.jsx` after confirming it has no required behavior.
-- [ ] Remove unused Vite/React template assets and styles after confirming they are unreferenced.
-- [ ] Replace placeholder documentation with architecture and learning documentation.
-- [ ] Document the final end-to-end data flow and each retrieval stage.
-- [ ] Produce an ablation comparison at minimum for:
-  - [ ] Original baseline.
-  - [ ] Improved extraction/chunking plus dense retrieval.
-  - [ ] Dense-only final configuration.
-  - [ ] Lexical-only retrieval.
-  - [ ] Hybrid RRF.
-  - [ ] Hybrid plus reranking.
-  - [ ] Hybrid plus reranking plus query expansion.
-- [ ] Report accuracy, category-level behavior, latency, and cost where applicable.
-- [ ] Record remaining known limitations and explicitly close the project scope.
+- [x] Add a pinned or suitably constrained Python dependency manifest.
+- [x] Add an `.env.example` containing variable names and safe placeholders only.
+- [x] Centralize settings and remove unnecessary hard-coded URLs, model names, chunk sizes, top-k values, and thresholds.
+- [x] Document local database, backend, frontend, migration, ingestion, re-indexing, evaluation, and test commands.
+- [x] Add focused unit tests for cleaning, chunking, metrics, RRF, deduplication, thresholds, and citation mapping.
+- [x] Add integration tests for document upload/indexing, listing, retrieval, querying, and deletion.
+- [x] Add regression tests for the labelled evaluation corpus.
+- [x] Review transaction handling and failure cleanup.
+- [x] Review CORS, API-key behavior, file limits, rate limits, and secret handling.
+- [x] Remove or archive obsolete code such as the unused `Sidebar.jsx` after confirming it has no required behavior.
+- [x] Remove unused Vite/React template assets and styles after confirming they are unreferenced.
+- [x] Replace placeholder documentation with architecture and learning documentation.
+- [x] Document the final end-to-end data flow and each retrieval stage.
+- [x] Produce an ablation comparison at minimum for:
+  - [x] Original baseline.
+  - [x] Improved extraction/chunking plus dense retrieval.
+  - [x] Dense-only final configuration.
+  - [x] Lexical-only retrieval.
+  - [x] Hybrid RRF.
+  - [x] Hybrid plus reranking.
+  - [x] Hybrid plus reranking plus query expansion.
+- [x] Report accuracy, category-level behavior, latency, and cost where applicable.
+- [x] Record remaining known limitations and explicitly close the project scope.
 
 ### Acceptance criteria
 
-- [ ] A new developer can set up, index, query, evaluate, and understand Lexis from repository documentation.
-- [ ] Tests and evaluation run through documented commands.
-- [ ] Final metrics are compared with the reproducible 91-page Phase 1 baseline; the historical two-page figures may be mentioned for context but are not a required regression target because their labelled inputs are unavailable and the developer waived reproducing that test.
-- [ ] The final system includes dense retrieval, lexical retrieval, RRF, reranking, safe query expansion, relevance/refusal handling, grounded answers, and page-aware citations.
-- [ ] Retrieval and answer evaluation remain separate and reproducible.
-- [ ] Dead code and template leftovers are removed without changing required behavior.
-- [ ] Known limitations, deferred items, and the stopping point are documented.
+- [x] A new developer can set up, index, query, evaluate, and understand Lexis from repository documentation.
+- [x] Tests and evaluation run through documented commands.
+- [x] Final metrics are compared with the reproducible 91-page Phase 1 baseline; the historical two-page figures may be mentioned for context but are not a required regression target because their labelled inputs are unavailable and the developer waived reproducing that test.
+- [x] The final system includes dense retrieval, lexical retrieval, RRF, reranking, safe query expansion, relevance/refusal handling, grounded answers, and page-aware citations.
+- [x] Retrieval and answer evaluation remain separate and reproducible.
+- [x] Dead code and template leftovers are removed without changing required behavior.
+- [x] Known limitations, deferred items, and the stopping point are documented.
 
 ### Dependencies
 

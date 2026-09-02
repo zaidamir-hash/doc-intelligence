@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "name": "lexis-final-ablation-v1",
+  "retrieval_dataset": {
+    "path": "evaluation/datasets/phase3.json",
+    "sha256": "976177cffb24ba98ce9b5a52b8d55cf8c5fd02ac1351d68c0334cf6edb4a1ea4",
+    "split": "test",
+    "total_cases": 14,
+    "answerable_cases": 13
+  },
+  "answer_dataset": {
+    "path": "evaluation/datasets/phase11_answers.json",
+    "sha256": "153419c6e7661ae9020f7b541460d897d02e6227443c823033daff925e5a0613",
+    "split": "test",
+    "total_cases": 6
+  },
+  "retrieval_stages": [
+    {
+      "id": "original_baseline",
+      "label": "Phase 1 original dense baseline",
+      "source_artifact": "docs/EVALUATION.md",
+      "source_run_id": "f4c150dab9ef",
+      "metrics": {"hit_at_5": 0.8462, "mrr": 0.5955, "recall_at_5": 0.7564, "ndcg_at_5": 0.5842},
+      "duration_ms": null,
+      "model_cost_usd": null
+    },
+    {
+      "id": "clean_extraction_dense",
+      "label": "Phase 2 cleaned page-aware extraction with dense retrieval",
+      "source_artifact": "docs/PHASE2_EXTRACTION.md",
+      "source_run_id": "bebc552d57bd",
+      "metrics": {"hit_at_5": 0.9231, "mrr": 0.7179, "recall_at_5": 0.7385, "ndcg_at_5": 0.6480},
+      "duration_ms": null,
+      "model_cost_usd": null
+    },
+    {
+      "id": "token_structure_dense",
+      "label": "Phase 3 token/structure chunks with dense retrieval",
+      "source_artifact": "docs/PHASE3_CHUNKING.md",
+      "source_run_id": "9475274a22ba",
+      "metrics": {"hit_at_5": 1.0, "mrr": 0.5179, "recall_at_5": 0.9231, "ndcg_at_5": 0.6246},
+      "duration_ms": null,
+      "model_cost_usd": null
+    },
+    {
+      "id": "dense_final",
+      "label": "Phase 5 final dense-only configuration",
+      "source_artifact": "docs/PHASE5_DENSE_RETRIEVAL.md",
+      "source_run_id": "ae70de100568",
+      "metrics": {"hit_at_5": 1.0, "mrr": 0.5179, "recall_at_5": 0.9231, "ndcg_at_5": 0.6246},
+      "duration_ms": 16890.0,
+      "model_cost_usd": null
+    },
+    {
+      "id": "lexical_final",
+      "label": "Phase 6 PostgreSQL lexical retrieval",
+      "source_artifact": "evaluation/experiments/phase6_lexical_comparison.json",
+      "source_run_id": "e9ccf0353cc7",
+      "metrics": {"hit_at_5": 1.0, "mrr": 0.7244, "recall_at_5": 0.8974, "ndcg_at_5": 0.7485},
+      "duration_ms": 1090.0,
+      "model_cost_usd": 0.0
+    },
+    {
+      "id": "hybrid_rrf",
+      "label": "Phase 7 dense plus lexical RRF",
+      "source_artifact": "evaluation/experiments/phase7_hybrid_comparison.json",
+      "source_run_id": "8d6a5317d321",
+      "metrics": {"hit_at_5": 1.0, "mrr": 0.7115, "recall_at_5": 0.9231, "ndcg_at_5": 0.7542},
+      "duration_ms": 1751.6,
+      "model_cost_usd": null
+    },
+    {
+      "id": "hybrid_reranked",
+      "label": "Phase 8 hybrid plus hosted reranking",
+      "source_artifact": "evaluation/experiments/phase8_reranking_comparison.json",
+      "source_run_id": "81754b6e9c15",
+      "metrics": {"hit_at_5": 1.0, "mrr": 1.0, "recall_at_5": 0.9615, "ndcg_at_5": 0.9579},
+      "duration_ms": 115383.4,
+      "model_cost_usd": 0.0115914
+    },
+    {
+      "id": "hybrid_reranked_expanded",
+      "label": "Phase 9 hybrid plus reranking plus safe query expansion",
+      "source_artifact": "evaluation/experiments/phase9_query_expansion_comparison.json",
+      "source_run_id": "5332eb857d15",
+      "metrics": {"hit_at_5": 1.0, "mrr": 1.0, "recall_at_5": 1.0, "ndcg_at_5": 0.9938},
+      "candidate_metrics": {"hit_at_5": 1.0, "mrr": 0.6859, "mean_recall_at_10": 1.0},
+      "duration_ms": 183681.7,
+      "model_cost_usd": 0.01354455
+    }
+  ],
+  "answer_evaluation": {
+    "source_artifact": "evaluation/experiments/phase11_answer_evaluation.md",
+    "source_run_id": "01903932da6b",
+    "retrieval_success": 1.0,
+    "answer_success": 0.8333,
+    "correctness": 0.8333,
+    "faithfulness": 0.8333,
+    "citation_accuracy": 0.8333,
+    "completeness": 0.8,
+    "refusal_accuracy": 0.8333,
+    "unsupported_claim_rate": 0.0
+  }
+}

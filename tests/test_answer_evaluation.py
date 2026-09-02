@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from evaluation.answer_dataset import (
     AnswerEvaluationCase,
+    AnswerEvaluationDataset,
     ClaimExpectation,
     load_answer_dataset,
 )
@@ -14,6 +16,7 @@ from evaluation.answer_evaluation import (
     claim_matches_expectation,
     classify_failure,
     grade_answer,
+    regrade_answer_report,
 )
 from grounded_generation import (
     Citation,
@@ -343,6 +346,85 @@ class FailureAttributionTests(unittest.TestCase):
                 True,
                 has_generation_evidence=True,
             )
+        )
+
+
+class RegradeProvenanceTests(unittest.TestCase):
+    def test_regrade_preserves_original_run_metadata(self):
+        case = _case(case_type="unanswerable")
+        dataset = AnswerEvaluationDataset(
+            schema_version=1,
+            name="test-dataset",
+            description="Test dataset",
+            split="test",
+            source_retrieval_dataset="source.json",
+            label_policy="Fixed test labels",
+            cases=(case,),
+            path=Path("test-dataset.json"),
+            sha256="a" * 64,
+        )
+        original_run = {
+            "run_id": "original-run",
+            "git_commit": "original-commit",
+            "working_tree_dirty": False,
+            "implementation_sha256": {"module.py": "original-hash"},
+        }
+        report = {
+            "run": dict(original_run),
+            "dataset": {"path": "old.json", "sha256": "b" * 64},
+            "configuration": {
+                "grader_version": "old-grader",
+                "model_assisted_judge": None,
+            },
+            "cases": [
+                {
+                    "id": case.case_id,
+                    "answer_output": {
+                        "status": "insufficient_evidence",
+                        "answer": "Cannot answer.",
+                        "claims": [],
+                        "citations": [],
+                        "refusal_reason": "No evidence met the cutoff.",
+                        "usage": {
+                            "requests": 0,
+                            "input_tokens": 0,
+                            "output_tokens": 0,
+                            "estimated_cost_usd": 0.0,
+                        },
+                        "latency_ms": 1.0,
+                        "used_fallback": False,
+                        "fallback_error": None,
+                        "rejected_claims": [],
+                    },
+                    "exact_generation_evidence": [],
+                    "stage_trace": {"checks": {}},
+                    "retrieval_success": None,
+                }
+            ],
+        }
+
+        with (
+            patch(
+                "evaluation.answer_evaluation._git_commit",
+                return_value="regrade-commit",
+            ),
+            patch(
+                "evaluation.answer_evaluation._working_tree_dirty",
+                return_value=True,
+            ),
+            patch(
+                "evaluation.answer_evaluation._implementation_hashes",
+                return_value={"grader.py": "regrade-hash"},
+            ),
+        ):
+            regraded = regrade_answer_report(report, dataset)
+
+        self.assertEqual(regraded["run"], original_run)
+        self.assertEqual(regraded["regrade"]["git_commit"], "regrade-commit")
+        self.assertTrue(regraded["regrade"]["working_tree_dirty"])
+        self.assertEqual(
+            regraded["regrade"]["implementation_sha256"],
+            {"grader.py": "regrade-hash"},
         )
 
 

@@ -158,6 +158,33 @@ class IngestionPostgresTests(unittest.TestCase):
         self.assertEqual(current_hashes, original_hashes)
         self.assertEqual(self.database.get(Document, ready.document_id).status, "ready")
 
+    def test_incomplete_embedding_batch_is_recorded_as_failed(self) -> None:
+        with (
+            patch("ingestion.extract_pdf", return_value=self.extraction),
+            patch("ingestion.get_embeddings", return_value=[]),
+        ):
+            with self.assertRaisesRegex(
+                EmbeddingGenerationError,
+                "different number of vectors",
+            ):
+                ingest_document(
+                    self.database,
+                    self.filename,
+                    b"incomplete embedding batch",
+                    self.config,
+                )
+
+        failed = (
+            self.database.query(Document)
+            .filter(
+                Document.original_filename == self.filename,
+                Document.status == DOCUMENT_STATUS_FAILED,
+            )
+            .one()
+        )
+        self.assertEqual(failed.chunk_count, 0)
+        self.assertEqual(failed.chunks, [])
+
 
 if __name__ == "__main__":
     unittest.main()
