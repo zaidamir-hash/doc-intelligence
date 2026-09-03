@@ -16,12 +16,13 @@ from dataclasses import dataclass
 from pypdf import PdfReader
 
 
-EXTRACTION_VERSION = "page-aware-v1"
+EXTRACTION_VERSION = "page-aware-v2"
 LOW_TEXT_CHARACTER_THRESHOLD = 40
 FURNITURE_POSITION_LINES = 2
 FURNITURE_MINIMUM_PAGES = 3
 FURNITURE_PAGE_FRACTION = 0.25
 PAGE_LABEL_TEMPLATE = "[Source page {page_number}]"
+_SUSPICIOUS_WORD_BREAK = re.compile(r"(?m)\b[A-Z][A-Za-z]{0,2}\n[a-z]{3,}")
 
 
 @dataclass(frozen=True)
@@ -81,6 +82,30 @@ def _normalize_newlines_and_spaces(text: str) -> str:
         .replace("\u202f", " ")
     )
     return re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", normalized)
+
+
+def _extraction_quality_penalty(text: str) -> int:
+    """Count strong signs that PDF positioning damaged readable words."""
+
+    replacement_characters = text.count("\ufffd")
+    split_words = len(_SUSPICIOUS_WORD_BREAK.findall(text))
+    return replacement_characters * 10 + split_words
+
+
+def _extract_best_page_text(page: object) -> str:
+    """Use layout extraction only when it measurably repairs damaged text."""
+
+    plain_text = page.extract_text() or ""
+    plain_penalty = _extraction_quality_penalty(plain_text)
+    if plain_penalty == 0:
+        return plain_text
+    try:
+        layout_text = page.extract_text(extraction_mode="layout") or ""
+    except Exception:
+        return plain_text
+    if _extraction_quality_penalty(layout_text) < plain_penalty:
+        return layout_text
+    return plain_text
 
 
 def _nonempty_lines(text: str) -> list[str]:
@@ -310,7 +335,7 @@ def extract_pdf(contents: bytes) -> ExtractionResult:
 
     for page_number, page in enumerate(reader.pages, start=1):
         try:
-            raw_pages.append(page.extract_text() or "")
+            raw_pages.append(_extract_best_page_text(page))
         except Exception as error:  # one broken page should remain visible
             raw_pages.append("")
             extraction_errors[page_number] = str(error)

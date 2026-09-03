@@ -27,6 +27,14 @@ def _non_negative_int(name: str, default: int) -> int:
     return value
 
 
+def _positive_float(name: str, default: float) -> float:
+    raw = os.getenv(name)
+    value = default if raw is None else float(raw)
+    if value <= 0:
+        raise RuntimeError(f"{name} must be a positive number")
+    return value
+
+
 def _comma_separated(name: str, default: str) -> tuple[str, ...]:
     values = tuple(
         item.strip() for item in os.getenv(name, default).split(",") if item.strip()
@@ -52,6 +60,8 @@ class LexisSettings:
     expansion_model: str
     reranker_model: str
     answer_model: str
+    model_request_timeout_seconds: float
+    model_max_retries: int
     chunk_max_tokens: int
     chunk_overlap_tokens: int
     chunk_min_tokens: int
@@ -98,6 +108,12 @@ class LexisSettings:
             ),
             answer_model=os.getenv(
                 "LEXIS_ANSWER_MODEL", "gpt-4o-mini-2024-07-18"
+            ),
+            model_request_timeout_seconds=_positive_float(
+                "LEXIS_MODEL_TIMEOUT_SECONDS", 30.0
+            ),
+            model_max_retries=_non_negative_int(
+                "LEXIS_MODEL_MAX_RETRIES", 2
             ),
             chunk_max_tokens=_positive_int("LEXIS_CHUNK_MAX_TOKENS", 200),
             chunk_overlap_tokens=_non_negative_int(
@@ -176,6 +192,8 @@ class LexisSettings:
                 "query_expansion": self.expansion_model,
                 "reranker": self.reranker_model,
                 "answer": self.answer_model,
+                "request_timeout_seconds": self.model_request_timeout_seconds,
+                "max_retries": self.model_max_retries,
             },
             "chunking": {
                 "max_tokens": self.chunk_max_tokens,

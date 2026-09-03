@@ -17,7 +17,22 @@ from pdf_processing import (
 
 
 DEFAULT_OUTPUT_DIRECTORY = Path("evaluation/reports")
-DEFAULT_SAMPLE_PAGES = (1, 20, 50, 91)
+
+
+def default_sample_pages(page_count: int) -> list[int]:
+    """Choose representative valid pages for a PDF of any length."""
+
+    if page_count <= 0:
+        raise ValueError("page_count must be positive")
+    candidates = (
+        1,
+        min(2, page_count),
+        max(1, round(page_count * 0.25)),
+        max(1, round(page_count * 0.5)),
+        max(1, round(page_count * 0.75)),
+        page_count,
+    )
+    return list(dict.fromkeys(candidates))
 
 
 def parse_args() -> argparse.Namespace:
@@ -32,8 +47,11 @@ def parse_args() -> argparse.Namespace:
         "--sample-pages",
         type=int,
         nargs="+",
-        default=list(DEFAULT_SAMPLE_PAGES),
-        help="One-based pages whose raw and cleaned previews are included",
+        default=None,
+        help=(
+            "One-based pages whose raw and cleaned previews are included. "
+            "By default, valid pages are sampled across the whole PDF."
+        ),
     )
     parser.add_argument("--preview-characters", type=int, default=800)
     return parser.parse_args()
@@ -158,11 +176,14 @@ def main() -> int:
     args = parse_args()
     contents = args.pdf.read_bytes()
     extraction = extract_pdf(contents)
+    sample_pages = args.sample_pages or default_sample_pages(
+        extraction.page_count
+    )
     report = build_report(
         args.pdf,
         contents,
         extraction,
-        args.sample_pages,
+        sample_pages,
         args.preview_characters,
     )
     run_id = report["run"]["source_sha256"][:12]

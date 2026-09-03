@@ -91,8 +91,8 @@ def answer_document_question(
         document_content_hash=document_content_hash,
         embedding_function=lambda text: get_embedding(
             text,
-            timeout_seconds=30.0,
-            max_retries=0,
+            timeout_seconds=APP_SETTINGS.model_request_timeout_seconds,
+            max_retries=APP_SETTINGS.model_max_retries,
         ),
     )
     reranking = rerank_function(
@@ -283,9 +283,16 @@ def build_query_response(
                 for item in result.context.suppressed
             ],
             "generation_used_fallback": result.answer.used_fallback,
+            "generation_repair_attempted": result.answer.repair_attempted,
+            "generation_repair_succeeded": result.answer.repair_succeeded,
             "generation_fallback_error": (
                 "Answer generation failed; Lexis returned a grounded refusal."
                 if result.answer.fallback_error
+                else None
+            ),
+            "generation_repair_error": (
+                "Answer repair failed; Lexis returned a grounded refusal."
+                if result.answer.repair_error
                 else None
             ),
             "rejected_claims": [

@@ -15,7 +15,8 @@ from settings import APP_SETTINGS
 
 
 DEFAULT_RERANKER_MODEL = APP_SETTINGS.reranker_model
-DEFAULT_REQUEST_TIMEOUT_SECONDS = 30.0
+DEFAULT_REQUEST_TIMEOUT_SECONDS = APP_SETTINGS.model_request_timeout_seconds
+DEFAULT_MAX_RETRIES = APP_SETTINGS.model_max_retries
 INPUT_USD_PER_MILLION_TOKENS = 0.15
 OUTPUT_USD_PER_MILLION_TOKENS = 0.60
 
@@ -145,7 +146,7 @@ def score_pairs_openai(
         return ScoreBatchResult(scores=(), usage=RerankerUsage())
     api_client = client or OpenAI(
         timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
-        max_retries=0,
+        max_retries=DEFAULT_MAX_RETRIES,
     )
     payload = [
         {

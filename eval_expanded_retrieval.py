@@ -14,6 +14,7 @@ from expanded_retrieval import retrieve_expanded_hybrid_candidates
 from embeddings import get_embedding
 from query_expansion import DEFAULT_EXPANSION_MODEL, ExpansionUsage
 from reranking import DEFAULT_RERANKER_MODEL, RerankerUsage, rerank_candidates
+from settings import APP_SETTINGS
 
 
 DEFAULT_DATASET = Path("evaluation/datasets/phase3.json")
@@ -90,7 +91,9 @@ def main() -> int:
                 document_content_hash=case.document_content_hash,
                 expansion_model=args.expansion_model,
                 embedding_function=lambda text: get_embedding(
-                    text, timeout_seconds=30.0, max_retries=0
+                    text,
+                    timeout_seconds=APP_SETTINGS.model_request_timeout_seconds,
+                    max_retries=APP_SETTINGS.model_max_retries,
                 ),
             )
             print(f"[{case.case_id}] reranking candidates...", flush=True)
@@ -158,6 +161,10 @@ def main() -> int:
                 "relevance_cutoff": args.relevance_cutoff,
                 "reranker_model": args.reranker_model,
                 "reranker_batch_size": args.reranker_batch_size,
+                "model_request_timeout_seconds": (
+                    APP_SETTINGS.model_request_timeout_seconds
+                ),
+                "model_max_retries": APP_SETTINGS.model_max_retries,
             },
         )
         for case in report["cases"]:

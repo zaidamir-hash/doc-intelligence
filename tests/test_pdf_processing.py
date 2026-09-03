@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import Mock
 
 from pdf_processing import (
+    _extract_best_page_text,
     PAGE_LABEL_TEMPLATE,
     chunk_extracted_pages,
     chunk_text,
@@ -11,6 +13,32 @@ from pdf_processing import (
 
 
 class PdfCleaningTests(unittest.TestCase):
+    def test_layout_fallback_repairs_repeated_split_words(self) -> None:
+        page = Mock()
+
+        def extract_text(*, extraction_mode=None):
+            if extraction_mode == "layout":
+                return "Traditional\nInitial\nAdvanced\nOptimal"
+            return "T\nraditional\nI\nnitial\nAd\nvanced\nOp\ntimal"
+
+        page.extract_text.side_effect = extract_text
+
+        self.assertEqual(
+            _extract_best_page_text(page),
+            "Traditional\nInitial\nAdvanced\nOptimal",
+        )
+        self.assertEqual(page.extract_text.call_count, 2)
+
+    def test_layout_fallback_is_not_used_for_clean_plain_text(self) -> None:
+        page = Mock()
+        page.extract_text.return_value = "Ordinary extracted prose."
+
+        self.assertEqual(
+            _extract_best_page_text(page),
+            "Ordinary extracted prose.",
+        )
+        page.extract_text.assert_called_once_with()
+
     def test_preserves_page_numbers_and_paragraph_boundaries(self) -> None:
         result = process_extracted_pages(
             ["First paragraph.\n\nSecond   paragraph.", "Page two text."]

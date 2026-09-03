@@ -15,7 +15,8 @@ from settings import APP_SETTINGS
 
 
 DEFAULT_EXPANSION_MODEL = APP_SETTINGS.expansion_model
-DEFAULT_REQUEST_TIMEOUT_SECONDS = 30.0
+DEFAULT_REQUEST_TIMEOUT_SECONDS = APP_SETTINGS.model_request_timeout_seconds
+DEFAULT_MAX_RETRIES = APP_SETTINGS.model_max_retries
 MAX_EXPANSION_CHARACTERS = 500
 
 _QUOTED_PHRASE = re.compile(r'"([^"\r\n]+)"')
@@ -217,7 +218,7 @@ def generate_expansion_openai(
 
     api_client = client or OpenAI(
         timeout=DEFAULT_REQUEST_TIMEOUT_SECONDS,
-        max_retries=0,
+        max_retries=DEFAULT_MAX_RETRIES,
     )
     response = api_client.responses.parse(
         model=model,

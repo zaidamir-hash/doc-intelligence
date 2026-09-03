@@ -48,6 +48,10 @@ Edit `.env` and replace the API keys and database password. Keep
 password contains URL-reserved characters, URL-encode it inside `DATABASE_URL`.
 Never commit `.env`.
 
+Hosted model requests use a 30-second per-attempt timeout and at most two SDK
+retries by default. Adjust `LEXIS_MODEL_TIMEOUT_SECONDS` and
+`LEXIS_MODEL_MAX_RETRIES` in `.env` when a different bounded policy is needed.
+
 Start PostgreSQL/pgvector and apply the checksum-tracked migrations:
 
 ```powershell
@@ -193,7 +197,9 @@ Detailed evaluation methodology is in [docs/EVALUATION.md](docs/EVALUATION.md).
 - The backend uses API-key protection, CORS allowlists, upload/query rate limits,
   bounded PDF size, MIME/signature checks, and redacted client errors.
 - PDF text and model output are untrusted data. Grounded generation validates
-  evidence IDs and supporting quotes before claims are displayed.
+  evidence IDs and supporting quotes before claims are displayed. If a model
+  answer fails that validation, Lexis permits one constrained repair attempt
+  and validates the result again; an invalid repair still fails closed.
 - The frontend keeps a validated key in tab-scoped `sessionStorage` so refresh
   can restore state; Disconnect or closing the tab clears it.
 

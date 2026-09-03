@@ -12,6 +12,7 @@ from evaluation.reporting import write_reports
 from evaluation.runner import reranked_candidate_to_retrieved, run_evaluation
 from hybrid_retrieval import retrieve_hybrid_candidates
 from reranking import (
+    DEFAULT_MAX_RETRIES,
     DEFAULT_REQUEST_TIMEOUT_SECONDS,
     DEFAULT_RERANKER_MODEL,
     RerankerUsage,
@@ -123,7 +124,7 @@ def main() -> int:
                 "reranker_score_scale": "0=irrelevant, 1=topical, 2=supporting, 3=direct",
                 "reranker_batch_size": args.batch_size,
                 "reranker_request_timeout_seconds": DEFAULT_REQUEST_TIMEOUT_SECONDS,
-                "reranker_max_retries": 0,
+                "reranker_max_retries": DEFAULT_MAX_RETRIES,
             },
         )
         input_tokens = sum(usage.input_tokens for usage in usage_parts)

@@ -20,6 +20,7 @@ from models import (
     DocumentChunk,
 )
 from pdf_processing import EXTRACTION_VERSION, ExtractionResult, extract_pdf
+from settings import APP_SETTINGS
 
 
 EmbeddingFunction = Callable[[str], list[float]]
@@ -169,7 +170,9 @@ def ingest_document(
         try:
             if embedding_function is get_embedding:
                 embeddings = get_embeddings(
-                    [chunk.content for chunk in generated_chunks]
+                    [chunk.content for chunk in generated_chunks],
+                    timeout_seconds=APP_SETTINGS.model_request_timeout_seconds,
+                    max_retries=APP_SETTINGS.model_max_retries,
                 )
             else:
                 embeddings = [

@@ -41,6 +41,7 @@ from query import (
 )
 from query_expansion import DEFAULT_EXPANSION_MODEL
 from reranking import DEFAULT_RERANKER_MODEL
+from settings import APP_SETTINGS
 
 from .answer_dataset import (
     AnswerEvaluationCase,
@@ -447,6 +448,9 @@ def _answer_payload(answer: GroundedAnswer) -> dict[str, Any]:
         "used_fallback": answer.used_fallback,
         "fallback_error": answer.fallback_error,
         "rejected_claims": [asdict(item) for item in answer.rejected_claims],
+        "repair_attempted": answer.repair_attempted,
+        "repair_succeeded": answer.repair_succeeded,
+        "repair_error": answer.repair_error,
         "usage": asdict(answer.usage),
         "latency_ms": round(answer.latency_ms, 3),
     }
@@ -647,6 +651,10 @@ def run_answer_evaluation(
         "final_evidence_k": DEFAULT_FINAL_EVIDENCE_K,
         "relevance_cutoff": DEFAULT_RELEVANCE_CUTOFF,
         "reranker_batch_size": DEFAULT_RERANKER_BATCH_SIZE,
+        "model_request_timeout_seconds": (
+            APP_SETTINGS.model_request_timeout_seconds
+        ),
+        "model_max_retries": APP_SETTINGS.model_max_retries,
         "grader_version": GRADER_VERSION,
         "model_assisted_judge": MODEL_JUDGE,
     }
@@ -735,6 +743,9 @@ def _answer_from_report_payload(payload: dict[str, Any]) -> GroundedAnswer:
         used_fallback=payload["used_fallback"],
         fallback_error=payload["fallback_error"],
         rejected_claims=rejected,
+        repair_attempted=payload.get("repair_attempted", False),
+        repair_succeeded=payload.get("repair_succeeded", False),
+        repair_error=payload.get("repair_error"),
     )
 
 

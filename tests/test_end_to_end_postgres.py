@@ -73,7 +73,7 @@ class EndToEndPostgresTests(unittest.TestCase):
             patch("ingestion.extract_pdf", return_value=extraction),
             patch(
                 "ingestion.get_embeddings",
-                side_effect=lambda texts: [
+                side_effect=lambda texts, **_kwargs: [
                     [1.0] + [0.0] * 1535 for _ in texts
                 ],
             ),
