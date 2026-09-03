@@ -1,20 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import Navigation from "./components/Navigation"
-import Dashboard from "./components/Dashboard"
-import Documents from "./components/Documents"
-import Query from "./components/Query"
-import {
-  apiErrorMessage,
-  fetchConfiguration,
-  fetchDocuments,
-  validateApiKey,
-} from "./api"
-import { theme } from "./styles/theme"
+import { apiErrorDetails, fetchConfiguration, fetchDocuments, validateApiKey } from "./api"
+import AppShell from "./components/AppShell"
+import AskWorkspace from "./components/AskWorkspace"
+import ConnectionScreen from "./components/ConnectionScreen"
+import DocumentLibrary from "./components/DocumentLibrary"
 
 const SESSION_KEY = "lexis-api-key"
 
 function App() {
-  const [activePage, setActivePage] = useState("dashboard")
+  const [activePage, setActivePage] = useState("library")
   const [apiKey, setApiKey] = useState(
     () => window.sessionStorage.getItem(SESSION_KEY) || "",
   )
@@ -23,28 +17,31 @@ function App() {
     apiKey ? "checking" : "disconnected",
   )
   const [authMessage, setAuthMessage] = useState("")
-  const [uploadedDocs, setUploadedDocs] = useState([])
+  const [documents, setDocuments] = useState([])
   const [documentsLoading, setDocumentsLoading] = useState(false)
   const [documentsError, setDocumentsError] = useState("")
   const [selectedDocumentId, setSelectedDocumentId] = useState("")
-  const [queryCount, setQueryCount] = useState(0)
   const [configuration, setConfiguration] = useState(null)
+  const [conversations, setConversations] = useState({})
 
   const loadDocuments = useCallback(async (key) => {
-    if (!key) return
+    if (!key) return []
     setDocumentsLoading(true)
     setDocumentsError("")
     try {
-      const documents = await fetchDocuments(key)
-      setUploadedDocs(documents)
+      const nextDocuments = await fetchDocuments(key)
+      setDocuments(nextDocuments)
       setSelectedDocumentId((currentId) => {
-        const selected = documents.find(
+        const selected = nextDocuments.find(
           (document) => document.document_id === currentId,
         )
         return selected?.status === "ready" ? currentId : ""
       })
+      return nextDocuments
     } catch (error) {
-      setDocumentsError(apiErrorMessage(error, "Could not load documents."))
+      setDocumentsError(
+        apiErrorDetails(error, "We couldn’t refresh your documents.").message,
+      )
       throw error
     } finally {
       setDocumentsLoading(false)
@@ -55,11 +52,12 @@ function App() {
     const candidate = key.trim()
     if (!candidate) {
       setAuthStatus("disconnected")
-      setAuthMessage("Enter the backend API key.")
+      setAuthMessage("Enter the API key provided by your Lexis backend.")
       return
     }
+
     setAuthStatus("checking")
-    setAuthMessage("Checking with the backend...")
+    setAuthMessage("Verifying a secure connection to Lexis…")
     try {
       await validateApiKey(candidate)
       const [, activeConfiguration] = await Promise.all([
@@ -67,15 +65,17 @@ function App() {
         fetchConfiguration(candidate),
       ])
       window.sessionStorage.setItem(SESSION_KEY, candidate)
+      setApiKey(candidate)
       setConfiguration(activeConfiguration)
       setAuthStatus("authenticated")
-      setAuthMessage("Backend verified")
+      setAuthMessage("")
     } catch (error) {
+      const details = apiErrorDetails(error, "Lexis could not validate this connection.")
       window.sessionStorage.removeItem(SESSION_KEY)
-      setUploadedDocs([])
+      setDocuments([])
       setConfiguration(null)
-      setAuthStatus("invalid")
-      setAuthMessage(apiErrorMessage(error, "The backend rejected this key."))
+      setAuthStatus(details.kind === "unreachable" ? "unreachable" : "invalid")
+      setAuthMessage(details.message)
     }
   }, [loadDocuments])
 
@@ -85,12 +85,10 @@ function App() {
 
   const handleApiKeyChange = (value) => {
     setApiKey(value)
-    window.sessionStorage.removeItem(SESSION_KEY)
-    setAuthStatus(value.trim() ? "unvalidated" : "disconnected")
-    setAuthMessage(value.trim() ? "Press Connect to validate" : "")
-    setUploadedDocs([])
-    setSelectedDocumentId("")
-    setConfiguration(null)
+    setAuthMessage("")
+    if (authStatus !== "authenticated") {
+      setAuthStatus(value.trim() ? "unvalidated" : "disconnected")
+    }
   }
 
   const handleDisconnect = () => {
@@ -98,62 +96,60 @@ function App() {
     setApiKey("")
     setAuthStatus("disconnected")
     setAuthMessage("")
-    setUploadedDocs([])
+    setDocuments([])
+    setDocumentsError("")
     setSelectedDocumentId("")
     setConfiguration(null)
+    setConversations({})
+    setActivePage("library")
   }
 
-  const handleQueryDocument = (documentId) => {
+  const openDocumentWorkspace = (documentId) => {
     setSelectedDocumentId(documentId)
-    setActivePage("query")
+    setActivePage("ask")
+  }
+
+  if (authStatus !== "authenticated") {
+    return (
+      <ConnectionScreen
+        apiKey={apiKey}
+        authStatus={authStatus}
+        message={authMessage}
+        onApiKeyChange={handleApiKeyChange}
+        onConnect={() => connect(apiKey)}
+      />
+    )
   }
 
   return (
-    <div style={{
-      display: "flex",
-      height: "100vh",
-      overflow: "hidden",
-      backgroundColor: theme.colors.bg,
-      fontFamily: theme.fonts.sans,
-    }}>
-      <Navigation
-        activePage={activePage}
-        setActivePage={setActivePage}
-        apiKey={apiKey}
-        setApiKey={handleApiKeyChange}
-        authStatus={authStatus}
-        authMessage={authMessage}
-        onConnect={() => connect(apiKey)}
-        onDisconnect={handleDisconnect}
-      />
-      <main style={{ flex: 1, overflow: "hidden", display: "flex" }}>
-        {activePage === "dashboard" && (
-          <Dashboard uploadedDocs={uploadedDocs} queryCount={queryCount} />
-        )}
-        {activePage === "documents" && (
-          <Documents
-            apiKey={apiKey}
-            authenticated={authStatus === "authenticated"}
-            uploadedDocs={uploadedDocs}
-            documentsLoading={documentsLoading}
-            documentsError={documentsError}
-            onRefresh={() => loadDocuments(apiKey)}
-            onQuery={handleQueryDocument}
-          />
-        )}
-        {activePage === "query" && (
-          <Query
-            apiKey={apiKey}
-            authenticated={authStatus === "authenticated"}
-            uploadedDocs={uploadedDocs}
-            selectedDocumentId={selectedDocumentId}
-            setSelectedDocumentId={setSelectedDocumentId}
-            setQueryCount={setQueryCount}
-            configuration={configuration}
-          />
-        )}
-      </main>
-    </div>
+    <AppShell
+      activePage={activePage}
+      onNavigate={setActivePage}
+      onDisconnect={handleDisconnect}
+      documents={documents}
+    >
+      {activePage === "library" ? (
+        <DocumentLibrary
+          apiKey={apiKey}
+          documents={documents}
+          documentsLoading={documentsLoading}
+          documentsError={documentsError}
+          configuration={configuration}
+          onRefresh={() => loadDocuments(apiKey)}
+          onAsk={openDocumentWorkspace}
+        />
+      ) : (
+        <AskWorkspace
+          apiKey={apiKey}
+          documents={documents}
+          selectedDocumentId={selectedDocumentId}
+          onSelectDocument={setSelectedDocumentId}
+          onOpenLibrary={() => setActivePage("library")}
+          conversations={conversations}
+          setConversations={setConversations}
+        />
+      )}
+    </AppShell>
   )
 }
 

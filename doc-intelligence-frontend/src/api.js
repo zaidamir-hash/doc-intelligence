@@ -9,11 +9,38 @@ function authHeaders(apiKey) {
   return { headers: { [API_KEY_HEADER]: apiKey } }
 }
 
-export function apiErrorMessage(error, fallback) {
+export function apiErrorDetails(error, fallback) {
   const detail = error.response?.data?.detail
-  if (typeof detail === "string") return detail
-  if (detail && typeof detail.message === "string") return detail.message
-  return fallback
+  const message = typeof detail === "string"
+    ? detail
+    : detail && typeof detail.message === "string"
+      ? detail.message
+      : fallback
+  const code = detail && typeof detail.code === "string" ? detail.code : null
+
+  if (!error.response) {
+    return {
+      code,
+      kind: "unreachable",
+      message: error.code === "ECONNABORTED"
+        ? "The backend took too long to respond. Check that it is running, then try again."
+        : "The Lexis backend is unreachable. Check the server address and try again.",
+    }
+  }
+
+  return {
+    code,
+    kind: error.response.status >= 500
+      ? "unreachable"
+      : error.response.status === 401 || error.response.status === 403
+        ? "authentication"
+        : "request",
+    message,
+  }
+}
+
+export function apiErrorMessage(error, fallback) {
+  return apiErrorDetails(error, fallback).message
 }
 
 export async function validateApiKey(apiKey) {
