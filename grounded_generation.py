@@ -597,6 +597,12 @@ _GROUNDING_STOP_WORDS = {
     "were",
     "with",
 }
+_INDEPENDENT_AND_SEPARATOR = re.compile(
+    r"\band\b(?=\s+(?:a|an|the)?\s*(?:[A-Za-z0-9'-]+\s+){0,6}"
+    r"(?:is|are|was|were|has|have|had|can|could|will|would|should|must|"
+    r"may|might)\b)",
+    flags=re.IGNORECASE,
+)
 
 
 def _normalized_token_text(value: str) -> str:
@@ -648,9 +654,7 @@ def _claim_clause_terms(value: str) -> list[set[str]]:
         if clause.count(",") >= 2:
             clauses.append(clause)
         else:
-            clauses.extend(
-                re.split(r"\band\b", clause, flags=re.IGNORECASE)
-            )
+            clauses.extend(_INDEPENDENT_AND_SEPARATOR.split(clause))
     return [terms for clause in clauses if (terms := _substantive_terms(clause))]
 
 

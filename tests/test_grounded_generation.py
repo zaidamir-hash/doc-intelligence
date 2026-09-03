@@ -403,6 +403,35 @@ class GroundedAnswerTests(unittest.TestCase):
         self.assertTrue(answer.used_fallback)
         self.assertIn("clause support term coverage was below", answer.fallback_error)
 
+    def test_shared_subject_conjunction_is_not_treated_as_a_new_claim(self) -> None:
+        passage = "Allow multiple branches and users to work simultaneously."
+        context = build_generation_context(
+            [reranked(candidate(1, passage=passage))]
+        )
+        generated = GeneratedAnswer(
+            status="answered",
+            claims=(
+                GroundedClaim(
+                    (
+                        "Concurrent-user protection allows multiple branches and "
+                        "users to work simultaneously."
+                    ),
+                    ("S1",),
+                    (passage,),
+                ),
+            ),
+            insufficient_reason=None,
+        )
+
+        answer = generate_grounded_answer(
+            "What does concurrent-user protection do?",
+            context,
+            generator=lambda _question, _context, _model: generated,
+        )
+
+        self.assertFalse(answer.used_fallback)
+        self.assertEqual(answer.status, "answered")
+
     def test_quote_matching_tolerates_typography_and_explicit_ellipsis(self) -> None:
         passage = (
             "The Governor’s Annual Report on achievements is hereby enclosed "
